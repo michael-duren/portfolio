@@ -1,11 +1,14 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
 import Header from '../components/Header.astro';
 import Nav from '../components/Nav.astro';
 const { title } = Astro.props;
+import '../styles/global.styles.css';
 ---
 
 <html lang="en">
   <head>
+    <ViewTransitions />
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
@@ -23,12 +26,15 @@ const { title } = Astro.props;
       <Header />
     </div>
     <div class="flex h-full px-2 py-2 rounded-lg gap-8 flex-col md:flex-row">
-      <aside>
+      <aside class="bg-gray-50 px-8 py-2 rounded-lg shadow-md">
         <Nav />
       </aside>
       <main class="w-full h-full flex flex-col items-center">
         <slot />
       </main>
     </div>
-  </body>
-</html>
+    <script>
+      import '../scripts/terminal.ts';
+    </script>
+  </body></html
+>

@@ -16,10 +16,57 @@ const typedTitle = async () => {
 
   for (let char of title) {
     titleText.textContent += char;
-    await sleep(50);
+    await sleep(40);
   }
   await sleep(500);
 };
+
+const pause = 1000;
+const type = 500;
+const fast = 100;
+
+const longPause = 2000;
+
+const runTerminal = async () => {
+  const terminalInput = document.querySelector('#terminal-input');
+  const terminalOutput = document.querySelector('#terminal-output');
+  if (!terminalInput || !terminalOutput) return;
+
+  for (let command of terminalCommands) {
+    for (let i = 0; i < command.command.length; i++) {
+      terminalInput!.textContent += command.command[i];
+      if (i % 2 === 0) {
+        await sleep(type);
+      } else {
+        await sleep(fast);
+      }
+    }
+    for (let output of command.output) {
+      const li = document.createElement('li');
+      li.className = 'flex items-center gap-2 fade-in';
+
+      const iconDiv = document.createElement('div');
+      iconDiv.className = 'w-4 h-4 rotate-90';
+      iconDiv.innerHTML = caretUpBoldIcon;
+
+      const textDiv = document.createElement('div');
+      textDiv.textContent = output;
+
+      li.appendChild(iconDiv);
+      li.appendChild(textDiv);
+
+      terminalOutput.appendChild(li);
+      await sleep(200);
+    }
+    await sleep(longPause);
+    terminalInput.textContent = '';
+  }
+};
+document.addEventListener('DOMContentLoaded', () => {
+  typedTitle().then(() => {
+    runTerminal();
+  });
+});
 
 const terminalCommands = [
   {
@@ -44,49 +91,3 @@ const terminalCommands = [
     output: [],
   },
 ];
-
-const pause = 1000;
-const type = 500;
-const fast = 100;
-
-const longPause = 2000;
-
-const runTerminal = async () => {
-  const terminalInput = document.querySelector('#terminal-input');
-  const terminalOutput = document.querySelector('#terminal-output');
-  if (!terminalInput || !terminalOutput) return;
-
-  for (let command of terminalCommands) {
-    for (let i = 0; i < command.command.length; i++) {
-      terminalInput!.textContent += command.command[i];
-      if (i % 2 === 0) {
-        await sleep(type);
-      } else {
-        await sleep(fast);
-      }
-    }
-    for (let output of command.output) {
-      const li = document.createElement('li');
-      li.className = 'flex items-center gap-2';
-
-      const iconDiv = document.createElement('div');
-      iconDiv.className = 'w-4 h-4 rotate-90';
-      iconDiv.innerHTML = caretUpBoldIcon;
-
-      const textDiv = document.createElement('div');
-      textDiv.textContent = output;
-
-      li.appendChild(iconDiv);
-      li.appendChild(textDiv);
-
-      terminalOutput.appendChild(li);
-      await sleep(200);
-    }
-    await sleep(longPause);
-    terminalInput.textContent = '';
-  }
-};
-
-typedTitle().then(() => {
-  runTerminal();
-});
