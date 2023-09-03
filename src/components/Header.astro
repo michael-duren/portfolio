@@ -1,0 +1,13 @@
+---
+import { Image } from 'astro:assets';
+import avatar from '../images/avatar_temp.jpeg';
+---
+
+<header class="flex justify-between items-center">
+  <h1 class="text-3xl font-rock">Michael Duren</h1>
+  <Image
+    class="rounded-full h-24 w-24"
+    src={avatar}
+    alt="A avatar of Michael Duren"
+  />
+</header>
