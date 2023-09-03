@@ -1,14 +1,20 @@
 ---
+import FloadingAvatar from '../components/FloadingAvatar.astro';
 import MainLayout from '../layouts/MainLayout.astro';
 import { Icon } from 'astro-icon';
 ---
 
 <MainLayout title="Michael Duren">
-  <div class="animate-pulse flex flex-col justify-between px-8 border-2 h-full">
-    <ul id="terminal-output" class="flex flex-col w-full"></ul>
-    <div class="flex items-center gap-2">
-      <Icon class="w-8 h-8 storke-2" name="tabler:terminal" />
-      <div id="terminal-input" class="text-2xl font-bold"></div>
+  <div class="flex flex-col md:flex-row w-full max-h-1/2">
+    <div class="animate-pulse flex-1 flex flex-col justify-between px-8 h-1/2">
+      <ul id="terminal-output" class="flex flex-grow flex-col w-full"></ul>
+      <div class="flex items-center gap-2">
+        <Icon class="w-8 h-8 storke-2" name="tabler:terminal" />
+        <div id="terminal-input" class="text-2xl font-bold"></div>
+      </div>
+    </div>
+    <div class="flex-1 items-center">
+      <FloadingAvatar />
     </div>
   </div>
 </MainLayout>

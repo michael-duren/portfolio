@@ -1,0 +1,72 @@
+---
+import { Image } from 'astro:assets';
+import michaelAvatar from '../images/Avatar.png';
+---
+
+<div class="floating-container">
+  <div class="avatar">
+    <Image src={michaelAvatar} alt="Avatar of Michael Duren" />
+  </div>
+  <!-- SVG FOR SHADOW -->
+  <svg
+    class="shadow"
+    width="172"
+    height="29"
+    viewBox="0 0 172 29"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M85.717 0C38.379 0 0 6.31805 0 14.1124C0 21.9067 38.379 28.2256 85.717 28.2256C133.055 28.2256 171.434 21.9067 171.434 14.1124C171.434 6.31805 133.055 0 85.717 0Z"
+    ></path>
+  </svg>
+</div>
+
+<style>
+  .floating-container {
+    position: relative;
+    height: 50vh;
+    /* border: 1px solid red; */
+    width: 20rem;
+  }
+  .avatar {
+    position: absolute;
+    background-color: hsl(var(--transparent));
+    border-radius: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: animateY 2.5s linear infinite alternate-reverse;
+  }
+
+  .shadow {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: animateSize 2.5s linear infinite alternate-reverse;
+    background: none;
+    border: none;
+  }
+
+  @keyframes animateY {
+    0% {
+      top: 10%;
+      scale: 0.95;
+    }
+    100% {
+      top: 15%;
+      scale: 1;
+    }
+  }
+
+  @keyframes animateSize {
+    0% {
+      scale: 1;
+      fill: #cecdd340;
+    }
+    100% {
+      scale: 1.1;
+      fill: #cecdd3;
+    }
+  }
+</style>

@@ -80,6 +80,7 @@ const runTerminal = async () => {
       li.appendChild(textDiv);
 
       terminalOutput.appendChild(li);
+      await sleep(200);
     }
     await sleep(longPause);
     terminalInput.textContent = '';
