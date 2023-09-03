@@ -1,7 +1,17 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
+import { Icon } from 'astro-icon';
 ---
 
 <MainLayout title="Michael Duren">
-  <div> Hello</div>
+  <div class="animate-pulse flex flex-col justify-between px-8 border-2 h-full">
+    <ul id="terminal-output" class="flex flex-col w-full"></ul>
+    <div class="flex items-center gap-2">
+      <Icon class="w-8 h-8 storke-2" name="tabler:terminal" />
+      <div id="terminal-input" class="text-2xl font-bold"></div>
+    </div>
+  </div>
 </MainLayout>
+<script>
+  import '../scripts/terminal.ts';
+</script>
