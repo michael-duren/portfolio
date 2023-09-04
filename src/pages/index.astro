@@ -1,22 +1,22 @@
 ---
 import FloadingAvatar from '../components/FloadingAvatar.astro';
-import TerminalText from '../components/TerminalText';
-import MainLayout from '../layouts/MainLayout.astro';
 import { Icon } from 'astro-icon';
+import MainLayout from '../layouts/MainLayout.astro';
 ---
 
-<MainLayout title="Michael Duren">
+<MainLayout title="Michael Duren" animated={true}>
   <div class="flex flex-col md:flex-row w-full max-h-1/2">
+    <!-- Terminal -->
     <div
-      class="animate-pulse flex-1 flex flex-col justify-between px-8 h-1/2"
+      class="animate-pulse flex-1 flex flex-col gap-6 justify-between px-8 h-1/2"
       transition:persist
     >
-      <!-- <ul id="terminal-output" class="flex flex-grow flex-col w-full"></ul>
       <div class="flex items-center gap-2">
         <Icon class="w-8 h-8 storke-2" name="tabler:terminal" />
         <div id="terminal-input" class="text-2xl font-bold"></div>
-      </div> -->
-      <TerminalText />
+      </div>
+      <ul id="terminal-output" class="flex flex-grow flex-col w-full gap-2"
+      ></ul>
     </div>
     <div class="flex-1 items-center">
       <FloadingAvatar />

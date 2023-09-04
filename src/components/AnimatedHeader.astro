@@ -1,22 +1,15 @@
 ---
 import { Image } from 'astro:assets';
 import avatar from '../images/avatar_temp.jpeg';
-const { animated } = Astro.props;
 ---
 
 <header class="flex min-w-[10vw] mb-auto h-full flex-col">
-  <div class="w-full flex mb-16 items-center justify-between">
+  <div class="w-full flex mb-16 items-center">
     <Image
       class="rounded-full h-36 w-36"
       src={avatar}
       alt="A avatar of Michael Duren"
     />
-    {
-      !animated ? (
-        <h1 class="ml-2 text-5xl font-rock mb-16">Michael Duren</h1>
-      ) : (
-        <h1 id="title" class="ml-2 text-5xl font-rock mb-16"></h1>
-      )
-    }
+    <h1 id="title" class="ml-2 text-5xl font-rock mb-16"></h1>
   </div>
 </header>

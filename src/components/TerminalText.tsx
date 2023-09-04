@@ -14,7 +14,7 @@ const CaretUpBoldIcon = () => (
   </svg>
 );
 
-const PortfolioTerminal = () => {
+const TerminalText = () => {
   const [titleText, setTitleText] = useState('');
   const [terminalInput, setTerminalInput] = useState('');
   const [terminalOutput, setTerminalOutput] = useState<string[]>([]);
@@ -65,6 +65,7 @@ const PortfolioTerminal = () => {
           </li>
         ))}
       </ul>
+      test
     </div>
   );
 };
@@ -93,4 +94,4 @@ const terminalCommands = [
   },
 ];
 
-export default PortfolioTerminal;
+export default TerminalText;

@@ -1,3 +1,18 @@
+const audioFiles = [
+  '/assets/keyboard-samples/1.wav',
+  '/assets/keyboard-samples/2.wav',
+  '/assets/keyboard-samples/3.wav',
+  '/assets/keyboard-samples/4.wav',
+  '/assets/keyboard-samples/5.wav',
+  '/assets/keyboard-samples/6.wav',
+  '/assets/keyboard-samples/7.wav',
+  '/assets/keyboard-samples/8.wav',
+  '/assets/keyboard-samples/9.wav',
+  '/assets/keyboard-samples/10.wav',
+];
+
+const blip = '/assets/keyboard-samples/blip.wav';
+
 const caretUpBoldIcon =
   '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><path fill="currentColor" d="M216.49 168.49a12 12 0 0 1-17 0L128 97l-71.51 71.49a12 12 0 0 1-17-17l80-80a12 12 0 0 1 17 0l80 80a12 12 0 0 1 0 17Z"/></svg>';
 
@@ -21,8 +36,22 @@ const typedTitle = async () => {
   await sleep(500);
 };
 
-const pause = 1000;
-const type = 500;
+const playBlip = () => {
+  new Audio(blip).play();
+};
+const playRandomAudio = (i?: number) => {
+  if (i) {
+    const audio = new Audio(audioFiles[i]);
+    audio.play();
+    return;
+  }
+  const randomIndex = Math.floor(Math.random() * audioFiles.length);
+  const audio = new Audio(audioFiles[randomIndex]);
+  audio.play();
+};
+
+const pause = 400;
+const type = 300;
 const fast = 100;
 
 const longPause = 2000;
@@ -34,14 +63,16 @@ const runTerminal = async () => {
 
   for (let command of terminalCommands) {
     for (let i = 0; i < command.command.length; i++) {
+      playRandomAudio(i);
       terminalInput!.textContent += command.command[i];
-      if (i % 2 === 0) {
+      if (i % 4 === 0) {
         await sleep(type);
       } else {
         await sleep(fast);
       }
     }
     for (let output of command.output) {
+      playBlip();
       const li = document.createElement('li');
       li.className = 'flex items-center gap-2 fade-in';
 
@@ -59,10 +90,12 @@ const runTerminal = async () => {
       await sleep(200);
     }
     await sleep(longPause);
-    terminalInput.textContent = '';
+    if (terminalInput.textContent !== 'Have Fun') {
+      terminalInput.textContent = '';
+    }
   }
 };
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('astro:page-load', () => {
   typedTitle().then(() => {
     runTerminal();
   });
@@ -76,7 +109,7 @@ const terminalCommands = [
     ],
   },
   {
-    command: 'Michael Duren',
+    command: 'I am...',
     output: [
       "I'm Michael...",
       'a',
@@ -88,6 +121,6 @@ const terminalCommands = [
   },
   {
     command: 'Have Fun',
-    output: [],
+    output: ['Have fun exploring my site!', '🥳🥳🥳'],
   },
 ];

@@ -1,9 +1,9 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
-import Header from '../components/Header.astro';
 import Nav from '../components/Nav.astro';
-const { title, animated } = Astro.props;
+const { title } = Astro.props;
 import '../styles/global.styles.css';
+import AnimatedHeader from './AnimatedHeader.astro';
 ---
 
 <html lang="en">
@@ -23,7 +23,7 @@ import '../styles/global.styles.css';
   </head>
   <body class="min-h-screen p-4 gap-2">
     <div class="px-2 py-2 rounded-lg">
-      <Header animated={animated} />
+      <AnimatedHeader />
     </div>
     <div class="flex h-full px-2 py-2 rounded-lg gap-8 flex-col md:flex-row">
       <aside class="bg-gray-50 px-8 py-2 rounded-lg shadow-md">
