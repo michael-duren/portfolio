@@ -1,9 +1,22 @@
+---
+import { Icon } from 'astro-icon';
+---
+
 <!-- Open the modal using ID.showModal() method -->
 <dialog id="my_modal_2" class="modal">
   <form method="dialog" class="modal-box">
-    <h3 class="font-bold text-lg">Hello!</h3>
-    <button id="modal-button-sound">With Sound</button>
-    <button id="modal-button-no-sound">Without Sound</button>
+    <h3 class="font-bold text-lg">Welcome</h3>
+    <p>Would you like to continue with sound?</p>
+    <div class="mt-8 flex gap-4">
+      <button id="modal-button-sound" class="btn">
+        <Icon name="iconoir:sound-low" class="w-6 h-6 mr-2" />
+         With Sound
+      </button>
+      <button id="modal-button-no-sound" class="btn">
+        <Icon name="iconoir:sound-off" class="w-6 h-6 mr-2" />
+         Without Sound
+      </button>
+    </div>
   </form>
   <form method="dialog" class="modal-backdrop"> </form>
 </dialog>

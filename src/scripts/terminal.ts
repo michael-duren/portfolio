@@ -22,8 +22,6 @@ const pluck = '/assets/keyboard-samples/pluck.mp3';
 const caretUpBoldIcon =
   '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><path fill="currentColor" d="M216.49 168.49a12 12 0 0 1-17 0L128 97l-71.51 71.49a12 12 0 0 1-17-17l80-80a12 12 0 0 1 17 0l80 80a12 12 0 0 1 0 17Z"/></svg>';
 
-let displayedOutput = [];
-
 // functions
 
 const sleep = (delay: number) => {
@@ -122,10 +120,11 @@ document.addEventListener('astro:page-load', () => {
   const navLinks = document.querySelectorAll('.nav-link');
   if (navLinks) {
     navLinks.forEach((link) => {
-      link.addEventListener('click', () => {
-        console.log('CLICKED');
-        playSample(pluck);
-      });
+      if (sound) {
+        link.addEventListener('click', () => {
+          playSample(pluck);
+        });
+      }
     });
   }
 
