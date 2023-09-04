@@ -1,3 +1,8 @@
+// global vars
+
+let play = false;
+let sound = false;
+
 const audioFiles = [
   '/assets/keyboard-samples/1.wav',
   '/assets/keyboard-samples/2.wav',
@@ -12,11 +17,14 @@ const audioFiles = [
 ];
 
 const blip = '/assets/keyboard-samples/blip.wav';
+const pluck = '/assets/keyboard-samples/pluck.mp3';
 
 const caretUpBoldIcon =
   '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 256 256"><path fill="currentColor" d="M216.49 168.49a12 12 0 0 1-17 0L128 97l-71.51 71.49a12 12 0 0 1-17-17l80-80a12 12 0 0 1 17 0l80 80a12 12 0 0 1 0 17Z"/></svg>';
 
 let displayedOutput = [];
+
+// functions
 
 const sleep = (delay: number) => {
   return new Promise((resolve) => {
@@ -36,8 +44,8 @@ const typedTitle = async () => {
   await sleep(500);
 };
 
-const playBlip = () => {
-  new Audio(blip).play();
+const playSample = (sample: string) => {
+  new Audio(sample).play();
 };
 const playRandomAudio = (i?: number) => {
   if (i) {
@@ -51,19 +59,19 @@ const playRandomAudio = (i?: number) => {
 };
 
 const pause = 400;
-const type = 300;
+const type = 200;
 const fast = 100;
 
-const longPause = 2000;
+const longPause = 1500;
 
-const runTerminal = async () => {
+const runTerminal = async (sound: boolean) => {
   const terminalInput = document.querySelector('#terminal-input');
   const terminalOutput = document.querySelector('#terminal-output');
   if (!terminalInput || !terminalOutput) return;
 
   for (let command of terminalCommands) {
     for (let i = 0; i < command.command.length; i++) {
-      playRandomAudio(i);
+      if (sound) playRandomAudio(i);
       terminalInput!.textContent += command.command[i];
       if (i % 4 === 0) {
         await sleep(type);
@@ -72,7 +80,7 @@ const runTerminal = async () => {
       }
     }
     for (let output of command.output) {
-      playBlip();
+      if (sound) playSample(blip);
       const li = document.createElement('li');
       li.className = 'flex items-center gap-2 fade-in';
 
@@ -95,10 +103,59 @@ const runTerminal = async () => {
     }
   }
 };
+
+const startAnimation = (sound: boolean) => {
+  play = true;
+  const terminalInput = document.querySelector('#terminal-input');
+  const terminalOutput = document.querySelector('#terminal-output');
+  if (!terminalInput || !terminalOutput) return;
+
+  terminalInput.textContent = '';
+  terminalOutput.innerHTML = '';
+
+  runTerminal(sound);
+};
+
 document.addEventListener('astro:page-load', () => {
-  typedTitle().then(() => {
-    runTerminal();
-  });
+  typedTitle();
+
+  const navLinks = document.querySelectorAll('.nav-link');
+  if (navLinks) {
+    navLinks.forEach((link) => {
+      link.addEventListener('click', () => {
+        console.log('CLICKED');
+        playSample(pluck);
+      });
+    });
+  }
+
+  const modalButtonSound: HTMLButtonElement | null = document.querySelector(
+    '#modal-button-sound'
+  );
+  const modalButtonNoSound: HTMLButtonElement | null = document.querySelector(
+    '#modal-button-no-sound'
+  );
+  if (modalButtonSound && modalButtonNoSound) {
+    modalButtonSound.addEventListener('click', () => {
+      sound = true;
+      startAnimation(true);
+    });
+    modalButtonNoSound.addEventListener('click', () => {
+      sound = false;
+      startAnimation(false);
+    });
+  }
+
+  const homeButton = document.querySelector('#home-button');
+  if (homeButton) {
+    homeButton.addEventListener('click', () => {
+      startAnimation(sound);
+    });
+  }
+});
+
+document.addEventListener('astro:route-change', () => {
+  play = false;
 });
 
 const terminalCommands = [

@@ -2,6 +2,7 @@
 import FloadingAvatar from '../components/FloadingAvatar.astro';
 import { Icon } from 'astro-icon';
 import MainLayout from '../layouts/MainLayout.astro';
+import Modal from '../components/Modal.astro';
 ---
 
 <MainLayout title="Michael Duren" animated={true}>
@@ -22,4 +23,8 @@ import MainLayout from '../layouts/MainLayout.astro';
       <FloadingAvatar />
     </div>
   </div>
+  <Modal />
+  <script>
+    my_modal_2.showModal();
+  </script>
 </MainLayout>
