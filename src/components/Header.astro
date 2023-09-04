@@ -8,7 +8,7 @@ const { animated } = Astro.props;
   <div class="w-full flex mb-16 items-center justify-between">
     <div class="avatar">
       <div
-        class="w-24 shadow-2xl shadow-blue-500 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
+        class="w-24 shadow-lg shadow-blue-500 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
       >
         <Image
           class="rounded-full h-36 w-36"
@@ -19,7 +19,9 @@ const { animated } = Astro.props;
     </div>
     {
       !animated ? (
-        <h1 class="ml-2 text-5xl font-rock mb-16">Michael Duren</h1>
+        <h1 class="ml-2 text-5xl font-rock mb-8 md:mb-16 drop-shadow-md">
+          Michael Duren
+        </h1>
       ) : (
         <h1 id="title" class="ml-2 text-5xl font-rock mb-16" />
       )
