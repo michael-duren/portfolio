@@ -1,7 +1,14 @@
 ---
+import { Image } from 'astro:assets';
 import MainLayout from '../layouts/MainLayout.astro';
+import rubberDuck from '../images/duck.png';
 ---
 
-<MainLayout>
-  <div transition:name="hero">About</div>
+<MainLayout title="Michael Duren About">
+  <div class="flex">
+    <div class="flex-1"> </div>
+    <div class="flex-1">
+      <Image src={rubberDuck} alt="Rubber Duck" />
+    </div>
+  </div>
 </MainLayout>
