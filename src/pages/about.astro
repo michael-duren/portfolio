@@ -2,13 +2,58 @@
 import { Image } from 'astro:assets';
 import MainLayout from '../layouts/MainLayout.astro';
 import rubberDuck from '../images/duck.png';
+import rubberDuckBlue from '../images/duck-blue.png';
+import Technologies from '../components/Technologies.astro';
 ---
 
 <MainLayout title="Michael Duren About">
   <div class="flex">
-    <div class="flex-1"> </div>
-    <div class="flex-1">
-      <Image src={rubberDuck} alt="Rubber Duck" />
+    <div class="flex flex-col gap-2 md:gap-3 lg:gap-4 flex-1">
+      <h2 class="font-bold text-2xl md:text-4xl">About Me</h2>
+      <div>
+        <p class="font-bold text-purple-700">
+          What's with the rubber <span class="text-amber-500">duck?</span></p
+        >
+        <p class="text-xs text-gray-400">(I dare you to click it)</p>
+      </div>
+      <p class="md:text-base text-sm">
+        The rubber <span class="font-semibold">duck</span> is a reference to the
+        rubber duck debugging method. The idea is that if you are stuck on a
+        problem, you should explain it to a rubber duck.
+      </p>
+      <p class="md:text-base text-sm">
+        I ❤️ this idea, because it of the reminder to take a step back, and
+        really look at what you're creating. The new ideas that arise after
+        talking through the code can lead us to a solution. Or not, then we try
+        something else. Don't take yourself too seriously 🤷‍♂️.
+      </p>
+      <p class="font-bold text-purple-700">Anyway...</p>
+      <p class="font-semibold text-gray-600 md:text-base text-sm">
+        I am a software engineer, and creative mind with a passion for building
+        things. I love to learn new things, and I am always looking for new
+        technologies, and new ways to solve problems.
+      </p>
+      <p class="font-semibold text-gray-600 md:text-base text-sm">
+        Currently, I am a freelance software engineer, and do work part time for
+        a local company. In my free time I make applications focused in the
+        areas of digital art and electronic music.
+      </p>
+      <h2 class="font-bold text-2xl">Technologies I use</h2>
+      <Technologies />
+    </div>
+    <div class="flex-1 flex-col flex justify-around">
+      <Image
+        id="rubber-duck"
+        class="active:scale-125 transition-all cursor-pointer duration-500"
+        src={rubberDuck}
+        alt="Rubber Duck"
+      />
+      <Image
+        id="rubber-duck-blue"
+        class="active:scale-125 md:hidden transition-all cursor-pointer duration-500"
+        src={rubberDuckBlue}
+        alt="Rubber Duck"
+      />
     </div>
   </div>
 </MainLayout>

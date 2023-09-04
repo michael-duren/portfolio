@@ -6,19 +6,21 @@ import Modal from '../components/Modal.astro';
 ---
 
 <MainLayout title="Michael Duren" animated={true}>
-  <div class="flex flex-col md:flex-row w-full max-h-1/2">
+  <div class="flex w-full max-h-1/2">
     <!-- Terminal -->
     <div
-      class="animate-pulse flex-1 flex flex-col gap-6 justify-between px-8 h-1/2"
+      class="animate-pulse flex-1 flex flex-col gap-6 justify-between h-1/2"
       transition:persist
     >
       <div class="flex items-center gap-2">
         <Icon class="w-8 h-8 storke-2 text-purple-900" name="tabler:terminal" />
-        <div id="terminal-input" class="text-2xl text-purple-700 font-bold"
-        ></div>
+        <div
+          id="terminal-input"
+          class="text-sm md:text-2xl text-purple-700 font-bold"></div>
       </div>
-      <ul id="terminal-output" class="flex flex-grow flex-col w-full gap-2"
-      ></ul>
+      <ul
+        id="terminal-output"
+        class="flex flex-grow md:text-base text-xs flex-col w-full gap-2"></ul>
     </div>
     <div class="flex-1 items-center">
       <FloadingAvatar />

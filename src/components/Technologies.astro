@@ -1,0 +1,43 @@
+---
+import { Image } from 'astro:assets';
+import TypeScriptIcon from '../icons/typescript.png';
+import JavaScriptIcon from '../icons/javascript.png';
+import ReactIcon from '../icons/react.png';
+import CSharpIcon from '../icons/csharp.png';
+import DotNetIcon from '../icons/dotnet.png';
+import CssIcon from '../icons/css.png';
+import PostgresIcon from '../icons/postgres.png';
+import SqlServerIcon from '../icons/sql-server.png';
+---
+
+<div class="carousel carousel-center rounded-box">
+  <div class="carousel-item">
+    <Image src={JavaScriptIcon} alt="Javascript logo" />
+  </div>
+
+  <div class="carousel-item">
+    <Image src={TypeScriptIcon} alt="Javascript logo" />
+  </div>
+
+  <div class="carousel-item">
+    <Image src={CssIcon} alt="Javascript logo" />
+  </div>
+  <div class="carousel-item">
+    <Image src={ReactIcon} alt="React logo" />
+  </div>
+  <div class="carousel-item">
+    <Image src={CSharpIcon} alt="C Sharp logo" />
+  </div>
+
+  <div class="carousel-item flex items-center">
+    <Image class="w-10 h-10" src={DotNetIcon} alt="C Sharp logo" />
+  </div>
+
+  <div class="carousel-item">
+    <Image src={PostgresIcon} alt="C Sharp logo" />
+  </div>
+
+  <div class="carousel-item">
+    <Image src={SqlServerIcon} alt="C Sharp logo" />
+  </div>
+</div>

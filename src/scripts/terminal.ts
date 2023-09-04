@@ -132,6 +132,19 @@ document.addEventListener('astro:page-load', () => {
     });
   }
 
+  const rubberDuck = document.querySelector('#rubber-duck');
+  if (rubberDuck) {
+    rubberDuck.addEventListener('click', () => {
+      new Audio('/assets/keyboard-samples/duck-squeek.mp3').play();
+    });
+  }
+  const rubberDuckBlue = document.querySelector('#rubber-duck-blue');
+  if (rubberDuckBlue) {
+    rubberDuckBlue.addEventListener('click', () => {
+      new Audio('/assets/keyboard-samples/duck-squeek-blue.mp3').play();
+    });
+  }
+
   if (!isAnimationComplete.get()) {
     // if animation has not run yet we want to allow the user to select sound or no sound
     return;
