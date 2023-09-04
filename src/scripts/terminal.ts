@@ -9,6 +9,7 @@ import {
 
 // global vars
 let sound = false;
+const audioCache = new Map();
 
 // functions
 
@@ -18,8 +19,16 @@ const sleep = (delay: number) => {
   });
 };
 
+const getAudio = (src: string) => {
+  if (audioCache.has(src)) {
+    return audioCache.get(src);
+  }
+  audioCache.set(src, new Audio(src));
+  return audioCache.get(src);
+};
+
 const playSample = (sample: string) => {
-  new Audio(sample).play();
+  getAudio(sample).play();
 };
 
 const typedTitle = async () => {
