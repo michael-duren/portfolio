@@ -6,16 +6,22 @@ const { animated } = Astro.props;
 
 <header class="flex min-w-[10vw] mb-auto h-full flex-col">
   <div class="w-full flex mb-16 items-center justify-between">
-    <Image
-      class="rounded-full h-36 w-36"
-      src={avatar}
-      alt="A avatar of Michael Duren"
-    />
+    <div class="avatar">
+      <div
+        class="w-24 shadow-2xl shadow-blue-500 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
+      >
+        <Image
+          class="rounded-full h-36 w-36"
+          src={avatar}
+          alt="A avatar of Michael Duren"
+        />
+      </div>
+    </div>
     {
       !animated ? (
         <h1 class="ml-2 text-5xl font-rock mb-16">Michael Duren</h1>
       ) : (
-        <h1 id="title" class="ml-2 text-5xl font-rock mb-16"></h1>
+        <h1 id="title" class="ml-2 text-5xl font-rock mb-16" />
       )
     }
   </div>
