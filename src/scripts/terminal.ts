@@ -1,65 +1,39 @@
-import { continueAnimation, isAnimationComplete } from '../store/store';
+import { terminalCommands } from './constants';
+import JSConfetti from 'js-confetti';
+import { playSample, stopSample } from './audio.utils';
 import {
-  terminalCommands,
-  audioFiles,
-  blip,
-  pluck,
-  caretUpBoldIcon,
-} from './constants';
+  continueAnimation,
+  isAnimationComplete,
+  startAnimation,
+} from '../store/store';
+import { caretUpBoldIcon } from './constants';
+import { sleep } from './sleep';
 
-// global vars
-let sound = false;
-const audioCache = new Map();
+const keyboardSounds: NodeListOf<HTMLAudioElement> =
+  document.querySelectorAll('.keyboard-sound');
+const blip: HTMLAudioElement | null = document.querySelector('#blip');
+const sound = localStorage.getItem('sound')
+  ? localStorage.getItem('sound')
+  : '0';
 
-// functions
-
-const sleep = (delay: number) => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, delay);
-  });
-};
-
-const getAudio = (src: string) => {
-  if (audioCache.has(src)) {
-    return audioCache.get(src);
-  }
-  audioCache.set(src, new Audio(src));
-  return audioCache.get(src);
-};
-
-const playSample = (sample: string) => {
-  getAudio(sample).play();
-};
-
-const typedTitle = async () => {
-  const titleText = document.querySelector('#title');
-  if (!titleText) return;
-  const title = 'Michael Duren';
-
-  for (let char of title) {
-    titleText.textContent += char;
-    await sleep(40);
-  }
-  await sleep(500);
-};
-
-const playRandomAudio = (i?: number) => {
-  if (i) {
-    const audio = new Audio(audioFiles[i]);
-    audio.play();
-    return;
-  }
-  const randomIndex = Math.floor(Math.random() * audioFiles.length);
-  const audio = new Audio(audioFiles[randomIndex]);
-  audio.play();
-};
-
+// animation speeds
 const type = 200;
 const fast = 100;
-
 const longPause = 1500;
 
-const runTerminal = async (sound: boolean, completed: boolean) => {
+/*
+ * Functions
+ */
+const playRandomKeyboardSound = (i?: number) => {
+  if (i) {
+    keyboardSounds[i].play();
+    return;
+  }
+  const randomIndex = Math.floor(Math.random() * keyboardSounds.length);
+  keyboardSounds[randomIndex].play();
+};
+
+const runTerminal = async (sound: number, completed: boolean) => {
   const terminalInput = document.querySelector('#terminal-input');
   const terminalOutput = document.querySelector('#terminal-output');
   if (!terminalInput || !terminalOutput) return;
@@ -82,16 +56,16 @@ const runTerminal = async (sound: boolean, completed: boolean) => {
         li.appendChild(textDiv);
 
         terminalOutput.appendChild(li);
-        sleep(100);
       }
     }
     return;
   }
 
   for (let command of terminalCommands) {
+    // Type the command in the terminal
     for (let i = 0; i < command.command.length; i++) {
       if (!continueAnimation.get()) return;
-      if (sound) playRandomAudio(i);
+      if (sound) playRandomKeyboardSound(i);
       terminalInput!.textContent += command.command[i];
       if (i % 4 === 0) {
         await sleep(type);
@@ -99,9 +73,11 @@ const runTerminal = async (sound: boolean, completed: boolean) => {
         await sleep(fast);
       }
     }
+    // display command output to screen
     for (let output of command.output) {
-      if (!continueAnimation.get()) return;
-      if (sound) playSample(blip);
+      if (!continueAnimation.get()) return; // if user clicks on a link we want to stop the animation
+      if (sound && blip) playSample(blip); // if sound is enabled we want to play a blip sound
+      // create the list item and append it to the terminal output
       const li = document.createElement('li');
       li.className = 'flex items-center gap-2 fade-in';
 
@@ -117,63 +93,24 @@ const runTerminal = async (sound: boolean, completed: boolean) => {
 
       terminalOutput.appendChild(li);
       await sleep(200);
+      if (blip) stopSample(blip);
     }
     await sleep(longPause);
     if (terminalInput.textContent !== 'Have Fun') {
       terminalInput.textContent = '';
+    } else {
+      const jsConfetti = new JSConfetti();
+      await jsConfetti.addConfetti({});
     }
   }
   isAnimationComplete.set(true);
 };
 
-// functions to run on each page load by astro
 document.addEventListener('astro:page-load', () => {
-  typedTitle();
-  const navLinks = document.querySelectorAll('.nav-link');
-  if (navLinks) {
-    navLinks.forEach((link) => {
-      link.addEventListener('click', () => {
-        if (sound) {
-          playSample(pluck);
-        }
-        continueAnimation.set(false);
-      });
-    });
-  }
-
-  const rubberDuck = document.querySelector('#rubber-duck');
-  if (rubberDuck) {
-    rubberDuck.addEventListener('click', () => {
-      new Audio('/assets/keyboard-samples/duck-squeek.mp3').play();
-    });
-  }
-  const rubberDuckBlue = document.querySelector('#rubber-duck-blue');
-  if (rubberDuckBlue) {
-    rubberDuckBlue.addEventListener('click', () => {
-      new Audio('/assets/keyboard-samples/duck-squeek-blue.mp3').play();
-    });
-  }
-
-  if (!isAnimationComplete.get()) {
-    // if animation has not run yet we want to allow the user to select sound or no sound
-    return;
-  }
-  runTerminal(sound, isAnimationComplete.get());
+  startAnimation.listen((startAnimation) => {
+    console.log('startAnimation from termina.ts', startAnimation);
+    if (startAnimation) {
+      runTerminal(Number(sound), isAnimationComplete.get());
+    }
+  });
 });
-
-const modalButtonSound: HTMLButtonElement | null = document.querySelector(
-  '#modal-button-sound'
-);
-const modalButtonNoSound: HTMLButtonElement | null = document.querySelector(
-  '#modal-button-no-sound'
-);
-if (modalButtonSound && modalButtonNoSound) {
-  modalButtonSound.addEventListener('click', () => {
-    sound = true;
-    runTerminal(true, false);
-  });
-  modalButtonNoSound.addEventListener('click', () => {
-    sound = false;
-    runTerminal(false, false);
-  });
-}
