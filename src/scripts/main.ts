@@ -1,9 +1,4 @@
-import { playSample, stopSample } from './audio.utils';
-import {
-  continueAnimation,
-  isAnimationComplete,
-  startAnimation,
-} from '../store/store';
+import { isAnimationComplete, startAnimation } from '../store/store';
 import { sleep } from './sleep';
 
 if (localStorage.getItem('sound') === null) {
@@ -12,7 +7,7 @@ if (localStorage.getItem('sound') === null) {
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
-    .register('/scripts/sw.js')
+    .register('/sw.js')
     .then(function (registration: ServiceWorkerRegistration) {
       console.log('Registration successful, scope is:', registration.scope);
     })
