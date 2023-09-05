@@ -1,9 +1,5 @@
-import { isAnimationComplete, startAnimation } from '../store/store';
+import { isAnimationComplete, sound, startAnimation } from '../store/store';
 import { sleep } from './sleep';
-
-if (localStorage.getItem('sound') === null) {
-  localStorage.setItem('sound', '0');
-}
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
@@ -48,12 +44,12 @@ const modalButtonNoSound: HTMLButtonElement | null = document.querySelector(
 );
 if (modalButtonSound && modalButtonNoSound) {
   modalButtonSound.addEventListener('click', () => {
-    localStorage.setItem('sound', '1');
+    sound.set('true');
     startAnimation.set(true);
     console.log('startAnimation', startAnimation.get());
   });
   modalButtonNoSound.addEventListener('click', () => {
-    localStorage.setItem('sound', '0');
+    sound.set('false');
     startAnimation.set(true);
   });
 }

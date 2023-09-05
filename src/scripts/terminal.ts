@@ -8,13 +8,11 @@ import {
 } from '../store/store';
 import { caretUpBoldIcon } from './constants';
 import { sleep } from './sleep';
+import { sound } from '../store/store';
 
 const keyboardSounds: NodeListOf<HTMLAudioElement> =
   document.querySelectorAll('.keyboard-sound');
 const blip: HTMLAudioElement | null = document.querySelector('#blip');
-const sound = localStorage.getItem('sound')
-  ? localStorage.getItem('sound')
-  : '0';
 
 // animation speeds
 const type = 200;
@@ -33,7 +31,7 @@ const playRandomKeyboardSound = (i?: number) => {
   keyboardSounds[randomIndex].play();
 };
 
-const runTerminal = async (sound: number, completed: boolean) => {
+const runTerminal = async (sound: boolean, completed: boolean) => {
   const terminalInput = document.querySelector('#terminal-input');
   const terminalOutput = document.querySelector('#terminal-output');
   if (!terminalInput || !terminalOutput) return;
@@ -108,9 +106,9 @@ const runTerminal = async (sound: number, completed: boolean) => {
 
 document.addEventListener('astro:page-load', () => {
   startAnimation.listen((startAnimation) => {
-    console.log('startAnimation from termina.ts', startAnimation);
+    console.log('startAnimation from termina.ts', sound);
     if (startAnimation) {
-      runTerminal(Number(sound), isAnimationComplete.get());
+      runTerminal(eval(sound.get()), isAnimationComplete.get());
     }
   });
 });

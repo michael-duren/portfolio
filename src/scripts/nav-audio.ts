@@ -1,14 +1,14 @@
 import { continueAnimation } from '../store/store';
+import { sound } from '../store/store';
 
 const addNavLinkListeners = () => {
-  const pluck: HTMLAudioElement | null = document.querySelector('#pluck');
-
+  const soundBool = sound.get() === 'true';
   const navLinks = document.querySelectorAll('.nav-link');
   if (navLinks) {
     navLinks.forEach((link) => {
       link.addEventListener('click', () => {
-        console.log('CLICKED');
-        new Audio('/audio/pluck.mp3').play();
+        const pluck = new Audio('/audio/pluck.mp3');
+        if (soundBool) pluck.play();
         continueAnimation.set(false);
       });
     });

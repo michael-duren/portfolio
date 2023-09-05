@@ -1,4 +1,7 @@
 import { playSample, stopSample } from './audio.utils';
+import { sound } from '../store/store';
+
+const soundBool = sound.get() === 'true';
 
 const squeekHigh: HTMLAudioElement | null =
   document.querySelector('#squeek-high');
@@ -8,7 +11,7 @@ const squeekLow: HTMLAudioElement | null =
 const rubberDuck = document.querySelector('#rubber-duck');
 if (rubberDuck) {
   rubberDuck.addEventListener('click', () => {
-    if (squeekHigh) {
+    if (squeekHigh && soundBool) {
       stopSample(squeekHigh);
       playSample(squeekHigh);
     }
@@ -17,7 +20,7 @@ if (rubberDuck) {
 const rubberDuckBlue = document.querySelector('#rubber-duck-blue');
 if (rubberDuckBlue) {
   rubberDuckBlue.addEventListener('click', () => {
-    if (squeekLow) {
+    if (squeekLow && soundBool) {
       stopSample(squeekLow);
       playSample(squeekLow);
     }
