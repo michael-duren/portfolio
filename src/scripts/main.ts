@@ -29,11 +29,6 @@ const typedTitle = async () => {
 // functions to run on each page load by astro
 document.addEventListener('astro:page-load', () => {
   typedTitle();
-
-  if (!isAnimationComplete.get()) {
-    // if animation has not run yet we want to allow the user to select sound or no sound
-    return;
-  }
 });
 
 const modalButtonSound: HTMLButtonElement | null = document.querySelector(

@@ -36,29 +36,6 @@ const runTerminal = async (sound: boolean, completed: boolean) => {
   const terminalOutput = document.querySelector('#terminal-output');
   if (!terminalInput || !terminalOutput) return;
 
-  if (completed) {
-    terminalInput.textContent = 'Have Fun';
-    for (let command of terminalCommands) {
-      for (let output of command.output) {
-        const li = document.createElement('li');
-        li.className = 'flex items-center gap-2 fade-in';
-
-        const iconDiv = document.createElement('div');
-        iconDiv.className = 'w-4 h-4 rotate-90';
-        iconDiv.innerHTML = caretUpBoldIcon;
-
-        const textDiv = document.createElement('div');
-        textDiv.textContent = output;
-
-        li.appendChild(iconDiv);
-        li.appendChild(textDiv);
-
-        terminalOutput.appendChild(li);
-      }
-    }
-    return;
-  }
-
   for (let command of terminalCommands) {
     // Type the command in the terminal
     for (let i = 0; i < command.command.length; i++) {
@@ -103,12 +80,38 @@ const runTerminal = async (sound: boolean, completed: boolean) => {
   }
   isAnimationComplete.set(true);
 };
+const updateCompletedAnimation = () => {
+  const terminalInput = document.querySelector('#terminal-input');
+  const terminalOutput = document.querySelector('#terminal-output');
+  if (!terminalInput || !terminalOutput) return;
+  terminalInput.textContent = 'Have Fun';
+  for (let command of terminalCommands) {
+    for (let output of command.output) {
+      const li = document.createElement('li');
+      li.className = 'flex items-center gap-2 fade-in';
+
+      const iconDiv = document.createElement('div');
+      iconDiv.className = 'w-4 h-4 rotate-90';
+      iconDiv.innerHTML = caretUpBoldIcon;
+
+      const textDiv = document.createElement('div');
+      textDiv.textContent = output;
+
+      li.appendChild(iconDiv);
+      li.appendChild(textDiv);
+
+      terminalOutput.appendChild(li);
+    }
+  }
+};
 
 document.addEventListener('astro:page-load', () => {
   startAnimation.listen((startAnimation) => {
-    console.log('startAnimation from termina.ts', sound);
     if (startAnimation) {
       runTerminal(eval(sound.get()), isAnimationComplete.get());
     }
   });
+  if (!continueAnimation.get()) {
+    updateCompletedAnimation();
+  }
 });
