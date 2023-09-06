@@ -3,13 +3,13 @@ import { Image } from 'astro:assets';
 import michaelAvatar from '../images/Avatar.png';
 ---
 
-<div class="floating-container flex-1">
+<div class="floating-container h-full flex-1">
   <div class="avatar">
     <Image src={michaelAvatar} alt="Avatar of Michael Duren" />
   </div>
   <!-- SVG FOR SHADOW -->
   <svg
-    class="shadow"
+    class="avatar-shadow hidden md:block"
     width="172"
     height="29"
     viewBox="0 0 172 29"
@@ -25,7 +25,6 @@ import michaelAvatar from '../images/Avatar.png';
 <style>
   .floating-container {
     position: relative;
-    height: 100%;
     width: 20rem;
     z: -10;
   }
@@ -38,7 +37,7 @@ import michaelAvatar from '../images/Avatar.png';
     animation: animateY 2.5s linear infinite alternate-reverse;
   }
 
-  .shadow {
+  .avatar-shadow {
     position: absolute;
     bottom: 0;
     left: 50%;
