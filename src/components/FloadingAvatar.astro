@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import michaelAvatar from '../images/Avatar.png';
 ---
 
-<div class="floating-container">
+<div class="floating-container flex-1">
   <div class="avatar">
     <Image src={michaelAvatar} alt="Avatar of Michael Duren" />
   </div>
@@ -25,9 +25,9 @@ import michaelAvatar from '../images/Avatar.png';
 <style>
   .floating-container {
     position: relative;
-    height: 50vh;
-    /* border: 1px solid red; */
+    height: 100%;
     width: 20rem;
+    z: -10;
   }
   .avatar {
     position: absolute;

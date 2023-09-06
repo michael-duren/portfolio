@@ -54,7 +54,8 @@ const runTerminal = async (sound: boolean, completed: boolean) => {
       if (sound && blip) playSample(blip); // if sound is enabled we want to play a blip sound
       // create the list item and append it to the terminal output
       const li = document.createElement('li');
-      li.className = 'flex items-center gap-2 fade-in';
+      li.className =
+        'flex text-xs md:text-base font-semibold items-center gap-2 fade-in';
 
       const iconDiv = document.createElement('div');
       iconDiv.className = 'w-4 h-4 rotate-90';
@@ -70,12 +71,13 @@ const runTerminal = async (sound: boolean, completed: boolean) => {
       await sleep(200);
       if (blip) stopSample(blip);
     }
+    if (terminalInput.textContent === 'Have Fun') {
+      const confetti = new JSConfetti();
+      confetti.addConfetti();
+    }
     await sleep(longPause);
     if (terminalInput.textContent !== 'Have Fun') {
       terminalInput.textContent = '';
-    } else {
-      const jsConfetti = new JSConfetti();
-      await jsConfetti.addConfetti({});
     }
   }
   isAnimationComplete.set(true);
