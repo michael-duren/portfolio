@@ -11,7 +11,7 @@ const { title, description, websiteLink, codeLink, images } = portfolioItem;
 ---
 
 <div
-  class="shadow-xl group relative h-full min-h-[30rem] rounded-lg flex-col flex items-center"
+  class="shadow-xl website-card group relative h-full min-h-[30rem] rounded-lg flex-col flex items-center cursor-pointer"
 >
   <!-- carousel -->
   <custom-carousel
@@ -40,16 +40,16 @@ const { title, description, websiteLink, codeLink, images } = portfolioItem;
   </custom-carousel>
 
   <div
-    class="h-full group-hover:block hidden rounded-xl absolute w-full bg-black bg-opacity-50 z-50"
+    class="h-full overlay group-hover:block hidden rounded-xl absolute w-full bg-black bg-opacity-70 z-30"
   >
     <div
       class="text-gray-100 justify-between h-full items-center flex flex-col p-4"
     >
       <div>
         <h2 class="text-2xl font-rock">{title}</h2>
-        <p class="mt-8 text-xs">{description}</p>
+        <p class="mt-8 text-xs font-semibold">{description}</p>
       </div>
-      <div class="flex gap-4">
+      <div class="flex gap-4 z-40">
         <a href={codeLink} rel="noopener noreferrer" target="_blank">
           <button class="btn btn-circle">
             <Icon class="text-gray-900 h-8 w-8" name="ic:baseline-code" />
