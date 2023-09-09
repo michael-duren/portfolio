@@ -4,9 +4,11 @@ import avatar from '../images/avatar_temp.jpeg';
 const { animated } = Astro.props;
 ---
 
-<header class="flex min-w-[10vw] mb-auto h-full flex-col">
-  <div class="w-full flex mb-16 items-center justify-between">
-    <div class="avatar">
+<header class="flex mx-auto min-w-[10vw] mb-auto h-full flex-col">
+  <div
+    class="w-full flex mb-4 sm:mb-8 md:mb-16 items-center justify-center gap-4 sm:gap-0 sm:justify-between"
+  >
+    <div class="avatar flex-1">
       <div
         class="w-24 shadow-lg shadow-blue-500 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
       >
@@ -17,14 +19,19 @@ const { animated } = Astro.props;
         />
       </div>
     </div>
-    {
-      !animated ? (
-        <h1 class="ml-2 text-5xl font-rock mb-8 md:mb-16 drop-shadow-md">
-          Michael Duren
-        </h1>
-      ) : (
-        <h1 id="title" class="ml-2 text-5xl font-rock mb-16" />
-      )
-    }
+    <div class="flex-1 sm:flex-grow-0 sm:flex-shrink-0">
+      {
+        !animated ? (
+          <h1 class=" text-3xl sm:text-4xl md:text-5xl font-rock  drop-shadow-md">
+            Michael Duren
+          </h1>
+        ) : (
+          <h1
+            id="title"
+            class=" text-3xl sm:text-4xl md:text-5xl font-rock  drop-shadow-md"
+          />
+        )
+      }
+    </div>
   </div>
 </header>

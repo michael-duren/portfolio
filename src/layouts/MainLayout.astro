@@ -23,14 +23,16 @@ import Social from '../components/Social.astro';
     <title>{title}</title>
   </head>
   <body class="min-h-screen flex flex-col p-4 gap-2">
-    <div class="px-2 py-2 rounded-lg">
+    <div class="px-2 py-2 rounded-lg w-full">
       <Header animated={animated} />
     </div>
     <!-- Take the remaining height -->
     <div
       class="flex h-full flex-1 px-2 py-2 rounded-lg gap-8 flex-col md:flex-row"
     >
-      <aside class="flex flex-col justify-between">
+      <aside
+        class="flex flex-col justify-between md:sticky top-[5%] max-h-[70vh]"
+      >
         <div class="bg-yellow-300 px-8 py-2 rounded-lg shadow-md">
           <Nav />
         </div>
