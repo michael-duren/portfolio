@@ -2,8 +2,12 @@
 import WebsiteCard from '../components/WebsiteCard.astro';
 import MainLayout from '../layouts/MainLayout.astro';
 import type { PortfolioItem } from '../types/portfolio-item';
-import AtmosphereImage from '../images/work/atmosphere.png';
-import AtmosphereImageTwo from '../images/work/atmosphere-running.png';
+import AtmosphereImage from '../images/work/atmosphere/atmosphere.png';
+import AtmosphereImageTwo from '../images/work/atmosphere/atmosphere-running.png';
+import TodoLightImage from '../images/work/todo/lightmode.png';
+import TodoDarkImage from '../images/work/todo/darkmode.png';
+import TodoLightImageCloseup from '../images/work/todo/lightmode-closeup.png';
+import TodoDarkImageCloseup from '../images/work/todo/darkmode-closeup.png';
 
 const websiteList: PortfolioItem[] = [
   {
@@ -11,16 +15,20 @@ const websiteList: PortfolioItem[] = [
     description: 'A web app for making music',
     websiteLink: '',
     codeLink: '',
-    image: AtmosphereImage,
-    imageTwo: AtmosphereImageTwo,
+    images: [AtmosphereImage, AtmosphereImageTwo],
   },
-  // {
-  //   title: 'Atmosphere',
-  //   description: 'A web app for making music',
-  //   websiteLink: '',
-  //   codeLink: '',
-  //   image: AtmosphereImage,
-  // },
+  {
+    title: 'Atmosphere',
+    description: 'A web app for making music',
+    websiteLink: '',
+    codeLink: '',
+    images: [
+      TodoLightImage,
+      TodoLightImageCloseup,
+      TodoDarkImage,
+      TodoDarkImageCloseup,
+    ],
+  },
   // {
   //   title: 'Atmosphere',
   //   description: 'A web app for making music',
@@ -32,8 +40,10 @@ const websiteList: PortfolioItem[] = [
 ---
 
 <MainLayout>
-  <div>Work</div>
-  <div class="grid w-full h-full grid-cols-2 grid-rows-2 items-center">
+  <div class="w-full mb-16">
+    <h2 class="font-bold text-2xl md:text-4xl">My Work</h2>
+  </div>
+  <div class="grid w-full h-full grid-cols-2 grid-rows-2 items-center gap-8">
     {
       websiteList.map((website) => {
         return <WebsiteCard portfolioItem={website} />;

@@ -3,6 +3,5 @@ export type PortfolioItem = {
   description: string;
   websiteLink: string;
   codeLink: string;
-  image: ImageMetadata;
-  imageTwo: ImageMetadata;
+  images: ImageMetadata[];
 };

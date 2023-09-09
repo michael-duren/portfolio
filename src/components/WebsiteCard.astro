@@ -6,11 +6,12 @@ interface Props {
 }
 
 const { portfolioItem } = Astro.props;
-const { title, description, websiteLink, codeLink, image, imageTwo } =
-  portfolioItem;
+const { title, description, websiteLink, codeLink, images } = portfolioItem;
 ---
 
-<div class="shadow-xl relative h-full rounded-lg flex-col flex items-center">
+<div
+  class="shadow-xl relative h-full min-h-[30rem] rounded-lg flex-col flex items-center"
+>
   <!-- carousel -->
   <custom-carousel
     aria-label={`${title} photos`}
@@ -18,55 +19,24 @@ const { title, description, websiteLink, codeLink, image, imageTwo } =
     data-carousel
     class="relative h-full w-full"
   >
-    <!-- <button
-      data-carousel-button="prev"
-      class="absolute top-[50%] left-2 z-[2] -translate-y-1/2 focus:border-blue-400 focus:border-2 hover:bg-opacity-40 bg-black bg-opacity-20 p-2 prev"
-      ><Icon
-        class="text-white hover:opacity-100 opacity-80 h-8 w-8"
-        name="raphael:arrowleft"
-      /></button
-    > -->
-    <!-- <button
-      data-carousel-button="next"
-      class="absolute top-[50%] z-[2] right-2 -translate-y-1/2 focus:border-blue-400 focus:border-2 hover:bg-opacity-40 bg-black bg-opacity-20 p-2 next"
-    >
-      <Icon
-        class="text-white hover:opacity-100 opacity-80 h-8 w-8"
-        name="raphael:arrowright"
-      />
-    </button> -->
     <ul data-slides>
-      <li
-        class="absolute slide shadow-lg opacity-0 inset-0 transition-opacity delay-300 duration-300"
-        data-active
-      >
-        <Image
-          class="object-cover rounded-xl object-center block h-full"
-          id={`item1-${title}`}
-          src={image}
-          alt={`${title} image #1`}
-        />
-      </li>
-      <li
-        class="absolute slide shadow-lg opacity-0 inset-0 transition-opacity delay-300 duration-300"
-      >
-        <Image
-          class="object-none rounded-xl object-center block h-full"
-          id={`item2-${title}`}
-          src={image}
-          alt={`${title} image #2`}
-        />
-      </li>
-      <li
-        class="absolute slide shadow-lg opacity-0 inset-0 transition-opacity delay-300 duration-300"
-      >
-        <Image
-          class="object-cover rounded-xl object-center block h-full"
-          id={`item3-${title}`}
-          src={imageTwo}
-          alt={`${title} image #3`}
-        />
-      </li>
+      {
+        images.map((image, i) => {
+          return (
+            <li
+              class="absolute slide shadow-lg opacity-0 inset-0 transition-opacity delay-300 duration-300"
+              data-active
+            >
+              <Image
+                class="object-cover rounded-xl object-center block h-full"
+                id={`item${i + 1}-${title}`}
+                src={image}
+                alt={`${title} image #${i + 1}`}
+              />
+            </li>
+          );
+        })
+      }
     </ul>
   </custom-carousel>
 
