@@ -1,7 +1,100 @@
 ---
+export const prerender = false;
+
 import MainLayout from '../layouts/MainLayout.astro';
+import Envelope from '../images/envelope.svg';
+import Mobile from '../images/mobile.svg';
+import Input from '../components/Input.astro';
+import TextArea from '../components/TextArea.astro';
+import { Image } from 'astro:assets';
+
+let sentSuccessfully = false;
+
+if (Astro.request.method === 'POST') {
+  try {
+    const data = await Astro.request.formData();
+    const name = data.get('name');
+    const email = data.get('email');
+    const message = data.get('message');
+    console.log(name, email, message);
+    sentSuccessfully = true;
+  } catch (error) {
+    console.error(error);
+  }
+}
 ---
 
-<MainLayout>
-  <div>Contact</div>
+<MainLayout title="Contact">
+  <div class="flex gap-2 md:gap-3 lg:gap-4 flex-col w-full">
+    <div class="">
+      <h2 class="font-bold text-2xl md:text-4xl">Contact</h2>
+    </div>
+    <div class="flex gap-8">
+      <div
+        class:list={[
+          'flex flex-1 flex-col justify-between',
+          { hidden: sentSuccessfully },
+        ]}
+      >
+        <div class="flex flex-col gap-8">
+          <h2 class="text-2xl text-purple-700 font-semibold"
+            >Successfuly sent! 🎉</h2
+          >
+          <p class="font-semibold text-gray-600 md:text-lg text-base">
+            Thanks for contacting me.</p
+          >
+          <p class="font-semibold text-gray-600 md:text-lg text-base">
+            I'll get back to you within 24 hours. I look forward to hearing more
+            about your project or business. Thanks!
+          </p>
+        </div>
+        <button class="btn btn-neutral mt-8"
+          ><a href="/contact">Send Another</a></button
+        >
+      </div>
+      <form
+        class:list={[
+          'flex flex-1 flex-col justify-between',
+          { hidden: !sentSuccessfully },
+        ]}
+        method="post"
+      >
+        <div>
+          <Input name="name" type="text" required={true} label="Name" />
+          <Input name="email" type="email" required={true} label="Email" />
+          <TextArea name="message" required={true} label="Message" />
+        </div>
+        <button class="btn btn-neutral mt-8">Submit</button>
+      </form>
+      <div class="flex w-full items-center flex-col flex-1">
+        <div class="w-full flex flex-col gap-4">
+          <h2
+            class="text-lg mb-8 sm:text-xl md:text-2xl lg:text-3xl text-purple-700 font-bold"
+            >I'd love to hear from you</h2
+          >
+          <p class="font-semibold text-gray-600 md:text-base text-sm"
+            >Let me know how I can contribute to your organization</p
+          >
+          <p class="font-semibold text-gray-600 md:text-base text-sm">
+            I help business find <span class="text-purple-700 font-bold"
+              >solutions</span
+            >
+          </p>
+          <p class="font-semibold text-gray-600 md:text-base text-sm">
+            Specializing in JavaScript, Typescript, C#, and .NET, I'm an avid
+            debugger and problem-solver with excellent communication skills and
+            a knack for collaboration.
+          </p>
+        </div>
+        <div class="flex mt-16 justify-around items-center w-full">
+          <Image class="h-10 sm:h-16 md:h-32" src={Envelope} alt="Envelope" />
+          <Image
+            class="h-16 sm:h-24 md:h-32 rotate-45"
+            src={Mobile}
+            alt="Mobile"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 </MainLayout>
