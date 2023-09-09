@@ -1,7 +1,43 @@
 ---
+import WebsiteCard from '../components/WebsiteCard.astro';
 import MainLayout from '../layouts/MainLayout.astro';
+import type { PortfolioItem } from '../types/portfolio-item';
+import AtmosphereImage from '../images/work/atmosphere.png';
+import AtmosphereImageTwo from '../images/work/atmosphere-running.png';
+
+const websiteList: PortfolioItem[] = [
+  {
+    title: 'Atmosphere',
+    description: 'A web app for making music',
+    websiteLink: '',
+    codeLink: '',
+    image: AtmosphereImage,
+    imageTwo: AtmosphereImageTwo,
+  },
+  // {
+  //   title: 'Atmosphere',
+  //   description: 'A web app for making music',
+  //   websiteLink: '',
+  //   codeLink: '',
+  //   image: AtmosphereImage,
+  // },
+  // {
+  //   title: 'Atmosphere',
+  //   description: 'A web app for making music',
+  //   websiteLink: '',
+  //   codeLink: '',
+  //   image: AtmosphereImage,
+  // },
+];
 ---
 
 <MainLayout>
   <div>Work</div>
+  <div class="grid w-full h-full grid-cols-2 grid-rows-2 items-center">
+    {
+      websiteList.map((website) => {
+        return <WebsiteCard portfolioItem={website} />;
+      })
+    }
+  </div>
 </MainLayout>

@@ -1,4 +1,4 @@
-import { isAnimationComplete, sound, startAnimation } from '../store/store';
+import { sound, startAnimation } from '../store/store';
 import { sleep } from './sleep';
 
 if ('serviceWorker' in navigator) {
@@ -41,7 +41,6 @@ if (modalButtonSound && modalButtonNoSound) {
   modalButtonSound.addEventListener('click', () => {
     sound.set('true');
     startAnimation.set(true);
-    console.log('startAnimation', startAnimation.get());
   });
   modalButtonNoSound.addEventListener('click', () => {
     sound.set('false');

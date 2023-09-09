@@ -23,15 +23,15 @@ const longPause = 1500;
  * Functions
  */
 const playRandomKeyboardSound = (i?: number) => {
-  if (i) {
-    keyboardSounds[i].play();
+  if (i && keyboardSounds[i]) {
+    keyboardSounds[i]!.play();
     return;
   }
   const randomIndex = Math.floor(Math.random() * keyboardSounds.length);
-  keyboardSounds[randomIndex].play();
+  keyboardSounds[randomIndex]!.play();
 };
 
-const runTerminal = async (sound: boolean, completed: boolean) => {
+const runTerminal = async (sound: boolean) => {
   const terminalInput = document.querySelector('#terminal-input');
   const terminalOutput = document.querySelector('#terminal-output');
   if (!terminalInput || !terminalOutput) return;
@@ -41,7 +41,7 @@ const runTerminal = async (sound: boolean, completed: boolean) => {
     for (let i = 0; i < command.command.length; i++) {
       if (!continueAnimation.get()) return;
       if (sound) playRandomKeyboardSound(i);
-      terminalInput!.textContent += command.command[i];
+      terminalInput!.textContent! += command.command[i];
       if (i % 4 === 0) {
         await sleep(type);
       } else {
@@ -110,7 +110,7 @@ const updateCompletedAnimation = () => {
 document.addEventListener('astro:page-load', () => {
   startAnimation.listen((startAnimation) => {
     if (startAnimation) {
-      runTerminal(eval(sound.get()), isAnimationComplete.get());
+      runTerminal(eval(sound.get()));
     }
   });
   if (!continueAnimation.get()) {
