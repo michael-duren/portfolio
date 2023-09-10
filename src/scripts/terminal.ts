@@ -110,7 +110,7 @@ const updateCompletedAnimation = () => {
 document.addEventListener('astro:page-load', () => {
   startAnimation.listen((startAnimation) => {
     if (startAnimation) {
-      runTerminal(eval(sound.get()));
+      runTerminal(sound.get() === 'true');
     }
   });
   if (!continueAnimation.get()) {
