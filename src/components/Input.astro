@@ -17,6 +17,7 @@ const { name, label, required, type } = Astro.props;
 </label>
 
 <input
+  id={name}
   class="appearance-none text-xs sm:text-sm md:text-base block w-full bg-gray-200 text-gray-700 border rounded-xl py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
   name={name}
   required={required}

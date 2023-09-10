@@ -15,6 +15,7 @@ const { name, label, required } = Astro.props;
   {label}
 </label>
 <textarea
+  id={name}
   class="w-full text-xs sm:text-sm md:text-base focus:bg-white rounded-xl bg-gray-200 p-2 text-gray-900 border-0 dark:bg-gray-800 focus:ring-0 dark:text-white dark:placeholder-gray-400"
   required={required}
   name={name}
