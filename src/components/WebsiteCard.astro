@@ -92,21 +92,38 @@ const { title, description, websiteLink, codeLink, images, color } =
           }
         </div>
         <div class="flex gap-4 mb-4 z-40">
-          <a href={codeLink} rel="noopener noreferrer" target="_blank">
-            <button class="btn btn-xs sm:btn-sm md:btn-md btn-circle">
+          <a
+            href={codeLink}
+            aria-label={`Link to ${title} code`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <button
+              class="btn btn-xs sm:btn-sm md:btn-md btn-circle"
+              type="button"
+              aria-label={`Link to ${title} code`}
+            >
               <Icon
                 class="text-gray-900 h-4 w-4 sm:h-6 sm:w-6 md:h-8 md:w-8"
                 name="ic:baseline-code"
+                alt="A icon with brackets representing code"
               />
             </button>
           </a>
-          <a href={websiteLink} rel="noopener noreferrer" target="_blank">
+          <a
+            href={websiteLink}
+            rel="noopener noreferrer"
+            aria-label={`Link to ${title} site`}
+            target="_blank"
+          >
             <button
               class="btn btn-neutral btn-xs sm:btn-sm md:btn-md btn-circle"
+              aria-label={`Link to ${title} site`}
             >
               <Icon
                 class="text-white stroke-white h-4 w-4 sm:h-6 sm:w-6 md:h-8 md:w-8"
                 name="carbon:view"
+                alt="An Icon with an Eye"
               />
             </button>
           </a>
