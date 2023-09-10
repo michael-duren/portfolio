@@ -7,6 +7,7 @@ import Mobile from '../images/mobile.svg';
 import Input from '../components/Input.astro';
 import TextArea from '../components/TextArea.astro';
 import { Image } from 'astro:assets';
+import nodemailer from 'nodemailer';
 
 let sentSuccessfully = false;
 
@@ -16,8 +17,37 @@ if (Astro.request.method === 'POST') {
     const name = data.get('name');
     const email = data.get('email');
     const message = data.get('message');
-    console.log(name, email, message);
-    sentSuccessfully = true;
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: import.meta.env.APP_GMAIL_EMAIL,
+        pass: import.meta.env.APP_GMAIL_PASSWORD,
+      },
+    });
+
+    if (!name || !email || !message) {
+      return new Response(
+        JSON.stringify({
+          message: 'Missing required fields',
+        }),
+        { status: 400 }
+      );
+    }
+    // Do something with the data, then return a success response
+    const responseSent = await transporter.sendMail({
+      from: 'info@michaelduren.com',
+      to: 'michaeld@michaelduren.com',
+      subject: `WEBSITE: MESSAGE FROM ${name}`,
+      html: `
+		<h1>${name}: ${email}</h1>
+		<h2>Message:</h2>
+		<p>${message}</p>
+		`,
+    });
+
+    if (responseSent.accepted.length > 0) {
+      sentSuccessfully = true;
+    }
   } catch (error) {
     console.error(error);
   }
@@ -33,11 +63,11 @@ if (Astro.request.method === 'POST') {
       <div
         class:list={[
           'flex flex-1 flex-col justify-between',
-          { hidden: sentSuccessfully },
+          { hidden: !sentSuccessfully },
         ]}
       >
         <div class="flex flex-col gap-8">
-          <h2 class="text-2xl text-purple-700 font-semibold"
+          <h2 class="text-2xl text-blue-700 font-semibold"
             >Successfuly sent! 🎉</h2
           >
           <p class="font-semibold text-gray-600 md:text-lg text-base">
@@ -48,14 +78,14 @@ if (Astro.request.method === 'POST') {
             about your project or business. Thanks!
           </p>
         </div>
-        <button class="btn btn-neutral mt-8"
-          ><a href="/contact">Send Another</a></button
-        >
+        <a class="w-full flex" data-astro-reload href="/contact">
+          <button class="btn flex-1 btn-neutral mt-8"> Send Another</button>
+        </a>
       </div>
       <form
         class:list={[
           'flex flex-1 flex-col justify-between',
-          { hidden: !sentSuccessfully },
+          { hidden: sentSuccessfully },
         ]}
         method="post"
       >
