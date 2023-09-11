@@ -27,7 +27,7 @@ const typedTitle = async () => {
 };
 
 // functions to run on each page load by astro
-document.addEventListener('astro:page-load', () => {
+document.addEventListener('DOMContentLoaded', () => {
   typedTitle();
 });
 
@@ -47,5 +47,3 @@ if (modalButtonSound && modalButtonNoSound) {
     startAnimation.set(true);
   });
 }
-
-console.log('Hello from main.ts');

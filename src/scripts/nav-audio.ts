@@ -16,6 +16,6 @@ const addNavLinkListeners = () => {
   }
 };
 
-document.addEventListener('astro:page-load', () => {
+document.addEventListener('DOMContentLoaded', () => {
   addNavLinkListeners();
 });

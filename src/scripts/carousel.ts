@@ -18,6 +18,8 @@ class Carousel extends HTMLElement {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  customElements.define('custom-carousel', Carousel);
+document.addEventListener('astro:page-load', () => {
+  if (!customElements.get('custom-carousel')) {
+    customElements.define('custom-carousel', Carousel);
+  }
 });
