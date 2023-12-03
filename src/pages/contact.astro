@@ -14,6 +14,16 @@ let sentSuccessfully = false;
 if (Astro.request.method === 'POST') {
   try {
     const data = await Astro.request.formData();
+    // Check for spam
+    const first = data.get('first');
+    if (first) {
+      return new Response(
+        JSON.stringify({
+          message: 'Nope',
+        }),
+        { status: 400 }
+      );
+    }
     const name = data.get('name');
     const email = data.get('email');
     const message = data.get('message');
@@ -97,6 +107,7 @@ if (Astro.request.method === 'POST') {
         method="post"
       >
         <div>
+          <input name="first" class="invisible" placeholder="first" />
           <Input name="name" type="text" required={true} label="Name" />
           <Input name="email" type="email" required={true} label="Email" />
           <TextArea name="message" required={true} label="Message" />
