@@ -1,139 +1,186 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro';
-import Modal from '../components/Modal.astro';
-import { Image } from 'astro:assets';
-import michaelAvatar from '../images/Avatar.png';
+import MainLayout from "../layouts/MainLayout.astro";
+import Modal from "../components/Modal.astro";
+import { Image } from "astro:assets";
+import michaelAvatar from "../images/Avatar.png";
+import AnimatedBackground from "../components/AnimatedBackground.astro";
 ---
 
 <MainLayout title="Michael Duren - Portfolio" animated={true}>
+  <AnimatedBackground />
   <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-    <div class="absolute top-20 -left-20 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-    <div class="absolute top-40 -right-20 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-    <div class="absolute -bottom-32 left-40 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-    <div class="absolute bottom-20 right-20 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-6000"></div>
-    
-    
+    <div
+      class="absolute top-20 -left-20 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"
+    >
+    </div>
+    <div
+      class="absolute top-40 -right-20 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"
+    >
+    </div>
+    <div
+      class="absolute -bottom-32 left-40 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"
+    >
+    </div>
+    <div
+      class="absolute bottom-20 right-20 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-6000"
+    >
+    </div>
+
     <div class="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
-    
-    
+
     <div class="geometric-shapes">
-      <div class="shape shape-square" style="left: 15%; top: 20%; animation-delay: 0s;"></div>
-      <div class="shape shape-circle" style="left: 75%; top: 15%; animation-delay: 2s;"></div>
-      <div class="shape shape-triangle" style="left: 25%; top: 70%; animation-delay: 4s;"></div>
-      <div class="shape shape-hexagon" style="left: 80%; top: 65%; animation-delay: 6s;"></div>
-      <div class="shape shape-square" style="left: 50%; top: 85%; animation-delay: 3s;"></div>
-      <div class="shape shape-circle" style="left: 10%; top: 50%; animation-delay: 5s;"></div>
+      <div
+        class="shape shape-square"
+        style="left: 15%; top: 20%; animation-delay: 0s;"
+      >
+      </div>
+      <div
+        class="shape shape-circle"
+        style="left: 75%; top: 15%; animation-delay: 2s;"
+      >
+      </div>
+      <div
+        class="shape shape-triangle"
+        style="left: 25%; top: 70%; animation-delay: 4s;"
+      >
+      </div>
+      <div
+        class="shape shape-hexagon"
+        style="left: 80%; top: 65%; animation-delay: 6s;"
+      >
+      </div>
+      <div
+        class="shape shape-square"
+        style="left: 50%; top: 85%; animation-delay: 3s;"
+      >
+      </div>
+      <div
+        class="shape shape-circle"
+        style="left: 10%; top: 50%; animation-delay: 5s;"
+      >
+      </div>
     </div>
   </div>
 
   <div class="flex flex-col items-center w-full">
-    
     <div class="relative z-10 w-full max-w-3xl px-4 mb-8">
-      <div class="bg-gray-900 rounded-lg shadow-2xl overflow-hidden border-2 border-gray-700">
-        
-        <div class="bg-gray-800 px-4 py-2 flex items-center gap-2 border-b border-gray-700">
+      <div
+        class="bg-gray-900 rounded-lg shadow-2xl overflow-hidden border-2 border-gray-700"
+      >
+        <div
+          class="bg-gray-800 px-4 py-2 flex items-center gap-2 border-b border-gray-700"
+        >
           <div class="flex gap-2">
             <span class="w-3 h-3 rounded-full bg-red-500"></span>
             <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
             <span class="w-3 h-3 rounded-full bg-green-500"></span>
           </div>
-          <span class="text-gray-400 text-sm ml-4 font-mono">michael@portfolio: ~</span>
+          <span class="text-gray-400 text-sm ml-4 font-mono"
+            >michael@portfolio: ~</span
+          >
         </div>
 
-        
         <div class="p-6 font-mono text-sm h-[400px] overflow-y-auto">
-          
           <div class="flex items-center gap-2 mb-3">
             <span class="text-green-400">michael@portfolio</span>
             <span class="text-white">:</span>
             <span class="text-blue-400">~</span>
             <span class="text-white">$</span>
-            <div
-              id="terminal-input"
-              class="text-green-300 ml-2"
-            ></div>
+            <div id="terminal-input" class="text-green-300 ml-2"></div>
           </div>
 
-          
           <div>
-            <ul
-              id="terminal-output"
-              class="text-gray-300 space-y-2"
-            ></ul>
+            <ul id="terminal-output" class="text-gray-300 space-y-2"></ul>
           </div>
         </div>
       </div>
     </div>
 
-    
-    <div class="relative z-20 flex flex-col items-center justify-center w-full min-h-[60vh] -mt-32">
-      
-      
+    <div
+      class="relative z-20 flex flex-col items-center justify-center w-full min-h-[60vh] -mt-32"
+    >
       <div class="tech-orbit absolute inset-0 pointer-events-none">
-        
-        <div class="tech-icon" style="--orbit-radius: 300px; --angle: 0deg; --duration: 20s;">
+        <div
+          class="tech-icon"
+          style="--orbit-radius: 300px; --angle: 0deg; --duration: 20s;"
+        >
           <div class="icon-wrapper">
             <i class="devicon-typescript-plain colored text-[5rem]"></i>
           </div>
         </div>
 
-        
-        <div class="tech-icon" style="--orbit-radius: 330px; --angle: 51deg; --duration: 25s;">
+        <div
+          class="tech-icon"
+          style="--orbit-radius: 330px; --angle: 51deg; --duration: 25s;"
+        >
           <div class="icon-wrapper">
             <i class="devicon-go-original-wordmark colored text-[5rem]"></i>
           </div>
         </div>
 
-        
-        <div class="tech-icon" style="--orbit-radius: 270px; --angle: 102deg; --duration: 22s;">
+        <div
+          class="tech-icon"
+          style="--orbit-radius: 270px; --angle: 102deg; --duration: 22s;"
+        >
           <div class="icon-wrapper">
             <i class="devicon-dotnetcore-plain colored text-[5rem]"></i>
           </div>
         </div>
 
-        
-        <div class="tech-icon" style="--orbit-radius: 360px; --angle: 153deg; --duration: 28s;">
+        <div
+          class="tech-icon"
+          style="--orbit-radius: 360px; --angle: 153deg; --duration: 28s;"
+        >
           <div class="icon-wrapper">
             <i class="devicon-kubernetes-plain colored text-[5rem]"></i>
           </div>
         </div>
 
-        
-        <div class="tech-icon" style="--orbit-radius: 315px; --angle: 204deg; --duration: 24s;">
+        <div
+          class="tech-icon"
+          style="--orbit-radius: 315px; --angle: 204deg; --duration: 24s;"
+        >
           <div class="icon-wrapper">
-            <i class="devicon-amazonwebservices-plain-wordmark colored text-[5rem]"></i>
+            <i
+              class="devicon-amazonwebservices-plain-wordmark colored text-[5rem]"
+            ></i>
           </div>
         </div>
 
-        
-        <div class="tech-icon" style="--orbit-radius: 285px; --angle: 255deg; --duration: 26s;">
+        <div
+          class="tech-icon"
+          style="--orbit-radius: 285px; --angle: 255deg; --duration: 26s;"
+        >
           <div class="icon-wrapper">
             <i class="devicon-azure-plain colored text-[5rem]"></i>
           </div>
         </div>
 
-        
-        <div class="tech-icon" style="--orbit-radius: 345px; --angle: 306deg; --duration: 23s;">
+        <div
+          class="tech-icon"
+          style="--orbit-radius: 345px; --angle: 306deg; --duration: 23s;"
+        >
           <div class="icon-wrapper">
             <i class="devicon-react-original colored text-[5rem]"></i>
           </div>
         </div>
 
-        
-        <div class="tech-icon" style="--orbit-radius: 295px; --angle: 357deg; --duration: 21s;">
+        <div
+          class="tech-icon"
+          style="--orbit-radius: 295px; --angle: 357deg; --duration: 21s;"
+        >
           <div class="icon-wrapper">
             <i class="devicon-docker-plain colored text-[5rem]"></i>
           </div>
         </div>
       </div>
 
-      
       <div class="relative">
         <div class="floating-container">
           <div class="avatar">
             <Image src={michaelAvatar} alt="Avatar of Michael Duren" />
           </div>
-          
+
           <svg
             class="avatar-shadow"
             width="172"
@@ -151,22 +198,28 @@ import michaelAvatar from '../images/Avatar.png';
     </div>
   </div>
 
-  <audio class="keyboard-sound" preload="auto" id="K1" src="/audio/K1.mp3"></audio>
-  <audio class="keyboard-sound" preload="auto" id="K2" src="/audio/K2.mp3"></audio>
-  <audio class="keyboard-sound" preload="auto" id="K3" src="/audio/K3.mp3"></audio>
-  <audio class="keyboard-sound" preload="auto" id="K4" src="/audio/K4.mp3"></audio>
-  <audio class="keyboard-sound" preload="auto" id="K5" src="/audio/K5.mp3"></audio>
-  <audio class="keyboard-sound" preload="auto" id="K6" src="/audio/K6.mp3"></audio>
-  <audio class="keyboard-sound" preload="auto" id="K7" src="/audio/K7.mp3"></audio>
-  <audio class="keyboard-sound" preload="auto" id="K8" src="/audio/K8.mp3"></audio>
-  <audio class="keyboard-sound" preload="auto" id="K9" src="/audio/K9.mp3"></audio>
-  <audio class="keyboard-sound" preload="auto" id="K10" src="/audio/K10.mp3"></audio>
+  <audio class="keyboard-sound" preload="auto" id="K1" src="/audio/K1.mp3"
+  ></audio>
+  <audio class="keyboard-sound" preload="auto" id="K2" src="/audio/K2.mp3"
+  ></audio>
+  <audio class="keyboard-sound" preload="auto" id="K3" src="/audio/K3.mp3"
+  ></audio>
+  <audio class="keyboard-sound" preload="auto" id="K4" src="/audio/K4.mp3"
+  ></audio>
+  <audio class="keyboard-sound" preload="auto" id="K5" src="/audio/K5.mp3"
+  ></audio>
+  <audio class="keyboard-sound" preload="auto" id="K6" src="/audio/K6.mp3"
+  ></audio>
+  <audio class="keyboard-sound" preload="auto" id="K7" src="/audio/K7.mp3"
+  ></audio>
+  <audio class="keyboard-sound" preload="auto" id="K8" src="/audio/K8.mp3"
+  ></audio>
+  <audio class="keyboard-sound" preload="auto" id="K9" src="/audio/K9.mp3"
+  ></audio>
+  <audio class="keyboard-sound" preload="auto" id="K10" src="/audio/K10.mp3"
+  ></audio>
 
   <Modal />
-  <script>
-    import '../scripts/terminal.ts';
-    my_modal_2.showModal();
-  </script>
 </MainLayout>
 
 <style>
@@ -204,7 +257,7 @@ import michaelAvatar from '../images/Avatar.png';
 
   /* Grid pattern background */
   .bg-grid-pattern {
-    background-image: 
+    background-image:
       linear-gradient(to right, #6366f1 1px, transparent 1px),
       linear-gradient(to bottom, #6366f1 1px, transparent 1px);
     background-size: 60px 60px;
@@ -254,7 +307,8 @@ import michaelAvatar from '../images/Avatar.png';
   }
 
   @keyframes float-shape {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0px) rotate(0deg);
     }
     25% {
@@ -274,7 +328,7 @@ import michaelAvatar from '../images/Avatar.png';
     width: 20rem;
     height: 20rem;
   }
-  
+
   .avatar {
     position: absolute;
     background-color: rgba(0, 0, 0, 0.1);
@@ -332,19 +386,12 @@ import michaelAvatar from '../images/Avatar.png';
 
   @keyframes orbit {
     from {
-      transform: 
-        translateX(-50%) 
-        translateY(-50%) 
-        rotateZ(var(--angle)) 
-        translateX(var(--orbit-radius)) 
-        rotateZ(calc(-1 * var(--angle)));
+      transform: translateX(-50%) translateY(-50%) rotateZ(var(--angle))
+        translateX(var(--orbit-radius)) rotateZ(calc(-1 * var(--angle)));
     }
     to {
-      transform: 
-        translateX(-50%) 
-        translateY(-50%) 
-        rotateZ(calc(var(--angle) + 360deg)) 
-        translateX(var(--orbit-radius)) 
+      transform: translateX(-50%) translateY(-50%)
+        rotateZ(calc(var(--angle) + 360deg)) translateX(var(--orbit-radius))
         rotateZ(calc(-1 * (var(--angle) + 360deg)));
     }
   }
@@ -374,11 +421,14 @@ import michaelAvatar from '../images/Avatar.png';
 
   /* Make icons pulse gently */
   .tech-icon:nth-child(odd) .icon-wrapper {
-    animation: counter-rotate var(--duration) linear infinite reverse, pulse 3s ease-in-out infinite;
+    animation:
+      counter-rotate var(--duration) linear infinite reverse,
+      pulse 3s ease-in-out infinite;
   }
 
   @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.85;
     }
     50% {
@@ -388,10 +438,12 @@ import michaelAvatar from '../images/Avatar.png';
 
   /* Terminal cursor blink */
   @keyframes blink {
-    0%, 50% {
+    0%,
+    50% {
       opacity: 1;
     }
-    51%, 100% {
+    51%,
+    100% {
       opacity: 0;
     }
   }
@@ -423,7 +475,7 @@ import michaelAvatar from '../images/Avatar.png';
     .tech-icon {
       --orbit-radius: 180px !important;
     }
-    
+
     .icon-wrapper i {
       font-size: 2rem !important;
     }
@@ -438,7 +490,7 @@ import michaelAvatar from '../images/Avatar.png';
     .tech-icon {
       --orbit-radius: 130px !important;
     }
-    
+
     .icon-wrapper i {
       font-size: 1.5rem !important;
     }

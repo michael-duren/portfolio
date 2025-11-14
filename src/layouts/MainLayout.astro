@@ -1,15 +1,15 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
-import Header from '../components/Header.astro';
-import Nav from '../components/Nav.astro';
+import { ClientRouter } from "astro:transitions";
+import Header from "../components/Header.astro";
+import Nav from "../components/Nav.astro";
 const { title, animated } = Astro.props;
-import '../styles/global.styles.css';
-import Social from '../components/Social.astro';
+import "../styles/global.styles.css";
+import Social from "../components/Social.astro";
 ---
 
 <html lang="en">
   <head>
-    <ViewTransitions />
+    <ClientRouter />
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
@@ -18,12 +18,12 @@ import Social from '../components/Social.astro';
       name="description"
       content="Michael Duren portfolio incues types, software engineering, skills, computer science, Web Developer JavaScript, Typescript, C#, .NET. "
     />
-  <link 
-    rel="stylesheet" 
-    type="text/css" 
-    href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" 
-  />
-  
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+    />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://michaelduren.com/" />
@@ -87,5 +87,5 @@ import Social from '../components/Social.astro';
     <audio preload="auto" id="bell" src="/audio/bell.mp3"></audio>
     <audio preload="auto" id="blip" src="/audio/blip.mp3"></audio>
     <script src="../scripts/main.ts"></script>
-  </body></html
->
+  </body>
+</html>
