@@ -2,144 +2,84 @@
 import { Image } from 'astro:assets';
 import type { PortfolioItem } from '../types/portfolio-item';
 import Icon from 'astro-icon';
+
 interface Props {
   portfolioItem: PortfolioItem;
 }
 
 const { portfolioItem } = Astro.props;
-const { title, description, websiteLink, codeLink, images, color } =
-  portfolioItem;
+const { title, description, websiteLink, codeLink, images, color } = portfolioItem;
+
+// Determine what to show in the URL bar
+const displayUrl = websiteLink || codeLink || 'Infrastructure Project';
+const isInfrastructure = !websiteLink; // No website = infrastructure project
 ---
 
 <div
-  class=`h-full group shadow-2xl max-w-[80vw] mx-auto rounded-xl  w-full flex flex-col gap-y-4 ${color}`
+  class=`h-full group shadow-2xl max-w-[80vw] mx-auto rounded-xl w-full flex flex-col gap-y-4 ${color}`
 >
   <div class="flex flex-col gap-4 pb-2 p-4">
     <div class="flex gap-2 items-center">
-      <span
-        class="h-2 w-2 sm:h-3 sm:w-3 md:h-4 md:w-4 rounded-full inline-block bg-red-500"
-      >
-      </span>
-      <span
-        class="h-2 w-2 sm:h-3 sm:w-3 md:h-4 md:w-4 rounded-full inline-block bg-orange-500"
-      >
-      </span>
-      <span
-        class="h-2 w-2 sm:h-3 sm:w-3 md:h-4 md:w-4 rounded-full inline-block bg-green-500"
-      >
-      </span>
+      <span class="h-2 w-2 sm:h-3 sm:w-3 md:h-4 md:w-4 rounded-full inline-block bg-red-500"></span>
+      <span class="h-2 w-2 sm:h-3 sm:w-3 md:h-4 md:w-4 rounded-full inline-block bg-orange-500"></span>
+      <span class="h-2 w-2 sm:h-3 sm:w-3 md:h-4 md:w-4 rounded-full inline-block bg-green-500"></span>
     </div>
     <div class="flex gap-4 items-center">
-      <Icon
-        class="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-gray-700"
-        name="ep:back"
-      />
-      <Icon
-        class="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-gray-700 rotate-180"
-        name="ep:back"
-      />
-      <div
-        class="w-full text-[0.7rem] md:text-sm bg-gray-200 truncate shadow-md py-[0.15rem] px-1 sm:py-1 sm:px-2 rounded-xl"
-        >{websiteLink}</div
-      >
+      {!isInfrastructure && (
+        <>
+          <Icon class="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-gray-700" name="ep:back" />
+          <Icon class="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-gray-700 rotate-180" name="ep:back" />
+        </>
+      )}
+      <div class="w-full text-[0.7rem] md:text-sm bg-gray-200 truncate shadow-md py-[0.15rem] px-1 sm:py-1 sm:px-2 rounded-xl">
+        {displayUrl}
+      </div>
     </div>
   </div>
-  <div
-    class="relative h-full min-h-[30rem] rounded-lg flex-col flex items-center cursor-pointer"
-  >
+
+  <!-- Rest stays the same -->
+  <div class="relative h-full min-h-[30rem] rounded-lg flex-col flex items-center cursor-pointer">
     <!-- carousel -->
-    <custom-carousel
-      aria-label={`${title} photos`}
-      class="relative h-full w-full"
-    >
+    <custom-carousel aria-label={`${title} photos`} class="relative h-full w-full">
       <ul data-slides>
-        {
-          images.map((image, i) => {
-            return (
-              <li
-                class="absolute slide rounded-xl opacity-0 inset-0 transition-opacity delay-300 duration-300"
-                data-active
-              >
-                <Image
-                  class="object-cover rounded-t-none rounded-xl object-center block h-full"
-                  id={`item${i + 1}-${title}`}
-                  src={image}
-                  alt={`${title} image #${i + 1}`}
-                />
-              </li>
-            );
-          })
-        }
+        {images.map((image, i) => (
+          <li class="absolute slide rounded-xl opacity-0 inset-0 transition-opacity delay-300 duration-300" data-active>
+            <Image
+              class="object-cover rounded-t-none rounded-xl object-center block h-full"
+              id={`item${i + 1}-${title}`}
+              src={image}
+              alt={`${title} image #${i + 1}`}
+            />
+          </li>
+        ))}
       </ul>
     </custom-carousel>
 
-    <div
-      class="h-full overlay overflow-y-scroll group-hover:block hidden rounded-xl rounded-t-none absolute w-full bg-black bg-opacity-70 z-30"
-    >
-      <div
-        class="text-gray-100 justify-between h-full items-center flex flex-col p-4"
-      >
+    <div class="h-full overlay overflow-y-scroll  rounded-xl rounded-t-none absolute w-full bg-black bg-opacity-70 z-30">
+      <div class="text-gray-100 justify-between h-full items-center flex flex-col p-4">
         <div>
           <h2 class="text-lg sm:text-xl md:text-2xl font-rock">{title}</h2>
-          {
-            description.map((paragraph) => {
-              return (
-                <p class="my-8 text-[0.7rem] sm:text-xs xl:text-sm font-light">
-                  {paragraph}
-                </p>
-              );
-            })
-          }
+          {description.map((paragraph) => (
+            <p class="my-8 text-[0.7rem] sm:text-xs xl:text-sm font-light">{paragraph}</p>
+          ))}
         </div>
         <div class="flex gap-4 mb-4 z-40">
-          <a
-            href={codeLink}
-            aria-label={`Link to ${title} code`}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <button
-              class="btn btn-xs sm:btn-sm md:btn-md btn-circle"
-              type="button"
-              aria-label={`Link to ${title} code`}
-            >
-              <Icon
-                class="text-gray-900 h-4 w-4 sm:h-6 sm:w-6 md:h-8 md:w-8"
-                name="ic:baseline-code"
-                alt="A icon with brackets representing code"
-              />
-            </button>
-          </a>
-          <a
-            href={websiteLink}
-            rel="noopener noreferrer"
-            aria-label={`Link to ${title} site`}
-            target="_blank"
-          >
-            <button
-              class="btn btn-neutral btn-xs sm:btn-sm md:btn-md btn-circle"
-              aria-label={`Link to ${title} site`}
-            >
-              <Icon
-                class="text-white stroke-white h-4 w-4 sm:h-6 sm:w-6 md:h-8 md:w-8"
-                name="carbon:view"
-                alt="An Icon with an Eye"
-              />
-            </button>
-          </a>
+          {codeLink && (
+            <a href={codeLink} aria-label={`Link to ${title} code`} rel="noopener noreferrer" target="_blank">
+              <button class="btn btn-xs sm:btn-sm md:btn-md btn-circle" type="button">
+                <Icon class="text-gray-900 h-4 w-4 sm:h-6 sm:w-6 md:h-8 md:w-8" name="ic:baseline-code" />
+              </button>
+            </a>
+          )}
+          {websiteLink && (
+            <a href={websiteLink} rel="noopener noreferrer" aria-label={`Link to ${title} site`} target="_blank">
+              <button class="btn btn-neutral btn-xs sm:btn-sm md:btn-md btn-circle">
+                <Icon class="text-white stroke-white h-4 w-4 sm:h-6 sm:w-6 md:h-8 md:w-8" name="carbon:view" />
+              </button>
+            </a>
+          )}
         </div>
       </div>
     </div>
   </div>
 </div>
-<style>
-  .slide[data-active] {
-    opacity: 1;
-    z-index: 1;
-    transition-delay: 0ms;
-  }
-</style>
-
-<script>
-  import '../scripts/carousel.ts';
-</script>

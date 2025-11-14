@@ -5,7 +5,6 @@ import rubberDuck from '../images/duck.png';
 import rubberDuckBlue from '../images/duck-blue.png';
 import Technologies from '../components/Technologies.astro';
 ---
-
 <MainLayout title="Michael Duren - About">
   <div class="flex lg:justify-between lg:w-full">
     <div class="flex flex-col gap-2 md:gap-3 lg:gap-4 flex-1">
@@ -29,9 +28,20 @@ import Technologies from '../components/Technologies.astro';
       </p>
       <p class="font-bold text-purple-700">Anyway...</p>
       <p class="font-semibold text-gray-600 md:text-base text-sm">
-        I am a software engineer, and creative mind with a passion for building.
-        I love to learn new things, and I am always looking for new
-        technologies, and new ways to solve problems.
+        I'm a software engineer with 3+ years building production systems in C#/.NET and TypeScript. 
+        After years of feature development, I'm transitioning toward infrastructure and distributed systems work—
+        the layer that makes applications reliable, observable, and scalable.
+      </p>
+      <p class="md:text-base text-sm">
+        I've built <a href="/work" class="text-purple-700 hover:underline">Next Step CMS</a>, 
+        a SaaS platform serving 1,200+ users managing chemical dependency treatment. 
+        I maintain a home monitoring stack with Grafana, Prometheus, and node exporters across multiple VMs. 
+        I contribute to open source projects like prometheus/node_exporter, learning systems programming 
+        and infrastructure tooling in Go.
+      </p>
+      <p class="md:text-base text-sm">
+        I'm drawn to the problems that live between services: how systems communicate, fail, recover, 
+        and scale. I want to work on the platforms and infrastructure that make great applications possible.
       </p>
     </div>
     <div class="flex-1 flex-col flex justify-around">
@@ -55,7 +65,6 @@ import Technologies from '../components/Technologies.astro';
   </div>
   <audio preload="auto" id="squeek-high" src="/audio/squeek-high.mp3"></audio>
   <audio preload="auto" id="squeek-low" src="/audio/squeek-low.mp3"></audio>
-
   <script>
     import '../scripts/duck.ts';
   </script>
