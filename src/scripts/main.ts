@@ -1,4 +1,5 @@
 import { sleep } from './sleep';
+import { sound, startAnimation } from '../store/store';
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
@@ -29,3 +30,21 @@ const typedTitle = async () => {
 document.addEventListener('DOMContentLoaded', () => {
   typedTitle();
 });
+
+// Modal button handlers
+const modalButtonSound: HTMLButtonElement | null = document.querySelector(
+  '#modal-button-sound'
+);
+const modalButtonNoSound: HTMLButtonElement | null = document.querySelector(
+  '#modal-button-no-sound'
+);
+if (modalButtonSound && modalButtonNoSound) {
+  modalButtonSound.addEventListener('click', () => {
+    sound.set(true);
+    startAnimation.set(true);
+  });
+  modalButtonNoSound.addEventListener('click', () => {
+    sound.set(false);
+    startAnimation.set(true);
+  });
+}

@@ -175,7 +175,7 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
 
       const playSqueak = () => {
         // Only play sound if sound is enabled
-        if (sound.get() === "true") {
+        if (sound.get()) {
           if (Math.random() > 0.5) {
             squeekHigh?.play();
           } else {

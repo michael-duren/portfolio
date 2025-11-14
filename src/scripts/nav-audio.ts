@@ -7,8 +7,7 @@ const addNavLinkListeners = () => {
     navLinks.forEach((link) => {
       link.addEventListener('click', () => {
         // Check sound setting dynamically on each click
-        const soundBool = sound.get() === 'true';
-        if (soundBool) {
+        if (sound.get()) {
           const pluck = new Audio('/audio/pluck.mp3');
           pluck.play();
         }
