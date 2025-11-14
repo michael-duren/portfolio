@@ -6,66 +6,315 @@ import rubberDuckBlue from '../images/duck-blue.png';
 import Technologies from '../components/Technologies.astro';
 ---
 <MainLayout title="Michael Duren - About">
-  <div class="flex lg:justify-between lg:w-full">
-    <div class="flex flex-col gap-2 md:gap-3 lg:gap-4 flex-1">
-      <h2 class="font-bold text-2xl md:text-4xl">About Me</h2>
-      <div>
-        <p class="font-bold text-purple-700">
-          What's with the rubber <span class="text-amber-700">duck?</span></p
-        >
-        <p class="text-xs text-gray-600">(I dare you to click it)</p>
+  <!-- Animated background -->
+  <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <!-- Gradient orbs that move slowly -->
+    <div class="absolute top-20 left-10 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+    <div class="absolute top-40 right-10 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+    <div class="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+    
+    <!-- Floating code symbols -->
+    <div class="code-rain">
+      <span class="code-symbol" style="left: 10%; animation-delay: 0s;">{`</>`}</span>
+      <span class="code-symbol" style="left: 25%; animation-delay: 2s;">{`{}`}</span>
+      <span class="code-symbol" style="left: 40%; animation-delay: 4s;">{`[]`}</span>
+      <span class="code-symbol" style="left: 55%; animation-delay: 1s;">{`()`}</span>
+      <span class="code-symbol" style="left: 70%; animation-delay: 3s;">{`<>`}</span>
+      <span class="code-symbol" style="left: 85%; animation-delay: 5s;">{`=>`}</span>
+      <span class="code-symbol" style="left: 15%; animation-delay: 6s;">{`//`}</span>
+      <span class="code-symbol" style="left: 35%; animation-delay: 7s;">{`fn`}</span>
+      <span class="code-symbol" style="left: 60%; animation-delay: 8s;">{`🦆`}</span>
+      <span class="code-symbol" style="left: 80%; animation-delay: 9s;">{`💻`}</span>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="relative z-10">
+    <div class="flex lg:justify-between lg:w-full">
+      <div class="flex flex-col gap-2 md:gap-3 lg:gap-4 flex-1">
+        <h2 class="font-bold text-2xl md:text-4xl">About Me</h2>
+        <div>
+          <p class="font-bold text-purple-700">
+            What's with the rubber <span class="text-amber-700">duck?</span></p
+          >
+          <p class="text-xs text-gray-600">(Try clicking or dragging them!)</p>
+        </div>
+        <p class="md:text-base text-sm">
+          The rubber <span class="font-semibold">duck</span> is a reference to the
+          rubber duck debugging method. The idea is that if you are stuck on a
+          problem, you should explain it to a rubber duck.
+        </p>
+        <p class="md:text-base text-sm">
+          I ❤️ this idea, because it is a reminder to take a step back, and
+          really look at what you're creating. The new ideas that arise after
+          talking through the code can lead us to a solution. Or not, then we try
+          something else. Don't take yourself too seriously 🤷‍♂️.
+        </p>
+        <p class="font-bold text-purple-700">Anyway...</p>
+        <p class="font-semibold text-gray-600 md:text-base text-sm">
+          I'm a software engineer with 3+ years building production systems in C#/.NET and TypeScript. 
+          After years of feature development, I'm transitioning toward infrastructure and distributed systems work—
+          the layer that makes applications reliable, observable, and scalable.
+        </p>
+        <p class="md:text-base text-sm">
+          I've built <a href="/work" class="text-purple-700 hover:underline">Next Step CMS</a>, 
+          a SaaS platform serving 1,200+ users managing chemical dependency treatment. 
+          I maintain a home monitoring stack with Grafana, Prometheus, and node exporters across multiple VMs. 
+          I contribute to open source projects like Code for Recovery, learning systems programming 
+          and infrastructure tooling in Go.
+        </p>
+        <p class="md:text-base text-sm">
+          I'm drawn to the problems that live between services: how systems communicate, fail, recover, 
+          and scale. I want to work on the platforms and infrastructure that make great applications possible.
+        </p>
       </div>
-      <p class="md:text-base text-sm">
-        The rubber <span class="font-semibold">duck</span> is a reference to the
-        rubber duck debugging method. The idea is that if you are stuck on a
-        problem, you should explain it to a rubber duck.
-      </p>
-      <p class="md:text-base text-sm">
-        I ❤️ this idea, because it is a reminder to take a step back, and
-        really look at what you're creating. The new ideas that arise after
-        talking through the code can lead us to a solution. Or not, then we try
-        something else. Don't take yourself too seriously 🤷‍♂️.
-      </p>
-      <p class="font-bold text-purple-700">Anyway...</p>
-      <p class="font-semibold text-gray-600 md:text-base text-sm">
-        I'm a software engineer with 3+ years building production systems in C#/.NET and TypeScript. 
-        After years of feature development, I'm transitioning toward infrastructure and distributed systems work—
-        the layer that makes applications reliable, observable, and scalable.
-      </p>
-      <p class="md:text-base text-sm">
-        I've built <a href="/work" class="text-purple-700 hover:underline">Next Step CMS</a>, 
-        a SaaS platform serving 1,200+ users managing chemical dependency treatment. 
-        I maintain a home monitoring stack with Grafana, Prometheus, and node exporters across multiple VMs. 
-        I contribute to open source projects like prometheus/node_exporter, learning systems programming 
-        and infrastructure tooling in Go.
-      </p>
-      <p class="md:text-base text-sm">
-        I'm drawn to the problems that live between services: how systems communicate, fail, recover, 
-        and scale. I want to work on the platforms and infrastructure that make great applications possible.
-      </p>
+      
+      <!-- Interactive ducks section -->
+      <div class="flex-1 flex-col flex justify-around relative">
+        <div class="duck-container">
+          <Image
+            id="rubber-duck"
+            class="floating-duck cursor-grab active:cursor-grabbing"
+            src={rubberDuck}
+            alt="Rubber Duck"
+            draggable="false"
+          />
+          <Image
+            id="rubber-duck-blue"
+            class="floating-duck cursor-grab active:cursor-grabbing md:hidden"
+            src={rubberDuckBlue}
+            alt="Blue Rubber Duck"
+            draggable="false"
+          />
+        </div>
+      </div>
     </div>
-    <div class="flex-1 flex-col flex justify-around">
-      <Image
-        id="rubber-duck"
-        class="active:scale-125 transition-all cursor-pointer duration-500"
-        src={rubberDuck}
-        alt="Rubber Duck"
-      />
-      <Image
-        id="rubber-duck-blue"
-        class="active:scale-125 md:hidden transition-all cursor-pointer duration-500"
-        src={rubberDuckBlue}
-        alt="Rubber Duck"
-      />
+    
+    <div class="w-full mt-4">
+      <h2 class="font-bold text-2xl">Skills:</h2>
+      <Technologies />
     </div>
   </div>
-  <div class="w-full mt-4">
-    <h2 class="font-bold text-2xl">Skills:</h2>
-    <Technologies />
-  </div>
+
   <audio preload="auto" id="squeek-high" src="/audio/squeek-high.mp3"></audio>
   <audio preload="auto" id="squeek-low" src="/audio/squeek-low.mp3"></audio>
-  <script>
-    import '../scripts/duck.ts';
-  </script>
 </MainLayout>
+
+<style>
+  /* Animated gradient blobs */
+  @keyframes blob {
+    0% {
+      transform: translate(0px, 0px) scale(1);
+    }
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+    }
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
+    100% {
+      transform: translate(0px, 0px) scale(1);
+    }
+  }
+
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+
+  /* Floating code symbols */
+  @keyframes float-down {
+    0% {
+      transform: translateY(-100px) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.3;
+    }
+    90% {
+      opacity: 0.3;
+    }
+    100% {
+      transform: translateY(100vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  .code-rain {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .code-symbol {
+    position: absolute;
+    top: -50px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: rgba(124, 58, 237, 0.3);
+    animation: float-down 15s linear infinite;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* Duck animations */
+  .duck-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .floating-duck {
+    position: relative;
+    animation: gentle-float 3s ease-in-out infinite;
+    transition: transform 0.3s ease;
+    max-width: 200px;
+    user-select: none;
+  }
+
+  .floating-duck:hover {
+    transform: scale(1.1) rotate(5deg);
+  }
+
+  .floating-duck:active {
+    transform: scale(0.95);
+  }
+
+  #rubber-duck {
+    animation-delay: 0s;
+  }
+
+  #rubber-duck-blue {
+    animation-delay: 1.5s;
+  }
+
+  @keyframes gentle-float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  /* Make ducks draggable on desktop */
+  @media (min-width: 768px) {
+    .floating-duck {
+      position: absolute;
+    }
+    
+    .floating-duck.dragging {
+      z-index: 1000;
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  import '../scripts/duck.ts';
+  
+  // Enhanced duck interaction
+  document.addEventListener('astro:page-load', () => {
+    const ducks = document.querySelectorAll('.floating-duck') as NodeListOf<HTMLImageElement>;
+    
+    ducks.forEach((duck) => {
+      let isDragging = false;
+      let currentX = 0;
+      let currentY = 0;
+      let initialX = 0;
+      let initialY = 0;
+      
+      // Click/tap for squeak
+      duck.addEventListener('click', () => {
+        if (!isDragging) {
+          // Play squeak sound (existing functionality from duck.ts)
+          const squeekHigh = document.getElementById('squeek-high') as HTMLAudioElement;
+          const squeekLow = document.getElementById('squeek-low') as HTMLAudioElement;
+          
+          if (Math.random() > 0.5) {
+            squeekHigh?.play();
+          } else {
+            squeekLow?.play();
+          }
+          
+          // Add bounce effect
+          duck.style.animation = 'none';
+          setTimeout(() => {
+            duck.style.animation = 'gentle-float 3s ease-in-out infinite';
+          }, 300);
+        }
+      });
+      
+      // Drag functionality for desktop
+      duck.addEventListener('mousedown', (e: MouseEvent) => {
+        e.preventDefault();
+        isDragging = true;
+        duck.classList.add('dragging');
+        
+        initialX = e.clientX - currentX;
+        initialY = e.clientY - currentY;
+      });
+      
+      document.addEventListener('mousemove', (e: MouseEvent) => {
+        if (isDragging && duck.classList.contains('dragging')) {
+          e.preventDefault();
+          currentX = e.clientX - initialX;
+          currentY = e.clientY - initialY;
+          
+          duck.style.transform = `translate(${currentX}px, ${currentY}px)`;
+        }
+      });
+      
+      document.addEventListener('mouseup', () => {
+        if (isDragging) {
+          isDragging = false;
+          duck.classList.remove('dragging');
+          
+          // Resume floating animation
+          setTimeout(() => {
+            duck.style.animation = 'gentle-float 3s ease-in-out infinite';
+          }, 100);
+        }
+      });
+      
+      // Touch support for mobile
+      duck.addEventListener('touchstart', (e: TouchEvent) => {
+        const touch = e.touches[0];
+        if (!touch) return;
+        initialX = touch.clientX - currentX;
+        initialY = touch.clientY - currentY;
+        isDragging = true;
+        duck.classList.add('dragging');
+      }, { passive: true });
+      
+      document.addEventListener('touchmove', (e: TouchEvent) => {
+        if (isDragging && duck.classList.contains('dragging')) {
+          const touch = e.touches[0];
+          if (!touch) return;
+          currentX = touch.clientX - initialX;
+          currentY = touch.clientY - initialY;
+          
+          duck.style.transform = `translate(${currentX}px, ${currentY}px)`;
+        }
+      }, { passive: true });
+      
+      document.addEventListener('touchend', () => {
+        if (isDragging) {
+          isDragging = false;
+          duck.classList.remove('dragging');
+          
+          setTimeout(() => {
+            duck.style.animation = 'gentle-float 3s ease-in-out infinite';
+          }, 100);
+        }
+      });
+    });
+  });
+</script>
