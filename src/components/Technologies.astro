@@ -1,74 +1,85 @@
-<div class="carousel carousel-center rounded-box">
-  <div
-    class="carousel-item"
-    style="--orbit-radius: 300px; --angle: 0deg; --duration: 20s;"
-  >
-    <div class="icon-wrapper">
-      <i class="devicon-typescript-plain colored text-[5rem]"></i>
-    </div>
+<div class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-6">
+  <div class="tech-item">
+    <i class="devicon-typescript-plain colored text-[3rem] md:text-[4rem]"></i>
   </div>
 
-  <div
-    class="carousel-item"
-    style="--orbit-radius: 330px; --angle: 51deg; --duration: 25s;"
-  >
-    <div class="icon-wrapper">
-      <i class="devicon-go-original-wordmark colored text-[5rem]"></i>
-    </div>
+  <div class="tech-item">
+    <i class="devicon-go-original-wordmark colored text-[3rem] md:text-[4rem]"></i>
   </div>
 
-  <div
-    class="carousel-item"
-    style="--orbit-radius: 270px; --angle: 102deg; --duration: 22s;"
-  >
-    <div class="icon-wrapper">
-      <i class="devicon-dotnetcore-plain colored text-[5rem]"></i>
-    </div>
+  <div class="tech-item">
+    <i class="devicon-dotnetcore-plain colored text-[3rem] md:text-[4rem]"></i>
   </div>
 
-  <div
-    class="carousel-item"
-    style="--orbit-radius: 360px; --angle: 153deg; --duration: 28s;"
-  >
-    <div class="icon-wrapper">
-      <i class="devicon-kubernetes-plain colored text-[5rem]"></i>
-    </div>
+  <div class="tech-item">
+    <i class="devicon-kubernetes-plain colored text-[3rem] md:text-[4rem]"></i>
   </div>
 
-  <div
-    class="carousel-item"
-    style="--orbit-radius: 315px; --angle: 204deg; --duration: 24s;"
-  >
-    <div class="icon-wrapper">
-      <i class="devicon-amazonwebservices-plain-wordmark colored text-[5rem]"
-      ></i>
-    </div>
+  <div class="tech-item">
+    <i class="devicon-amazonwebservices-plain-wordmark colored text-[3rem] md:text-[4rem]"></i>
   </div>
 
-  <div
-    class="carousel-item"
-    style="--orbit-radius: 285px; --angle: 255deg; --duration: 26s;"
-  >
-    <div class="icon-wrapper">
-      <i class="devicon-azure-plain colored text-[5rem]"></i>
-    </div>
+  <div class="tech-item">
+    <i class="devicon-azure-plain colored text-[3rem] md:text-[4rem]"></i>
   </div>
 
-  <div
-    class="carousel-item"
-    style="--orbit-radius: 345px; --angle: 306deg; --duration: 23s;"
-  >
-    <div class="icon-wrapper">
-      <i class="devicon-react-original colored text-[5rem]"></i>
-    </div>
+  <div class="tech-item">
+    <i class="devicon-react-original colored text-[3rem] md:text-[4rem]"></i>
   </div>
 
-  <div
-    class="carousel-item"
-    style="--orbit-radius: 295px; --angle: 357deg; --duration: 21s;"
-  >
-    <div class="icon-wrapper">
-      <i class="devicon-docker-plain colored text-[5rem]"></i>
-    </div>
+  <div class="tech-item">
+    <i class="devicon-docker-plain colored text-[3rem] md:text-[4rem]"></i>
+  </div>
+
+  <div class="tech-item">
+    <i class="devicon-postgresql-plain colored text-[3rem] md:text-[4rem]"></i>
+  </div>
+
+  <div class="tech-item">
+    <i class="devicon-microsoftsqlserver-plain colored text-[3rem] md:text-[4rem]"></i>
+  </div>
+
+  <div class="tech-item">
+    <i class="devicon-grafana-plain colored text-[3rem] md:text-[4rem]"></i>
+  </div>
+
+  <div class="tech-item">
+    <i class="devicon-prometheus-original colored text-[3rem] md:text-[4rem]"></i>
+  </div>
+
+  <div class="tech-item">
+    <i class="devicon-nodejs-plain colored text-[3rem] md:text-[4rem]"></i>
+  </div>
+
+  <div class="tech-item">
+    <i class="devicon-python-plain colored text-[3rem] md:text-[4rem]"></i>
+  </div>
+
+  <div class="tech-item">
+    <i class="devicon-lua-plain colored text-[3rem] md:text-[4rem]"></i>
+  </div>
+
+  <div class="tech-item">
+    <i class="devicon-neovim-plain colored text-[3rem] md:text-[4rem]"></i>
   </div>
 </div>
+
+<style>
+  .tech-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .tech-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+</style>

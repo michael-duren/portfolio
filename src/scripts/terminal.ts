@@ -1,5 +1,4 @@
 import { terminalCommands } from './constants';
-import JSConfetti from 'js-confetti';
 import { playSample, stopSample } from './audio.utils';
 import {
   continueAnimation,
@@ -31,10 +30,19 @@ const playRandomKeyboardSound = (i?: number) => {
   keyboardSounds[randomIndex]!.play();
 };
 
+const scrollToBottom = (container: HTMLElement | null) => {
+  if (container) {
+    container.scrollTop = container.scrollHeight;
+  }
+};
+
 const runTerminal = async (sound: boolean) => {
   const terminalInput = document.querySelector('#terminal-input');
   const terminalOutput = document.querySelector('#terminal-output');
   if (!terminalInput || !terminalOutput) return;
+
+  // Get the scrollable container (parent of terminal output)
+  const terminalContainer = terminalOutput.closest('.overflow-y-auto') as HTMLElement;
 
   for (let command of terminalCommands) {
     // Type the command in the terminal
@@ -68,17 +76,12 @@ const runTerminal = async (sound: boolean) => {
       li.appendChild(textDiv);
 
       terminalOutput.appendChild(li);
+      scrollToBottom(terminalContainer);
       await sleep(200);
       if (blip) stopSample(blip);
     }
-    if (terminalInput.textContent === 'Have Fun') {
-      const confetti = new JSConfetti();
-      confetti.addConfetti();
-    }
     await sleep(longPause);
-    if (terminalInput.textContent !== 'Have Fun') {
-      terminalInput.textContent = '';
-    }
+    terminalInput.textContent = '';
   }
   isAnimationComplete.set(true);
 };
@@ -86,7 +89,8 @@ const updateCompletedAnimation = () => {
   const terminalInput = document.querySelector('#terminal-input');
   const terminalOutput = document.querySelector('#terminal-output');
   if (!terminalInput || !terminalOutput) return;
-  terminalInput.textContent = 'Have Fun';
+  const lastCommand = terminalCommands[terminalCommands.length - 1];
+  terminalInput.textContent = lastCommand.command;
   for (let command of terminalCommands) {
     for (let output of command.output) {
       const li = document.createElement('li');
@@ -108,11 +112,18 @@ const updateCompletedAnimation = () => {
 };
 
 document.addEventListener('astro:page-load', () => {
-  startAnimation.listen((startAnimation) => {
-    if (startAnimation) {
+  // Check if animation should start immediately
+  if (startAnimation.get()) {
+    runTerminal(sound.get() === 'true');
+  }
+
+  // Also listen for future changes
+  startAnimation.listen((shouldStart) => {
+    if (shouldStart) {
       runTerminal(sound.get() === 'true');
     }
   });
+
   if (!continueAnimation.get()) {
     updateCompletedAnimation();
   }
