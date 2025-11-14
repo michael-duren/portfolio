@@ -1,0 +1,20 @@
+{
+	"geolocation": {
+		"data": {
+			"city": "Eden Prairie",
+			"country": {
+				"code": "US",
+				"name": "United States"
+			},
+			"subdivision": {
+				"code": "MN",
+				"name": "Minnesota"
+			},
+			"timezone": "America/Chicago",
+			"latitude": 44.8547,
+			"longitude": -93.4708,
+			"postalCode": "55344"
+		},
+		"timestamp": 1763135939490
+	}
+}
