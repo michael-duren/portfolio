@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import { Icon } from 'astro-icon';
 import avatar from '../images/avatar_temp.jpeg';
 const { animated } = Astro.props;
 ---
@@ -20,19 +21,87 @@ const { animated } = Astro.props;
         />
       </div>
     </div>
-    <div class="flex-1 sm:flex-grow-0 sm:flex-shrink-0">
-      {
-        !animated ? (
-          <h1 class=" text-3xl sm:text-4xl md:text-5xl font-rock  drop-shadow-md">
-            Michael Duren
-          </h1>
-        ) : (
-          <h1
-            id="title"
-            class=" text-3xl sm:text-4xl md:text-5xl font-rock  drop-shadow-md"
-          />
-        )
-      }
+    <div class="flex-1 sm:flex-grow-0 sm:flex-shrink-0 flex items-center gap-4">
+      <div>
+        {
+          !animated ? (
+            <h1 class=" text-3xl sm:text-4xl md:text-5xl font-rock  drop-shadow-md">
+              Michael Duren
+            </h1>
+          ) : (
+            <h1
+              id="title"
+              class=" text-3xl sm:text-4xl md:text-5xl font-rock  drop-shadow-md"
+            />
+          )
+        }
+      </div>
+      <button
+        id="sound-toggle"
+        class="btn btn-circle btn-ghost btn-sm sm:btn-md"
+        aria-label="Toggle sound"
+        title="Toggle sound"
+      >
+        <Icon id="sound-icon-on" name="iconoir:sound-low" class="h-6 w-6" />
+        <Icon id="sound-icon-off" name="iconoir:sound-off" class="h-6 w-6 hidden" />
+      </button>
     </div>
   </div>
 </header>
+
+<script>
+  import { sound } from '../store/store';
+
+  const updateSoundIcon = (isOn: boolean) => {
+    const iconOn = document.querySelector('#sound-icon-on');
+    const iconOff = document.querySelector('#sound-icon-off');
+    if (iconOn && iconOff) {
+      if (isOn) {
+        iconOn.classList.remove('hidden');
+        iconOff.classList.add('hidden');
+      } else {
+        iconOn.classList.add('hidden');
+        iconOff.classList.remove('hidden');
+      }
+    }
+  };
+
+  let isSetup = false;
+
+  const setupSoundToggle = () => {
+    const soundToggle = document.querySelector('#sound-toggle');
+    if (!soundToggle) return;
+
+    // Set initial icon state
+    const currentSound = sound.get();
+    updateSoundIcon(currentSound === 'true');
+
+    // Only set up listeners once to avoid duplicates
+    if (!isSetup) {
+      // Listen to sound changes
+      sound.listen((value) => {
+        updateSoundIcon(value === 'true');
+      });
+
+      // Toggle sound on click
+      soundToggle.addEventListener('click', () => {
+        const currentSound = sound.get();
+        const newSound = currentSound === 'true' ? 'false' : 'true';
+        sound.set(newSound);
+      });
+
+      isSetup = true;
+    }
+  };
+
+  // Setup on initial load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupSoundToggle);
+  } else {
+    // DOM is already loaded
+    setupSoundToggle();
+  }
+
+  // Setup on navigation (Astro view transitions)
+  document.addEventListener('astro:page-load', setupSoundToggle);
+</script>

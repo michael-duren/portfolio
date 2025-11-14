@@ -65,7 +65,7 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
           />
           <Image
             id="rubber-duck-blue"
-            class="floating-duck cursor-grab active:cursor-grabbing md:hidden"
+            class="floating-duck cursor-grab active:cursor-grabbing"
             src={rubberDuckBlue}
             alt="Blue Rubber Duck"
             draggable="false"
@@ -132,125 +132,152 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
       position: absolute;
     }
 
+    #rubber-duck {
+      top: 20%;
+      left: 10%;
+    }
+
+    #rubber-duck-blue {
+      top: 50%;
+      left: 60%;
+    }
+
     .floating-duck.dragging {
       z-index: 1000;
       animation: none;
+      cursor: grabbing !important;
     }
   }
 </style>
 
 <script>
-  import "../scripts/duck.ts";
+  import { sound } from "../store/store";
 
   // Enhanced duck interaction
   document.addEventListener("astro:page-load", () => {
     const ducks = document.querySelectorAll(
       ".floating-duck",
     ) as NodeListOf<HTMLImageElement>;
+    const squeekHigh = document.getElementById(
+      "squeek-high",
+    ) as HTMLAudioElement;
+    const squeekLow = document.getElementById(
+      "squeek-low",
+    ) as HTMLAudioElement;
 
     ducks.forEach((duck) => {
       let isDragging = false;
-      let currentX = 0;
-      let currentY = 0;
-      let initialX = 0;
-      let initialY = 0;
+      let hasMoved = false;
+      let startX = 0;
+      let startY = 0;
+      let offsetX = 0;
+      let offsetY = 0;
 
-      // Click/tap for squeak
-      duck.addEventListener("click", () => {
-        if (!isDragging) {
-          // Play squeak sound (existing functionality from duck.ts)
-          const squeekHigh = document.getElementById(
-            "squeek-high",
-          ) as HTMLAudioElement;
-          const squeekLow = document.getElementById(
-            "squeek-low",
-          ) as HTMLAudioElement;
-
+      const playSqueak = () => {
+        // Only play sound if sound is enabled
+        if (sound.get() === "true") {
           if (Math.random() > 0.5) {
             squeekHigh?.play();
           } else {
             squeekLow?.play();
           }
-
-          // Add bounce effect
-          duck.style.animation = "none";
-          setTimeout(() => {
-            duck.style.animation = "gentle-float 3s ease-in-out infinite";
-          }, 300);
         }
-      });
+      };
 
-      // Drag functionality for desktop
+      // Mouse events for desktop
       duck.addEventListener("mousedown", (e: MouseEvent) => {
         e.preventDefault();
         isDragging = true;
+        hasMoved = false;
         duck.classList.add("dragging");
 
-        initialX = e.clientX - currentX;
-        initialY = e.clientY - currentY;
-      });
-
-      document.addEventListener("mousemove", (e: MouseEvent) => {
-        if (isDragging && duck.classList.contains("dragging")) {
-          e.preventDefault();
-          currentX = e.clientX - initialX;
-          currentY = e.clientY - initialY;
-
-          duck.style.transform = `translate(${currentX}px, ${currentY}px)`;
+        // Get the current position from transform or use 0
+        const transform = window.getComputedStyle(duck).transform;
+        if (transform !== "none") {
+          const matrix = new DOMMatrix(transform);
+          offsetX = matrix.m41;
+          offsetY = matrix.m42;
         }
+
+        startX = e.clientX - offsetX;
+        startY = e.clientY - offsetY;
       });
 
-      document.addEventListener("mouseup", () => {
-        if (isDragging) {
-          isDragging = false;
-          duck.classList.remove("dragging");
+      const handleMouseMove = (e: MouseEvent) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        hasMoved = true;
 
-          // Resume floating animation
-          setTimeout(() => {
-            duck.style.animation = "gentle-float 3s ease-in-out infinite";
-          }, 100);
+        offsetX = e.clientX - startX;
+        offsetY = e.clientY - startY;
+
+        duck.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+      };
+
+      const handleMouseUp = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        duck.classList.remove("dragging");
+
+        // If didn't move, treat as a click
+        if (!hasMoved) {
+          playSqueak();
         }
-      });
+      };
 
-      // Touch support for mobile
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+
+      // Touch events for mobile
       duck.addEventListener(
         "touchstart",
         (e: TouchEvent) => {
           const touch = e.touches[0];
           if (!touch) return;
-          initialX = touch.clientX - currentX;
-          initialY = touch.clientY - currentY;
+
           isDragging = true;
+          hasMoved = false;
           duck.classList.add("dragging");
-        },
-        { passive: true },
-      );
 
-      document.addEventListener(
-        "touchmove",
-        (e: TouchEvent) => {
-          if (isDragging && duck.classList.contains("dragging")) {
-            const touch = e.touches[0];
-            if (!touch) return;
-            currentX = touch.clientX - initialX;
-            currentY = touch.clientY - initialY;
-
-            duck.style.transform = `translate(${currentX}px, ${currentY}px)`;
+          // Get the current position from transform or use 0
+          const transform = window.getComputedStyle(duck).transform;
+          if (transform !== "none") {
+            const matrix = new DOMMatrix(transform);
+            offsetX = matrix.m41;
+            offsetY = matrix.m42;
           }
+
+          startX = touch.clientX - offsetX;
+          startY = touch.clientY - offsetY;
         },
         { passive: true },
       );
 
-      document.addEventListener("touchend", () => {
-        if (isDragging) {
-          isDragging = false;
-          duck.classList.remove("dragging");
+      const handleTouchMove = (e: TouchEvent) => {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        if (!touch) return;
 
-          setTimeout(() => {
-            duck.style.animation = "gentle-float 3s ease-in-out infinite";
-          }, 100);
+        hasMoved = true;
+        offsetX = touch.clientX - startX;
+        offsetY = touch.clientY - startY;
+
+        duck.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+      };
+
+      const handleTouchEnd = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        duck.classList.remove("dragging");
+
+        // If didn't move, treat as a tap
+        if (!hasMoved) {
+          playSqueak();
         }
-      });
+      };
+
+      document.addEventListener("touchmove", handleTouchMove, { passive: true });
+      document.addEventListener("touchend", handleTouchEnd);
     });
   });
 </script>
