@@ -26,9 +26,9 @@ export const terminalCommands = [
     output: [
       "NAME: Michael Duren",
       "CLASS: Software Engineer",
-      "SPECIALIZATION: Full-Stack Web Development",
-      "SKILLS: JavaScript | TypeScript | React | .NET | Go",
-      "ATTRIBUTE: Musician",
+      "SPECIALIZATION: Distributed Systems | Observability",
+      "SKILLS: Go | .NET | TypeScript | Prometheus | Grafana",
+      "ATTRIBUTES: Open Source Contributor | Musician",
       "LOCATION: Twin Cities, Minnesota",
     ],
   },
@@ -42,10 +42,7 @@ export const terminalCommands = [
   },
   {
     command: "READY>_",
-    output: [
-      "Type 'help' for available commands",
-      "System awaiting input...",
-    ],
+    output: ["Type 'help' for available commands", "System awaiting input..."],
   },
 ];
 
