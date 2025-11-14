@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import MainLayout from "../layouts/MainLayout.astro";
 import rubberDuck from "../images/duck.png";
 import rubberDuckBlue from "../images/duck-blue.png";
+import pen from "../images/pen.svg";
 import Technologies from "../components/Technologies.astro";
 import AnimatedBackground from "../components/AnimatedBackground.astro";
 ---
@@ -17,7 +18,7 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
           <p class="font-bold text-purple-700">
             What's with the rubber <span class="text-amber-700">duck?</span>
           </p>
-          <p class="text-xs text-gray-600">(Try clicking or dragging them!)</p>
+          <p class="text-xs text-gray-600">(Try clicking them!)</p>
         </div>
         <p class="md:text-base text-sm">
           The rubber <span class="font-semibold">duck</span> is a reference to the
@@ -55,27 +56,40 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
 
       <!-- Interactive ducks section -->
       <div class="flex-1 flex-col flex justify-around relative">
-        <div class="duck-container">
-          <Image
-            id="rubber-duck"
-            class="floating-duck cursor-grab active:cursor-grabbing"
-            src={rubberDuck}
-            alt="Rubber Duck"
-            draggable="false"
-          />
-          <Image
-            id="rubber-duck-blue"
-            class="floating-duck cursor-grab active:cursor-grabbing"
-            src={rubberDuckBlue}
-            alt="Blue Rubber Duck"
-            draggable="false"
-          />
+        <div class="duck-container flex-col md:flex-row gap-4 md:gap-0 h-full">
+          <div class="active:scale-95">
+            <Image
+              id="rubber-duck"
+              class="floating-duck cursor-pointer"
+              src={rubberDuck}
+              alt="Rubber Duck"
+              draggable="false"
+            />
+          </div>
+          <div class="active:scale-90">
+            <Image
+              id="pen"
+              class="floating-duck cursor-pointer"
+              src={pen}
+              alt="Pen"
+              draggable="false"
+            />
+          </div>
+          <div class="active:scale-90">
+            <Image
+              id="rubber-duck-blue"
+              class="floating-duck cursor-pointer"
+              src={rubberDuckBlue}
+              alt="Blue Rubber Duck"
+              draggable="false"
+            />
+          </div>
         </div>
       </div>
     </div>
 
     <div class="w-full mt-4">
-      <h2 class="font-bold text-2xl">Technologies I use:</h2>
+      <h2 class="font-bold text-2xl mb-4">Technologies I use:</h2>
       <Technologies />
     </div>
   </div>
@@ -89,13 +103,30 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
   .duck-container {
     position: relative;
     width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
     height: 100%;
+  }
+
+  .duck-container > div:nth-child(1) {
+    align-self: flex-start;
+    margin-top: 2rem;
+  }
+
+  .duck-container > div:nth-child(2) {
+    align-self: center;
+  }
+
+  .duck-container > div:nth-child(3) {
+    align-self: flex-end;
+    margin-bottom: 2rem;
   }
 
   .floating-duck {
     position: relative;
     animation: gentle-float 3s ease-in-out infinite;
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease;
     max-width: 200px;
     user-select: none;
   }
@@ -112,6 +143,10 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
     animation-delay: 0s;
   }
 
+  #pen {
+    animation-delay: 0.75s;
+  }
+
   #rubber-duck-blue {
     animation-delay: 1.5s;
   }
@@ -125,55 +160,20 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
       transform: translateY(-20px);
     }
   }
-
-  /* Make ducks draggable on desktop */
-  @media (min-width: 768px) {
-    .floating-duck {
-      position: absolute;
-    }
-
-    #rubber-duck {
-      top: 20%;
-      left: 10%;
-    }
-
-    #rubber-duck-blue {
-      top: 50%;
-      left: 60%;
-    }
-
-    .floating-duck.dragging {
-      z-index: 1000;
-      animation: none;
-      cursor: grabbing !important;
-    }
-  }
 </style>
 
 <script>
   import { sound } from "../store/store";
 
-  // Enhanced duck interaction
   document.addEventListener("astro:page-load", () => {
-    const ducks = document.querySelectorAll(
-      ".floating-duck",
-    ) as NodeListOf<HTMLImageElement>;
+    const ducks = document.querySelectorAll(".floating-duck");
     const squeekHigh = document.getElementById(
       "squeek-high",
     ) as HTMLAudioElement;
-    const squeekLow = document.getElementById(
-      "squeek-low",
-    ) as HTMLAudioElement;
+    const squeekLow = document.getElementById("squeek-low") as HTMLAudioElement;
 
     ducks.forEach((duck) => {
-      let isDragging = false;
-      let hasMoved = false;
-      let currentX = 0;
-      let currentY = 0;
-      let initialMouseX = 0;
-      let initialMouseY = 0;
-
-      const playSqueak = () => {
+      duck.addEventListener("click", () => {
         // Only play sound if sound is enabled
         if (sound.get()) {
           if (Math.random() > 0.5) {
@@ -182,137 +182,7 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
             squeekLow?.play();
           }
         }
-      };
-
-      // Mouse events for desktop
-      duck.addEventListener("mousedown", (e: MouseEvent) => {
-        e.preventDefault();
-        isDragging = true;
-        hasMoved = false;
-        duck.classList.add("dragging");
-
-        // Store initial mouse position
-        initialMouseX = e.clientX;
-        initialMouseY = e.clientY;
-
-        // Get current transform values
-        const transform = window.getComputedStyle(duck).transform;
-        if (transform !== "none" && transform !== "matrix(1, 0, 0, 1, 0, 0)") {
-          const matrix = new DOMMatrix(transform);
-          currentX = matrix.m41;
-          currentY = matrix.m42;
-        } else {
-          currentX = 0;
-          currentY = 0;
-        }
       });
-
-      const handleMouseMove = (e: MouseEvent) => {
-        if (!isDragging) return;
-        e.preventDefault();
-        hasMoved = true;
-
-        // Calculate how far the mouse has moved from initial position
-        const deltaX = e.clientX - initialMouseX;
-        const deltaY = e.clientY - initialMouseY;
-
-        // Add delta to current position
-        const newX = currentX + deltaX;
-        const newY = currentY + deltaY;
-
-        duck.style.transform = `translate(${newX}px, ${newY}px)`;
-      };
-
-      const handleMouseUp = () => {
-        if (!isDragging) return;
-        isDragging = false;
-        duck.classList.remove("dragging");
-
-        // Update current position for next drag
-        const transform = window.getComputedStyle(duck).transform;
-        if (transform !== "none" && transform !== "matrix(1, 0, 0, 1, 0, 0)") {
-          const matrix = new DOMMatrix(transform);
-          currentX = matrix.m41;
-          currentY = matrix.m42;
-        }
-
-        // If didn't move, treat as a click
-        if (!hasMoved) {
-          playSqueak();
-        }
-      };
-
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-
-      // Touch events for mobile
-      duck.addEventListener(
-        "touchstart",
-        (e: TouchEvent) => {
-          const touch = e.touches[0];
-          if (!touch) return;
-
-          isDragging = true;
-          hasMoved = false;
-          duck.classList.add("dragging");
-
-          // Store initial touch position
-          initialMouseX = touch.clientX;
-          initialMouseY = touch.clientY;
-
-          // Get current transform values
-          const transform = window.getComputedStyle(duck).transform;
-          if (transform !== "none" && transform !== "matrix(1, 0, 0, 1, 0, 0)") {
-            const matrix = new DOMMatrix(transform);
-            currentX = matrix.m41;
-            currentY = matrix.m42;
-          } else {
-            currentX = 0;
-            currentY = 0;
-          }
-        },
-        { passive: true },
-      );
-
-      const handleTouchMove = (e: TouchEvent) => {
-        if (!isDragging) return;
-        const touch = e.touches[0];
-        if (!touch) return;
-
-        hasMoved = true;
-
-        // Calculate how far the touch has moved from initial position
-        const deltaX = touch.clientX - initialMouseX;
-        const deltaY = touch.clientY - initialMouseY;
-
-        // Add delta to current position
-        const newX = currentX + deltaX;
-        const newY = currentY + deltaY;
-
-        duck.style.transform = `translate(${newX}px, ${newY}px)`;
-      };
-
-      const handleTouchEnd = () => {
-        if (!isDragging) return;
-        isDragging = false;
-        duck.classList.remove("dragging");
-
-        // Update current position for next drag
-        const transform = window.getComputedStyle(duck).transform;
-        if (transform !== "none" && transform !== "matrix(1, 0, 0, 1, 0, 0)") {
-          const matrix = new DOMMatrix(transform);
-          currentX = matrix.m41;
-          currentY = matrix.m42;
-        }
-
-        // If didn't move, treat as a tap
-        if (!hasMoved) {
-          playSqueak();
-        }
-      };
-
-      document.addEventListener("touchmove", handleTouchMove, { passive: true });
-      document.addEventListener("touchend", handleTouchEnd);
     });
   });
 </script>
