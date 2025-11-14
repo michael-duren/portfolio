@@ -64,12 +64,10 @@ import Social from "../components/Social.astro";
         class="flex flex-col justify-between md:sticky top-[5%] max-h-[70vh]"
         transition:persist
       >
-        <div class="bg-yellow-300 px-8 py-2 rounded-lg shadow-md">
+        <div class="sticky-note">
           <Nav />
         </div>
-        <div
-          class="bg-yellow-300 px-8 py-2 rounded-lg shadow-md md:block hidden"
-        >
+        <div class="sticky-note md:block hidden">
           <Social />
         </div>
       </aside>
