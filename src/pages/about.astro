@@ -168,10 +168,10 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
     ducks.forEach((duck) => {
       let isDragging = false;
       let hasMoved = false;
-      let startX = 0;
-      let startY = 0;
-      let offsetX = 0;
-      let offsetY = 0;
+      let currentX = 0;
+      let currentY = 0;
+      let initialMouseX = 0;
+      let initialMouseY = 0;
 
       const playSqueak = () => {
         // Only play sound if sound is enabled
@@ -191,16 +191,20 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
         hasMoved = false;
         duck.classList.add("dragging");
 
-        // Get the current position from transform or use 0
-        const transform = window.getComputedStyle(duck).transform;
-        if (transform !== "none") {
-          const matrix = new DOMMatrix(transform);
-          offsetX = matrix.m41;
-          offsetY = matrix.m42;
-        }
+        // Store initial mouse position
+        initialMouseX = e.clientX;
+        initialMouseY = e.clientY;
 
-        startX = e.clientX - offsetX;
-        startY = e.clientY - offsetY;
+        // Get current transform values
+        const transform = window.getComputedStyle(duck).transform;
+        if (transform !== "none" && transform !== "matrix(1, 0, 0, 1, 0, 0)") {
+          const matrix = new DOMMatrix(transform);
+          currentX = matrix.m41;
+          currentY = matrix.m42;
+        } else {
+          currentX = 0;
+          currentY = 0;
+        }
       });
 
       const handleMouseMove = (e: MouseEvent) => {
@@ -208,16 +212,29 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
         e.preventDefault();
         hasMoved = true;
 
-        offsetX = e.clientX - startX;
-        offsetY = e.clientY - startY;
+        // Calculate how far the mouse has moved from initial position
+        const deltaX = e.clientX - initialMouseX;
+        const deltaY = e.clientY - initialMouseY;
 
-        duck.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        // Add delta to current position
+        const newX = currentX + deltaX;
+        const newY = currentY + deltaY;
+
+        duck.style.transform = `translate(${newX}px, ${newY}px)`;
       };
 
       const handleMouseUp = () => {
         if (!isDragging) return;
         isDragging = false;
         duck.classList.remove("dragging");
+
+        // Update current position for next drag
+        const transform = window.getComputedStyle(duck).transform;
+        if (transform !== "none" && transform !== "matrix(1, 0, 0, 1, 0, 0)") {
+          const matrix = new DOMMatrix(transform);
+          currentX = matrix.m41;
+          currentY = matrix.m42;
+        }
 
         // If didn't move, treat as a click
         if (!hasMoved) {
@@ -239,16 +256,20 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
           hasMoved = false;
           duck.classList.add("dragging");
 
-          // Get the current position from transform or use 0
-          const transform = window.getComputedStyle(duck).transform;
-          if (transform !== "none") {
-            const matrix = new DOMMatrix(transform);
-            offsetX = matrix.m41;
-            offsetY = matrix.m42;
-          }
+          // Store initial touch position
+          initialMouseX = touch.clientX;
+          initialMouseY = touch.clientY;
 
-          startX = touch.clientX - offsetX;
-          startY = touch.clientY - offsetY;
+          // Get current transform values
+          const transform = window.getComputedStyle(duck).transform;
+          if (transform !== "none" && transform !== "matrix(1, 0, 0, 1, 0, 0)") {
+            const matrix = new DOMMatrix(transform);
+            currentX = matrix.m41;
+            currentY = matrix.m42;
+          } else {
+            currentX = 0;
+            currentY = 0;
+          }
         },
         { passive: true },
       );
@@ -259,16 +280,30 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
         if (!touch) return;
 
         hasMoved = true;
-        offsetX = touch.clientX - startX;
-        offsetY = touch.clientY - startY;
 
-        duck.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        // Calculate how far the touch has moved from initial position
+        const deltaX = touch.clientX - initialMouseX;
+        const deltaY = touch.clientY - initialMouseY;
+
+        // Add delta to current position
+        const newX = currentX + deltaX;
+        const newY = currentY + deltaY;
+
+        duck.style.transform = `translate(${newX}px, ${newY}px)`;
       };
 
       const handleTouchEnd = () => {
         if (!isDragging) return;
         isDragging = false;
         duck.classList.remove("dragging");
+
+        // Update current position for next drag
+        const transform = window.getComputedStyle(duck).transform;
+        if (transform !== "none" && transform !== "matrix(1, 0, 0, 1, 0, 0)") {
+          const matrix = new DOMMatrix(transform);
+          currentX = matrix.m41;
+          currentY = matrix.m42;
+        }
 
         // If didn't move, treat as a tap
         if (!hasMoved) {
