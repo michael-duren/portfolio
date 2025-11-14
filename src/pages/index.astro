@@ -1,5 +1,6 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
+import Modal from "../components/Modal.astro";
 import { Image } from "astro:assets";
 import michaelAvatar from "../images/Avatar.png";
 import AnimatedBackground from "../components/AnimatedBackground.astro";
@@ -29,9 +30,9 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
   </div>
 
   <div class="flex flex-col items-center w-full">
-    <div class="relative z-0 w-full max-w-3xl px-4 mb-8">
+    <div class="relative z-50 w-full max-w-3xl px-4 mb-8">
       <div
-        class="bg-gray-900 rounded-lg shadow-2xl overflow-hidden border-2 border-gray-700"
+        class="bg-gray-900/90 rounded-lg shadow-2xl overflow-hidden border-2 border-gray-700"
       >
         <div
           class="bg-gray-800 px-4 py-2 flex items-center gap-2 border-b border-gray-700"
@@ -255,15 +256,19 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
   ></audio>
   <audio class="keyboard-sound" preload="auto" id="K10" src="/audio/K10.mp3"
   ></audio>
+
+  <Modal />
 </MainLayout>
 
 <script>
   import "../scripts/terminal";
-  import { startAnimation } from "../store/store";
 
-  // Auto-start animation on page load
+  // Show modal on page load
   document.addEventListener("astro:page-load", () => {
-    startAnimation.set(true);
+    const modal = document.querySelector("#my_modal_2") as HTMLDialogElement;
+    if (modal) {
+      modal.showModal();
+    }
   });
 </script>
 

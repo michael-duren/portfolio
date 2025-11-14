@@ -114,13 +114,13 @@ const updateCompletedAnimation = () => {
 document.addEventListener('astro:page-load', () => {
   // Check if animation should start immediately
   if (startAnimation.get()) {
-    runTerminal(sound.get() === 'true');
+    runTerminal(sound.get());
   }
 
   // Also listen for future changes
   startAnimation.listen((shouldStart) => {
     if (shouldStart) {
-      runTerminal(sound.get() === 'true');
+      runTerminal(sound.get());
     }
   });
 
