@@ -1,50 +1,451 @@
 ---
-import FloadingAvatar from '../components/FloadingAvatar.astro';
 import MainLayout from '../layouts/MainLayout.astro';
 import Modal from '../components/Modal.astro';
-import Terminal from '../components/Terminal.astro';
+import { Image } from 'astro:assets';
+import michaelAvatar from '../images/Avatar.png';
 ---
 
 <MainLayout title="Michael Duren - Portfolio" animated={true}>
-  <div
-    class="flex flex-col items-center sm:items-start sm:flex-row relative flex-1 w-full"
-  >
-    <div class="flex-1 items-center h-full order-1 sm:order-2">
-      <FloadingAvatar />
-    </div>
-    <!-- Terminal -->
-    <div
-      class="mt-16 sm:static flex-1 flex flex-col gap-6 justify-between h-1/2 order-2 sm:order-1"
-    >
-      <Terminal />
+  <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div class="absolute top-20 -left-20 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+    <div class="absolute top-40 -right-20 w-96 h-96 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+    <div class="absolute -bottom-32 left-40 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+    <div class="absolute bottom-20 right-20 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-6000"></div>
+    
+    
+    <div class="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
+    
+    
+    <div class="geometric-shapes">
+      <div class="shape shape-square" style="left: 15%; top: 20%; animation-delay: 0s;"></div>
+      <div class="shape shape-circle" style="left: 75%; top: 15%; animation-delay: 2s;"></div>
+      <div class="shape shape-triangle" style="left: 25%; top: 70%; animation-delay: 4s;"></div>
+      <div class="shape shape-hexagon" style="left: 80%; top: 65%; animation-delay: 6s;"></div>
+      <div class="shape shape-square" style="left: 50%; top: 85%; animation-delay: 3s;"></div>
+      <div class="shape shape-circle" style="left: 10%; top: 50%; animation-delay: 5s;"></div>
     </div>
   </div>
 
-  <audio class="keyboard-sound" preload="auto" id="K1" src="/audio/K1.mp3"
-  ></audio>
-  <audio class="keyboard-sound" preload="auto" id="K2" src="/audio/K2.mp3"
-  ></audio>
-  <audio class="keyboard-sound" preload="auto" id="K3" src="/audio/K3.mp3"
-  ></audio>
-  <audio class="keyboard-sound" preload="auto" id="K4" src="/audio/K4.mp3"
-  ></audio>
-  <audio class="keyboard-sound" preload="auto" id="K5" src="/audio/K5.mp3"
-  ></audio>
-  <audio class="keyboard-sound" preload="auto" id="K6" src="/audio/K6.mp3"
-  ></audio>
-  <audio class="keyboard-sound" preload="auto" id="K7" src="/audio/K7.mp3"
-  ></audio>
-  <audio class="keyboard-sound" preload="auto" id="K8" src="/audio/K8.mp3"
-  ></audio>
-  <audio class="keyboard-sound" preload="auto" id="K9" src="/audio/K9.mp3"
-  ></audio>
-  <audio class="keyboard-sound" preload="auto" id="K10" src="/audio/K10.mp3"
-  ></audio>
+  <div class="flex flex-col items-center w-full">
+    
+    <div class="relative z-10 w-full max-w-3xl px-4 mb-8">
+      <div class="bg-gray-900 rounded-lg shadow-2xl overflow-hidden border-2 border-gray-700">
+        
+        <div class="bg-gray-800 px-4 py-2 flex items-center gap-2 border-b border-gray-700">
+          <div class="flex gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+          </div>
+          <span class="text-gray-400 text-sm ml-4 font-mono">michael@portfolio: ~</span>
+        </div>
+
+        
+        <div class="p-6 font-mono text-sm h-[400px] overflow-y-auto">
+          
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-green-400">michael@portfolio</span>
+            <span class="text-white">:</span>
+            <span class="text-blue-400">~</span>
+            <span class="text-white">$</span>
+            <div
+              id="terminal-input"
+              class="text-green-300 ml-2"
+            ></div>
+          </div>
+
+          
+          <div>
+            <ul
+              id="terminal-output"
+              class="text-gray-300 space-y-2"
+            ></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="relative z-20 flex flex-col items-center justify-center w-full min-h-[60vh] -mt-32">
+      
+      
+      <div class="tech-orbit absolute inset-0 pointer-events-none">
+        
+        <div class="tech-icon" style="--orbit-radius: 300px; --angle: 0deg; --duration: 20s;">
+          <div class="icon-wrapper">
+            <i class="devicon-typescript-plain colored text-[5rem]"></i>
+          </div>
+        </div>
+
+        
+        <div class="tech-icon" style="--orbit-radius: 330px; --angle: 51deg; --duration: 25s;">
+          <div class="icon-wrapper">
+            <i class="devicon-go-original-wordmark colored text-[5rem]"></i>
+          </div>
+        </div>
+
+        
+        <div class="tech-icon" style="--orbit-radius: 270px; --angle: 102deg; --duration: 22s;">
+          <div class="icon-wrapper">
+            <i class="devicon-dotnetcore-plain colored text-[5rem]"></i>
+          </div>
+        </div>
+
+        
+        <div class="tech-icon" style="--orbit-radius: 360px; --angle: 153deg; --duration: 28s;">
+          <div class="icon-wrapper">
+            <i class="devicon-kubernetes-plain colored text-[5rem]"></i>
+          </div>
+        </div>
+
+        
+        <div class="tech-icon" style="--orbit-radius: 315px; --angle: 204deg; --duration: 24s;">
+          <div class="icon-wrapper">
+            <i class="devicon-amazonwebservices-plain-wordmark colored text-[5rem]"></i>
+          </div>
+        </div>
+
+        
+        <div class="tech-icon" style="--orbit-radius: 285px; --angle: 255deg; --duration: 26s;">
+          <div class="icon-wrapper">
+            <i class="devicon-azure-plain colored text-[5rem]"></i>
+          </div>
+        </div>
+
+        
+        <div class="tech-icon" style="--orbit-radius: 345px; --angle: 306deg; --duration: 23s;">
+          <div class="icon-wrapper">
+            <i class="devicon-react-original colored text-[5rem]"></i>
+          </div>
+        </div>
+
+        
+        <div class="tech-icon" style="--orbit-radius: 295px; --angle: 357deg; --duration: 21s;">
+          <div class="icon-wrapper">
+            <i class="devicon-docker-plain colored text-[5rem]"></i>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="relative">
+        <div class="floating-container">
+          <div class="avatar">
+            <Image src={michaelAvatar} alt="Avatar of Michael Duren" />
+          </div>
+          
+          <svg
+            class="avatar-shadow"
+            width="172"
+            height="29"
+            viewBox="0 0 172 29"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M85.717 0C38.379 0 0 6.31805 0 14.1124C0 21.9067 38.379 28.2256 85.717 28.2256C133.055 28.2256 171.434 21.9067 171.434 14.1124C171.434 6.31805 133.055 0 85.717 0Z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <audio class="keyboard-sound" preload="auto" id="K1" src="/audio/K1.mp3"></audio>
+  <audio class="keyboard-sound" preload="auto" id="K2" src="/audio/K2.mp3"></audio>
+  <audio class="keyboard-sound" preload="auto" id="K3" src="/audio/K3.mp3"></audio>
+  <audio class="keyboard-sound" preload="auto" id="K4" src="/audio/K4.mp3"></audio>
+  <audio class="keyboard-sound" preload="auto" id="K5" src="/audio/K5.mp3"></audio>
+  <audio class="keyboard-sound" preload="auto" id="K6" src="/audio/K6.mp3"></audio>
+  <audio class="keyboard-sound" preload="auto" id="K7" src="/audio/K7.mp3"></audio>
+  <audio class="keyboard-sound" preload="auto" id="K8" src="/audio/K8.mp3"></audio>
+  <audio class="keyboard-sound" preload="auto" id="K9" src="/audio/K9.mp3"></audio>
+  <audio class="keyboard-sound" preload="auto" id="K10" src="/audio/K10.mp3"></audio>
 
   <Modal />
   <script>
     import '../scripts/terminal.ts';
     my_modal_2.showModal();
   </script>
-  <script></script>
 </MainLayout>
+
+<style>
+  /* Animated gradient blobs */
+  @keyframes blob {
+    0% {
+      transform: translate(0px, 0px) scale(1);
+    }
+    33% {
+      transform: translate(40px, -60px) scale(1.15);
+    }
+    66% {
+      transform: translate(-30px, 30px) scale(0.9);
+    }
+    100% {
+      transform: translate(0px, 0px) scale(1);
+    }
+  }
+
+  .animate-blob {
+    animation: blob 10s infinite;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+
+  .animation-delay-6000 {
+    animation-delay: 6s;
+  }
+
+  /* Grid pattern background */
+  .bg-grid-pattern {
+    background-image: 
+      linear-gradient(to right, #6366f1 1px, transparent 1px),
+      linear-gradient(to bottom, #6366f1 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* Floating geometric shapes */
+  .geometric-shapes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .shape {
+    position: absolute;
+    opacity: 0.05;
+    animation: float-shape 20s ease-in-out infinite;
+  }
+
+  .shape-square {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+  }
+
+  .shape-circle {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 50%;
+  }
+
+  .shape-triangle {
+    width: 0;
+    height: 0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-bottom: 52px solid #4facfe;
+  }
+
+  .shape-hexagon {
+    width: 50px;
+    height: 43.3px;
+    background: #43e97b;
+    position: relative;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+
+  @keyframes float-shape {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-30px) rotate(90deg);
+    }
+    50% {
+      transform: translateY(0px) rotate(180deg);
+    }
+    75% {
+      transform: translateY(30px) rotate(270deg);
+    }
+  }
+
+  /* Avatar floating animation with shadow at bottom */
+  .floating-container {
+    position: relative;
+    width: 20rem;
+    height: 20rem;
+  }
+  
+  .avatar {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: animateY 2.5s linear infinite alternate-reverse;
+    z-index: 2;
+  }
+
+  .avatar-shadow {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: animateSize 2.5s linear infinite alternate-reverse;
+    z-index: 1;
+  }
+
+  @keyframes animateY {
+    0% {
+      top: 10%;
+      scale: 0.95;
+    }
+    100% {
+      top: 15%;
+      scale: 1;
+    }
+  }
+
+  @keyframes animateSize {
+    0% {
+      scale: 1;
+      fill: #cecdd340;
+    }
+    100% {
+      scale: 1.1;
+      fill: #cecdd3;
+    }
+  }
+
+  /* Orbital animation system */
+  .tech-orbit {
+    perspective: 1000px;
+  }
+
+  .tech-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -30px 0 0 -30px;
+    animation: orbit var(--duration) linear infinite;
+    transform-style: preserve-3d;
+  }
+
+  @keyframes orbit {
+    from {
+      transform: 
+        translateX(-50%) 
+        translateY(-50%) 
+        rotateZ(var(--angle)) 
+        translateX(var(--orbit-radius)) 
+        rotateZ(calc(-1 * var(--angle)));
+    }
+    to {
+      transform: 
+        translateX(-50%) 
+        translateY(-50%) 
+        rotateZ(calc(var(--angle) + 360deg)) 
+        translateX(var(--orbit-radius)) 
+        rotateZ(calc(-1 * (var(--angle) + 360deg)));
+    }
+  }
+
+  .icon-wrapper {
+    animation: counter-rotate var(--duration) linear infinite reverse;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .icon-wrapper:hover {
+    filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.3));
+    transform: scale(1.3);
+  }
+
+  @keyframes counter-rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Make icons pulse gently */
+  .tech-icon:nth-child(odd) .icon-wrapper {
+    animation: counter-rotate var(--duration) linear infinite reverse, pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 0.85;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  /* Terminal cursor blink */
+  @keyframes blink {
+    0%, 50% {
+      opacity: 1;
+    }
+    51%, 100% {
+      opacity: 0;
+    }
+  }
+
+  .blinking-cursor {
+    animation: blink 1s infinite;
+  }
+
+  /* Terminal scrollbar styling */
+  .overflow-y-auto::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-track {
+    background: #1f2937;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 4px;
+  }
+
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .tech-icon {
+      --orbit-radius: 180px !important;
+    }
+    
+    .icon-wrapper i {
+      font-size: 2rem !important;
+    }
+
+    .floating-container {
+      width: 15rem;
+      height: 15rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .tech-icon {
+      --orbit-radius: 130px !important;
+    }
+    
+    .icon-wrapper i {
+      font-size: 1.5rem !important;
+    }
+
+    .floating-container {
+      width: 12rem;
+      height: 12rem;
+    }
+  }
+</style>
