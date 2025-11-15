@@ -11,7 +11,6 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
 <MainLayout title="Michael Duren - About">
   <AnimatedBackground />
   <div class="relative z-10">
-    
     <div class="desk-surface"></div>
     <div
       class="flex flex-col xl:flex-row xl:justify-between xl:w-full relative"
@@ -64,7 +63,7 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
               class="text-purple-700 dark:text-purple-400 hover:underline"
               >Next Step CMS</a
             > with <a
-              href=""
+              href="https://www.patterninterruptinc.com/"
               class="text-purple-700 dark:text-purple-400 hover:underline"
               >Pattern Interrupt</a
             >, a SaaS platform serving 1,200+ users managing chemical dependency
@@ -81,11 +80,9 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
         </div>
       </div>
 
-      
       <div
         class="flex-1 flex-col flex justify-center items-center relative order-2"
       >
-        
         <div class="mousepad">
           <div class="mousepad-surface">
             <div
@@ -418,9 +415,9 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
   const handleDuckClick = () => {
     if (sound.get()) {
       if (Math.random() > 0.5) {
-        audioManager.play('/audio/squeek-high.mp3', 0.6);
+        audioManager.play("/audio/squeek-high.mp3", 0.6);
       } else {
-        audioManager.play('/audio/squeek-low.mp3', 0.6);
+        audioManager.play("/audio/squeek-low.mp3", 0.6);
       }
     }
   };
