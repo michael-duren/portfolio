@@ -1,3 +1,4 @@
+@import "tailwindcss";
 fade-in {
   animation: fadein 500ms linear alternate-reverse;
 }
