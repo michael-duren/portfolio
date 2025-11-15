@@ -42,9 +42,11 @@ if (modalButtonSound && modalButtonNoSound) {
   modalButtonSound.addEventListener('click', () => {
     sound.set(true);
     startAnimation.set(true);
+    localStorage.setItem('hasSeenSoundModal', 'true');
   });
   modalButtonNoSound.addEventListener('click', () => {
     sound.set(false);
     startAnimation.set(true);
+    localStorage.setItem('hasSeenSoundModal', 'true');
   });
 }
