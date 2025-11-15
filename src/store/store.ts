@@ -9,12 +9,16 @@ export const continueAnimation = atom(true);
 export const startAnimation = atom(false);
 export const sound = atom(true);
 export const formSuccessful = atom(false);
+export const hasSeenSoundModal = atom(false);
 
-
-export const theme = persistentAtom<'light' | 'dark' | 'system'>('theme', 'system', {
-  encode: JSON.stringify,
-  decode: JSON.parse,
-});
+export const theme = persistentAtom<"light" | "dark" | "system">(
+  "theme",
+  "system",
+  {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+  },
+);
 
 if (isDev) {
   logger({
