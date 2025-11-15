@@ -8,7 +8,6 @@ import { Icon } from "astro-icon";
   <AnimatedBackground />
   <div class="relative z-10 w-full max-w-6xl mx-auto">
     <div class="flex flex-col gap-4">
-      <!-- Header with download button -->
       <div
         class="flex flex-col sm:flex-row justify-between items-center gap-4 p-6 rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg dark:shadow-gray-500"
       >
@@ -27,12 +26,10 @@ import { Icon } from "astro-icon";
         </a>
       </div>
 
-      <!-- PDF Viewer Container -->
       <div
         class="rounded-lg overflow-hidden shadow-2xl dark:shadow-gray-500 bg-white dark:bg-gray-800"
       >
         <div class="relative w-full" style="min-height: 80vh;">
-          <!-- PDF Embed for Desktop -->
           <object
             data="/resume.pdf"
             type="application/pdf"
@@ -56,14 +53,12 @@ import { Icon } from "astro-icon";
             </div>
           </object>
 
-          <!-- Mobile-friendly iframe -->
           <iframe
             src="/resume.pdf"
             class="w-full md:hidden"
             style="height: 80vh;"
             title="Resume PDF"></iframe>
 
-          <!-- Fallback message for mobile if iframe doesn't work -->
           <div
             class="md:hidden flex flex-col items-center justify-center p-8 gap-4 bg-gray-50 dark:bg-gray-900 rounded-lg"
           >
@@ -86,7 +81,6 @@ import { Icon } from "astro-icon";
         </div>
       </div>
 
-      <!-- Additional info card -->
       <div
         class="p-6 rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-lg dark:shadow-gray-500"
       >
@@ -104,7 +98,6 @@ import { Icon } from "astro-icon";
 </MainLayout>
 
 <style>
-  /* Ensure PDF viewer has proper styling in dark mode */
   object,
   iframe {
     border: none;
