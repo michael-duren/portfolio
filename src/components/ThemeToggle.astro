@@ -23,12 +23,12 @@ import { Icon } from "astro-icon";
     const iconSystem = document.querySelector("#theme-icon-system");
 
     if (iconLight && iconDark && iconSystem) {
-      // Hide all icons
+      
       iconLight.classList.add("hidden");
       iconDark.classList.add("hidden");
       iconSystem.classList.add("hidden");
 
-      // Show the appropriate icon
+      
       if (currentTheme === "light") {
         iconLight.classList.remove("hidden");
       } else if (currentTheme === "dark") {
@@ -60,17 +60,17 @@ import { Icon } from "astro-icon";
     const themeToggle = document.querySelector("#theme-toggle");
     if (!themeToggle) return;
 
-    // Set initial icon state
+    
     updateThemeIcon(theme.get());
 
-    // Only set up listeners once to avoid duplicates
+    
     if (!isSetup) {
-      // Listen to theme changes
+      
       theme.listen((value) => {
         updateThemeIcon(value);
       });
 
-      // Cycle theme on click
+      
       themeToggle.addEventListener("click", cycleTheme);
 
       isSetup = true;
