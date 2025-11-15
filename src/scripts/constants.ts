@@ -17,7 +17,7 @@ export const terminalCommands = [
     output: [
       "Performing POST checks...",
       "Memory test: OK",
-      "Loading BIOS v2024.11...",
+      "Loading BIOS v2025.11...",
       "Initializing systems...",
     ],
   },
