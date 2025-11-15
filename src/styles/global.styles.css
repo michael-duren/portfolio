@@ -1,3 +1,14 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes:
+    light --default,
+    dark --prefersdark;
+}
+@theme {
+  --font-rock: "Rock Salt", cursive;
+}
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
 fade-in {
   animation: fadein 500ms linear alternate-reverse;
 }

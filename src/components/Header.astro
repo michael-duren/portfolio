@@ -12,7 +12,7 @@ const { animated } = Astro.props;
   >
     <div class="avatar flex-1">
       <div
-        class="w-24 shadow-lg shadow-blue-500 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
+        class="shadow-lg shadow-blue-500 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
       >
         <Image
           class="rounded-full h-36 w-36"
@@ -22,7 +22,7 @@ const { animated } = Astro.props;
         />
       </div>
     </div>
-    <div class="flex-1 sm:flex-grow-0 sm:flex-shrink-0 flex items-center gap-2 sm:gap-4">
+    <div class="flex-1 sm:grow-0 sm:shrink-0 flex items-center gap-2 sm:gap-4">
       <div>
         {
           !animated ? (
@@ -80,17 +80,13 @@ const { animated } = Astro.props;
     const soundToggle = document.querySelector("#sound-toggle");
     if (!soundToggle) return;
 
-    
     updateSoundIcon(sound.get());
 
-    
     if (!isSetup) {
-      
       sound.listen((value) => {
         updateSoundIcon(value);
       });
 
-      
       soundToggle.addEventListener("click", () => {
         sound.set(!sound.get());
       });

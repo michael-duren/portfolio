@@ -103,7 +103,10 @@ import Social from "../components/Social.astro";
           <Social />
         </div>
       </aside>
-      <main class="flex-1 flex flex-col items-center">
+      <main
+        transition:animate="slide"
+        class="flex-1 flex flex-col items-center"
+      >
         <slot />
       </main>
     </div>
