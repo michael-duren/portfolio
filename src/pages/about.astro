@@ -134,9 +134,6 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
       <Technologies />
     </div>
   </div>
-
-  <audio preload="auto" id="squeek-high" src="/audio/squeek-high.mp3"></audio>
-  <audio preload="auto" id="squeek-low" src="/audio/squeek-low.mp3"></audio>
 </MainLayout>
 
 <style>
@@ -416,25 +413,24 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
 
 <script>
   import { sound } from "../store/store";
+  import { audioManager } from "../scripts/web-audio";
+
+  const handleDuckClick = () => {
+    if (sound.get()) {
+      if (Math.random() > 0.5) {
+        audioManager.play('/audio/squeek-high.mp3', 0.6);
+      } else {
+        audioManager.play('/audio/squeek-low.mp3', 0.6);
+      }
+    }
+  };
 
   document.addEventListener("astro:page-load", () => {
     const ducks = document.querySelectorAll(".floating-duck");
-    const squeekHigh = document.getElementById(
-      "squeek-high",
-    ) as HTMLAudioElement;
-    const squeekLow = document.getElementById("squeek-low") as HTMLAudioElement;
 
     ducks.forEach((duck) => {
-      duck.addEventListener("click", () => {
-        
-        if (sound.get()) {
-          if (Math.random() > 0.5) {
-            squeekHigh?.play();
-          } else {
-            squeekLow?.play();
-          }
-        }
-      });
+      duck.removeEventListener("click", handleDuckClick);
+      duck.addEventListener("click", handleDuckClick);
     });
   });
 </script>

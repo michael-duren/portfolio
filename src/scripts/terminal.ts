@@ -1,33 +1,34 @@
-import { terminalCommands } from './constants';
-import { playSample, stopSample } from './audio.utils';
+import { terminalCommands } from "./constants";
 import {
   continueAnimation,
   isAnimationComplete,
   startAnimation,
-} from '../store/store';
-import { caretUpBoldIcon } from './constants';
-import { sleep } from './sleep';
-import { sound } from '../store/store';
-
-const keyboardSounds: NodeListOf<HTMLAudioElement> =
-  document.querySelectorAll('.keyboard-sound');
-const blip: HTMLAudioElement | null = document.querySelector('#blip');
-
+} from "../store/store";
+import { caretUpBoldIcon } from "./constants";
+import { sleep } from "./sleep";
+import { sound } from "../store/store";
+import { audioManager } from "./web-audio";
 
 const type = 200;
 const fast = 100;
 const longPause = 1500;
 
-/*
- * Functions
- */
-const playRandomKeyboardSound = (i?: number) => {
-  if (i && keyboardSounds[i]) {
-    keyboardSounds[i]!.play();
-    return;
-  }
-  const randomIndex = Math.floor(Math.random() * keyboardSounds.length);
-  keyboardSounds[randomIndex]!.play();
+const keyboardSoundUrls = [
+  "/audio/K1.mp3",
+  "/audio/K2.mp3",
+  "/audio/K3.mp3",
+  "/audio/K4.mp3",
+  "/audio/K5.mp3",
+  "/audio/K6.mp3",
+  "/audio/K7.mp3",
+  "/audio/K8.mp3",
+  "/audio/K9.mp3",
+  "/audio/K10.mp3",
+];
+
+const playRandomKeyboardSound = () => {
+  const randomIndex = Math.floor(Math.random() * keyboardSoundUrls.length);
+  audioManager.play(keyboardSoundUrls[randomIndex]!, 0.6);
 };
 
 const scrollToBottom = (container: HTMLElement | null) => {
@@ -37,18 +38,18 @@ const scrollToBottom = (container: HTMLElement | null) => {
 };
 
 const runTerminal = async (sound: boolean) => {
-  const terminalInput = document.querySelector('#terminal-input');
-  const terminalOutput = document.querySelector('#terminal-output');
+  const terminalInput = document.querySelector("#terminal-input");
+  const terminalOutput = document.querySelector("#terminal-output");
   if (!terminalInput || !terminalOutput) return;
 
-  
-  const terminalContainer = terminalOutput.closest('.overflow-y-auto') as HTMLElement;
+  const terminalContainer = terminalOutput.closest(
+    ".overflow-y-auto",
+  ) as HTMLElement;
 
   for (let command of terminalCommands) {
-    
     for (let i = 0; i < command.command.length; i++) {
       if (!continueAnimation.get()) return;
-      if (sound) playRandomKeyboardSound(i);
+      if (sound) playRandomKeyboardSound();
       terminalInput!.textContent! += command.command[i];
       if (i % 4 === 0) {
         await sleep(type);
@@ -56,20 +57,20 @@ const runTerminal = async (sound: boolean) => {
         await sleep(fast);
       }
     }
-    
-    for (let output of command.output) {
-      if (!continueAnimation.get()) return; 
-      if (sound && blip) playSample(blip); 
-      
-      const li = document.createElement('li');
-      li.className =
-        'flex text-xs md:text-base font-semibold items-center gap-2 fade-in';
 
-      const iconDiv = document.createElement('div');
-      iconDiv.className = 'w-4 h-4 rotate-90';
+    for (let output of command.output) {
+      if (!continueAnimation.get()) return;
+      if (sound) audioManager.play("/audio/blip.mp3", 0.4);
+
+      const li = document.createElement("li");
+      li.className =
+        "flex text-xs md:text-base font-semibold items-center gap-2 fade-in";
+
+      const iconDiv = document.createElement("div");
+      iconDiv.className = "w-4 h-4 rotate-90";
       iconDiv.innerHTML = caretUpBoldIcon;
 
-      const textDiv = document.createElement('div');
+      const textDiv = document.createElement("div");
       textDiv.textContent = output;
 
       li.appendChild(iconDiv);
@@ -78,29 +79,28 @@ const runTerminal = async (sound: boolean) => {
       terminalOutput.appendChild(li);
       scrollToBottom(terminalContainer);
       await sleep(200);
-      if (blip) stopSample(blip);
     }
     await sleep(longPause);
-    terminalInput.textContent = '';
+    terminalInput.textContent = "";
   }
   isAnimationComplete.set(true);
 };
 const updateCompletedAnimation = () => {
-  const terminalInput = document.querySelector('#terminal-input');
-  const terminalOutput = document.querySelector('#terminal-output');
+  const terminalInput = document.querySelector("#terminal-input");
+  const terminalOutput = document.querySelector("#terminal-output");
   if (!terminalInput || !terminalOutput) return;
   const lastCommand = terminalCommands[terminalCommands.length - 1];
-  terminalInput.textContent = lastCommand.command;
+  terminalInput.textContent = lastCommand?.command || "";
   for (let command of terminalCommands) {
     for (let output of command.output) {
-      const li = document.createElement('li');
-      li.className = 'flex items-center gap-2 fade-in';
+      const li = document.createElement("li");
+      li.className = "flex items-center gap-2 fade-in";
 
-      const iconDiv = document.createElement('div');
-      iconDiv.className = 'w-4 h-4 rotate-90';
+      const iconDiv = document.createElement("div");
+      iconDiv.className = "w-4 h-4 rotate-90";
       iconDiv.innerHTML = caretUpBoldIcon;
 
-      const textDiv = document.createElement('div');
+      const textDiv = document.createElement("div");
       textDiv.textContent = output;
 
       li.appendChild(iconDiv);
@@ -111,13 +111,11 @@ const updateCompletedAnimation = () => {
   }
 };
 
-document.addEventListener('astro:page-load', () => {
-  
+document.addEventListener("astro:page-load", () => {
   if (startAnimation.get()) {
     runTerminal(sound.get());
   }
 
-  
   startAnimation.listen((shouldStart) => {
     if (shouldStart) {
       runTerminal(sound.get());
