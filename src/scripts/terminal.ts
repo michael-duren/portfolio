@@ -9,9 +9,9 @@ import { sleep } from "./sleep";
 import { sound } from "../store/store";
 import { audioManager } from "./web-audio";
 
-const type = 200;
-const fast = 100;
-const longPause = 1500;
+const type = 100;
+const fast = 75;
+const longPause = 500;
 
 const keyboardSoundUrls = [
   "/audio/K1.mp3",
