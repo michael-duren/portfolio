@@ -228,18 +228,30 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
   .duck-container {
     position: relative;
     width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
     height: 100%;
-    padding: 1rem;
+    min-height: 300px;
   }
 
   .desk-item {
-    position: relative;
+    position: absolute;
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
+
+  .desk-item:nth-child(1) {
+    top: 15%;
+    left: 10%;
+  }
+
+  .desk-item:nth-child(2) {
+    top: 55%;
+    right: 15%;
+  }
+
+  .desk-item:nth-child(3) {
+    bottom: 15%;
+    left: 25%;
   }
 
   .floating-duck {
@@ -348,9 +360,22 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
     }
 
     .duck-container {
-      flex-direction: row !important;
-      justify-content: space-around;
-      padding: 0.5rem;
+      min-height: 250px;
+    }
+
+    .desk-item:nth-child(1) {
+      top: 10%;
+      left: 5%;
+    }
+
+    .desk-item:nth-child(2) {
+      top: 45%;
+      right: 10%;
+    }
+
+    .desk-item:nth-child(3) {
+      bottom: 10%;
+      left: 15%;
     }
   }
 
@@ -365,6 +390,26 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
 
     .mousepad-surface {
       padding: 1rem 1.5rem;
+    }
+
+    .duck-container {
+      min-height: 200px;
+    }
+
+    .desk-item:nth-child(1) {
+      top: 8%;
+      left: 8%;
+    }
+
+    .desk-item:nth-child(2) {
+      top: 50%;
+      right: 8%;
+    }
+
+    .desk-item:nth-child(3) {
+      bottom: 8%;
+      left: 50%;
+      transform: translateX(-50%);
     }
   }
 </style>
