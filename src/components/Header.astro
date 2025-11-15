@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon";
-import avatar from "../images/avatar_temp.jpeg";
+import avatar from "../images/avatar_temp.png";
 import ThemeToggle from "./ThemeToggle.astro";
 const { animated } = Astro.props;
 ---
@@ -15,7 +15,7 @@ const { animated } = Astro.props;
         class="shadow-lg shadow-blue-500 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
       >
         <Image
-          class="rounded-full h-36 w-36"
+          class="rounded-full"
           src={avatar}
           alt="A avatar of Michael Duren"
           transition:persist
