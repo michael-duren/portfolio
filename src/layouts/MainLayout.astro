@@ -14,6 +14,53 @@ import Social from "../components/Social.astro";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+    <!-- Inline theme script to prevent FOUC -->
+    <script is:inline>
+      (function() {
+        function getSystemTheme() {
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        function getResolvedTheme(themePreference) {
+          if (themePreference === 'system') {
+            return getSystemTheme();
+          }
+          return themePreference || 'system';
+        }
+
+        function applyTheme() {
+          try {
+            const stored = localStorage.getItem('theme');
+            const themePreference = stored ? JSON.parse(stored) : 'system';
+            const resolvedTheme = getResolvedTheme(themePreference);
+            const isDark = resolvedTheme === 'dark';
+
+            // Use toggle with force parameter for more reliable updates
+            document.documentElement.classList.toggle('dark', isDark);
+            document.documentElement.setAttribute('data-theme', resolvedTheme);
+          } catch (e) {
+            console.error('Error loading theme:', e);
+          }
+        }
+
+        // Apply theme immediately on initial load
+        applyTheme();
+
+        // Persist theme AFTER page swap (critical for preventing flash)
+        document.addEventListener('astro:after-swap', function() {
+          const stored = localStorage.getItem('theme');
+          if (stored) {
+            const themePreference = JSON.parse(stored);
+            const resolvedTheme = getResolvedTheme(themePreference);
+            const isDark = resolvedTheme === 'dark';
+
+            // Force toggle dark class immediately after swap
+            document.documentElement.classList.toggle('dark', isDark);
+            document.documentElement.setAttribute('data-theme', resolvedTheme);
+          }
+        });
+      })();
+    </script>
     <meta
       name="description"
       content="Michael Duren portfolio incues types, software engineering, skills, computer science, Web Developer JavaScript, Typescript, C#, .NET. "
@@ -52,7 +99,7 @@ import Social from "../components/Social.astro";
     />
     <title>{title}</title>
   </head>
-  <body class="min-h-screen flex flex-col p-4 gap-2">
+  <body class="min-h-screen flex flex-col p-4 gap-2 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
     <div class="px-2 py-2 rounded-lg w-full" transition:persist>
       <Header animated={animated} />
     </div>
@@ -83,5 +130,22 @@ import Social from "../components/Social.astro";
     <audio preload="auto" id="bell" src="/audio/bell.mp3"></audio>
     <audio preload="auto" id="blip" src="/audio/blip.mp3"></audio>
     <script src="../scripts/main.ts"></script>
+    <script>
+      import { initTheme } from "../scripts/theme";
+
+      // Initialize theme on page load
+      document.addEventListener("astro:page-load", () => {
+        initTheme();
+      });
+
+      // Also initialize immediately
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => {
+          initTheme();
+        });
+      } else {
+        initTheme();
+      }
+    </script>
   </body>
 </html>
