@@ -8,7 +8,6 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
 
 <MainLayout title="Michael Duren - Portfolio" animated={true}>
   <AnimatedBackground />
-
   <div class="flex flex-col items-center w-full">
     <div class="relative z-50 w-full max-w-3xl px-4 mb-8">
       <div
@@ -29,15 +28,25 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
 
         <div class="p-6 font-mono text-sm h-[400px] overflow-y-auto relative">
           <div class="flex items-center gap-2 mb-3 relative z-30">
-            <span class="text-green-400 dark:text-green-300">michael@portfolio</span>
+            <span class="text-green-400 dark:text-green-300"
+              >michael@portfolio</span
+            >
             <span class="text-white dark:text-gray-200">:</span>
             <span class="text-blue-400 dark:text-blue-300">~</span>
             <span class="text-white dark:text-gray-200">$</span>
-            <div id="terminal-input" class="text-green-300 dark:text-green-200 ml-2"></div>
+            <div
+              id="terminal-input"
+              class="text-green-300 dark:text-green-200 ml-2"
+            >
+            </div>
           </div>
 
           <div class="relative z-30">
-            <ul id="terminal-output" class="text-gray-300 dark:text-gray-400 space-y-2"></ul>
+            <ul
+              id="terminal-output"
+              class="text-gray-300 dark:text-gray-400 space-y-2"
+            >
+            </ul>
           </div>
         </div>
       </div>
