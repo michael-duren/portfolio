@@ -191,6 +191,7 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
     padding: 2rem;
     margin: 2rem;
     perspective: 1000px;
+    width: 100%;
   }
 
   .mousepad-surface {
@@ -380,7 +381,7 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
 
     ducks.forEach((duck) => {
       duck.addEventListener("click", () => {
-        // Only play sound if sound is enabled
+        
         if (sound.get()) {
           if (Math.random() > 0.5) {
             squeekHigh?.play();

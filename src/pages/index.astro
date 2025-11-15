@@ -252,11 +252,10 @@ import AnimatedBackground from "../components/AnimatedBackground.astro";
 <script>
   import "../scripts/terminal";
 
-  // Show modal only on first visit
   document.addEventListener("astro:page-load", () => {
     const hasSeenModal = localStorage.getItem("hasSeenSoundModal");
 
-    // Only show if user hasn't seen it before
+    
     if (!hasSeenModal) {
       const modal = document.querySelector("#my_modal_2") as HTMLDialogElement;
       if (modal) {

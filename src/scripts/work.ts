@@ -1,5 +1,5 @@
-// add listener if user is on phone/tablet and cannot hover over
-// cards
+
+
 document.addEventListener('DOMContentLoaded', () => {
   const websiteList: HTMLDivElement[] = Array.from(
     document.querySelectorAll('.website-card')
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     links.forEach((link) => {
       link.addEventListener('touchend', (e) => {
-        e.stopPropagation(); // stop overlay code from running
+        e.stopPropagation(); 
       });
     });
     website.addEventListener('touchend', (e) => {

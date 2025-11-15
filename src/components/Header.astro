@@ -80,17 +80,17 @@ const { animated } = Astro.props;
     const soundToggle = document.querySelector("#sound-toggle");
     if (!soundToggle) return;
 
-    // Set initial icon state
+    
     updateSoundIcon(sound.get());
 
-    // Only set up listeners once to avoid duplicates
+    
     if (!isSetup) {
-      // Listen to sound changes
+      
       sound.listen((value) => {
         updateSoundIcon(value);
       });
 
-      // Toggle sound on click
+      
       soundToggle.addEventListener("click", () => {
         sound.set(!sound.get());
       });

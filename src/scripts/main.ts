@@ -26,12 +26,12 @@ const typedTitle = async () => {
   await sleep(500);
 };
 
-// functions to run on each page load by astro
+
 document.addEventListener('DOMContentLoaded', () => {
   typedTitle();
 });
 
-// Modal button handlers
+
 const modalButtonSound: HTMLButtonElement | null = document.querySelector(
   '#modal-button-sound'
 );
