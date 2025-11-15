@@ -25,3 +25,5 @@ pnpm-debug.log*
 /notes/*
 
 ./.netlify/*
+CLAUDE.*
+.netlify/*

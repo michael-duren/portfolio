@@ -26,12 +26,12 @@ const typedTitle = async () => {
   await sleep(500);
 };
 
-// functions to run on each page load by astro
+
 document.addEventListener('DOMContentLoaded', () => {
   typedTitle();
 });
 
-// Modal button handlers
+
 const modalButtonSound: HTMLButtonElement | null = document.querySelector(
   '#modal-button-sound'
 );
@@ -42,9 +42,11 @@ if (modalButtonSound && modalButtonNoSound) {
   modalButtonSound.addEventListener('click', () => {
     sound.set(true);
     startAnimation.set(true);
+    localStorage.setItem('hasSeenSoundModal', 'true');
   });
   modalButtonNoSound.addEventListener('click', () => {
     sound.set(false);
     startAnimation.set(true);
+    localStorage.setItem('hasSeenSoundModal', 'true');
   });
 }

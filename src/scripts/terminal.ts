@@ -13,7 +13,7 @@ const keyboardSounds: NodeListOf<HTMLAudioElement> =
   document.querySelectorAll('.keyboard-sound');
 const blip: HTMLAudioElement | null = document.querySelector('#blip');
 
-// animation speeds
+
 const type = 200;
 const fast = 100;
 const longPause = 1500;
@@ -41,11 +41,11 @@ const runTerminal = async (sound: boolean) => {
   const terminalOutput = document.querySelector('#terminal-output');
   if (!terminalInput || !terminalOutput) return;
 
-  // Get the scrollable container (parent of terminal output)
+  
   const terminalContainer = terminalOutput.closest('.overflow-y-auto') as HTMLElement;
 
   for (let command of terminalCommands) {
-    // Type the command in the terminal
+    
     for (let i = 0; i < command.command.length; i++) {
       if (!continueAnimation.get()) return;
       if (sound) playRandomKeyboardSound(i);
@@ -56,11 +56,11 @@ const runTerminal = async (sound: boolean) => {
         await sleep(fast);
       }
     }
-    // display command output to screen
+    
     for (let output of command.output) {
-      if (!continueAnimation.get()) return; // if user clicks on a link we want to stop the animation
-      if (sound && blip) playSample(blip); // if sound is enabled we want to play a blip sound
-      // create the list item and append it to the terminal output
+      if (!continueAnimation.get()) return; 
+      if (sound && blip) playSample(blip); 
+      
       const li = document.createElement('li');
       li.className =
         'flex text-xs md:text-base font-semibold items-center gap-2 fade-in';
@@ -112,12 +112,12 @@ const updateCompletedAnimation = () => {
 };
 
 document.addEventListener('astro:page-load', () => {
-  // Check if animation should start immediately
+  
   if (startAnimation.get()) {
     runTerminal(sound.get());
   }
 
-  // Also listen for future changes
+  
   startAnimation.listen((shouldStart) => {
     if (shouldStart) {
       runTerminal(sound.get());

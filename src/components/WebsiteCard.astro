@@ -10,9 +10,9 @@ interface Props {
 const { portfolioItem } = Astro.props;
 const { title, description, websiteLink, codeLink, images, color } = portfolioItem;
 
-// Determine what to show in the URL bar
+
 const displayUrl = websiteLink || codeLink || 'Infrastructure Project';
-const isInfrastructure = !websiteLink; // No website = infrastructure project
+const isInfrastructure = !websiteLink; 
 ---
 
 <div

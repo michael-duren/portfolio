@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon";
 import avatar from "../images/avatar_temp.jpeg";
+import ThemeToggle from "./ThemeToggle.astro";
 const { animated } = Astro.props;
 ---
 
@@ -21,7 +22,7 @@ const { animated } = Astro.props;
         />
       </div>
     </div>
-    <div class="flex-1 sm:flex-grow-0 sm:flex-shrink-0 flex items-center gap-4">
+    <div class="flex-1 sm:flex-grow-0 sm:flex-shrink-0 flex items-center gap-2 sm:gap-4">
       <div>
         {
           !animated ? (
@@ -36,19 +37,22 @@ const { animated } = Astro.props;
           )
         }
       </div>
-      <button
-        id="sound-toggle"
-        class="btn btn-circle btn-ghost btn-sm sm:btn-md"
-        aria-label="Toggle sound"
-        title="Toggle sound"
-      >
-        <Icon id="sound-icon-on" name="iconoir:sound-low" class="h-6 w-6" />
-        <Icon
-          id="sound-icon-off"
-          name="iconoir:sound-off"
-          class="h-6 w-6 hidden"
-        />
-      </button>
+      <div class="flex gap-1 sm:gap-2">
+        <ThemeToggle />
+        <button
+          id="sound-toggle"
+          class="btn btn-circle btn-ghost btn-sm sm:btn-md"
+          aria-label="Toggle sound"
+          title="Toggle sound"
+        >
+          <Icon id="sound-icon-on" name="iconoir:sound-low" class="h-6 w-6" />
+          <Icon
+            id="sound-icon-off"
+            name="iconoir:sound-off"
+            class="h-6 w-6 hidden"
+          />
+        </button>
+      </div>
     </div>
   </div>
 </header>
@@ -76,17 +80,17 @@ const { animated } = Astro.props;
     const soundToggle = document.querySelector("#sound-toggle");
     if (!soundToggle) return;
 
-    // Set initial icon state
+    
     updateSoundIcon(sound.get());
 
-    // Only set up listeners once to avoid duplicates
+    
     if (!isSetup) {
-      // Listen to sound changes
+      
       sound.listen((value) => {
         updateSoundIcon(value);
       });
 
-      // Toggle sound on click
+      
       soundToggle.addEventListener("click", () => {
         sound.set(!sound.get());
       });

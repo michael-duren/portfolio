@@ -13,7 +13,7 @@ export const audioFiles = [
 
 export const terminalCommands = [
   {
-    command: "BOOT SEQUENCE INITIATED...",
+    command: "INITIATE BOOT SEQUENCE...",
     output: [
       "Performing POST checks...",
       "Memory test: OK",
@@ -22,7 +22,7 @@ export const terminalCommands = [
     ],
   },
   {
-    command: "LOADING PROFILE: MICHAEL_DUREN",
+    command: "LOAD PROFILE: MICHAEL_DUREN",
     output: [
       "NAME: Michael Duren",
       "CLASS: Software Engineer",
