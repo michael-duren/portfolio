@@ -9,7 +9,7 @@ const portfolioList: PortfolioItem[] = [
   {
     title: "Next Step CMS",
     description: [
-      "A SaaS platform serving users across chemical dependency treatment facilities in California State programs and drug testing labs.",
+      "A SaaS platform serving users across chemical dependency treatment facilities, working with PHPs (physician health programs) and alternative to discipline programs across the country.",
       "Worked with Pattern Interrupt to architect and build a multi-tenant Chemical Dependency Case Management system with role-based access control, handling sensitive PHI data with HIPAA-compliant security patterns.",
       "Built backend with Go using Chi router and containerized deployment for horizontal scalability. Frontend developed in TypeScript with SolidJS, leveraging its 45% faster rendering performance compared to React.",
       "Implemented background job processing for report generation, automated email notifications, and integrated payment processing. Scaled from prototype to production supporting multiple organizations with thousands of daily transactions.",

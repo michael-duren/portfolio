@@ -1,23 +1,21 @@
-
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   const websiteList: HTMLDivElement[] = Array.from(
-    document.querySelectorAll('.website-card')
+    document.querySelectorAll(".website-card"),
   );
   websiteList.forEach((website) => {
-    const overlay = website.querySelector('.overlay');
+    const overlay = website.querySelector(".overlay");
     const links: HTMLAnchorElement[] = Array.from(
-      website.querySelectorAll('a')
+      website.querySelectorAll("a"),
     );
 
     links.forEach((link) => {
-      link.addEventListener('touchend', (e) => {
-        e.stopPropagation(); 
+      link.addEventListener("touchend", (e) => {
+        e.stopPropagation();
       });
     });
-    website.addEventListener('touchend', (e) => {
+    website.addEventListener("touchend", (e) => {
       e.preventDefault();
-      overlay?.classList.toggle('hidden');
+      overlay?.classList.toggle("hidden");
     });
   });
 });
