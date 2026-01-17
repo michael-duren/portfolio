@@ -1,52 +1,89 @@
 ---
-import { createHighlighter } from "shiki";
-import k8sCode from "../constants/k8s.txt?raw";
+import { getHighlighter } from "../utils/highlighter";
 
-const highlighter = await createHighlighter({
-  themes: ["github-light", "synthwave-84"],
-  langs: ["go"],
+// Use a simple, safe code snippet for the background to avoid Shiki memory issues
+const codeSnippet = `package main
+
+import (
+	"fmt"
+	"net/http"
+	"time"
+)
+
+// Worker represents a background job processor
+type Worker struct {
+	ID        int
+	JobQueue  chan Job
+	QuitChan  chan bool
+}
+
+func NewWorker(id int, jobQueue chan Job) Worker {
+	return Worker{
+		ID:       id,
+		JobQueue: jobQueue,
+		QuitChan: make(chan bool),
+	}
+}
+
+func (w Worker) Start() {
+	go func() {
+		for {
+			select {
+			case job := <-w.JobQueue:
+				fmt.Printf("Worker %d starting job %s\\n", w.ID, job.Name)
+				time.Sleep(job.Duration)
+				fmt.Printf("Worker %d finished job %s\\n", w.ID, job.Name)
+			case <-w.QuitChan:
+				fmt.Printf("Worker %d stopping\\n", w.ID)
+				return
+			}
+		}
+	}()
+}
+`;
+
+const highlighter = await getHighlighter();
+
+const lightHtml = highlighter.codeToHtml(codeSnippet, {
+    lang: "go",
+    theme: "github-light",
 });
 
-const lightHtml = highlighter.codeToHtml(k8sCode, {
-  lang: "go",
-  theme: "github-light",
-});
-
-const darkHtml = highlighter.codeToHtml(k8sCode, {
-  lang: "go",
-  theme: "synthwave-84",
+const darkHtml = highlighter.codeToHtml(codeSnippet, {
+    lang: "go",
+    theme: "synthwave-84",
 });
 ---
 
 <div
-  class="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none"
+    class="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none"
 >
-  <!-- Light Mode Code -->
-  <div
-    class="absolute inset-0 opacity-30 dark:hidden whitespace-pre font-mono text-xs leading-tight"
-    set:html={lightHtml}
-  />
+    <!-- Light Mode Code -->
+    <div
+        class="absolute inset-0 opacity-30 dark:hidden whitespace-pre font-mono text-xs leading-tight"
+        set:html={lightHtml}
+    />
 
-  <!-- Dark Mode Code -->
-  <div
-    class="absolute inset-0 hidden dark:block opacity-30 whitespace-pre font-mono text-xs leading-tight mix-blend-screen"
-    set:html={darkHtml}
-  />
+    <!-- Dark Mode Code -->
+    <div
+        class="absolute inset-0 hidden dark:block opacity-30 whitespace-pre font-mono text-xs leading-tight mix-blend-screen"
+        set:html={darkHtml}
+    />
 
-  <!-- Overlay to fade out edges/ensure readability -->
-  <div
-    class="absolute inset-0 bg-gradient-to-b from-white/80 via-transparent to-white/80 dark:from-gray-900/80 dark:via-transparent dark:to-gray-900/80"
-  >
-  </div>
+    <!-- Overlay to fade out edges/ensure readability -->
+    <div
+        class="absolute inset-0 bg-gradient-to-b from-white/80 via-transparent to-white/80 dark:from-gray-900/80 dark:via-transparent dark:to-gray-900/80"
+    >
+    </div>
 </div>
 
 <style is:global>
-  /* Ensure shiki output fits and doesn't break layout */
-  .shiki {
-    background-color: transparent !important;
-    margin: 0;
-    padding: 1rem;
-    width: 100%;
-    height: 100%;
-  }
+    /* Ensure shiki output fits and doesn't break layout */
+    .shiki {
+        background-color: transparent !important;
+        margin: 0;
+        padding: 1rem;
+        width: 100%;
+        height: 100%;
+    }
 </style>

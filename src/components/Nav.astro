@@ -3,38 +3,63 @@ const { pathname } = Astro.url;
 ---
 
 <nav
-  class="flex items-center justify-center p-2 rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-sm border border-gray-200 dark:border-gray-700"
+  id="main-nav"
+  class="flex items-center justify-center px-6 py-3 rounded-full bg-white/10 dark:bg-black/40 backdrop-blur-xl shadow-lg border border-white/20 dark:border-white/10 transition-all duration-300 hover:bg-white/20 dark:hover:bg-black/50 hover:scale-[1.02]"
 >
-  <ul class="flex flex-wrap items-center justify-center gap-1 sm:gap-6">
+  <ul class="flex flex-wrap items-center justify-center gap-2 sm:gap-8">
     <li>
       <a
         href="/#home"
-        class="btn btn-ghost btn-sm sm:btn-md text-sm sm:text-base">Home</a
+        class="nav-link group relative px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
       >
+        Home
+        <span
+          class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-purple-600 dark:bg-purple-400 group-hover:w-1/2 group-hover:-translate-x-1/2 transition-all duration-300 ease-out rounded-full"
+        ></span>
+      </a>
     </li>
     <li>
       <a
         href="/#about"
-        class="btn btn-ghost btn-sm sm:btn-md text-sm sm:text-base">About</a
+        class="nav-link group relative px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
       >
+        About
+        <span
+          class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-purple-600 dark:bg-purple-400 group-hover:w-1/2 group-hover:-translate-x-1/2 transition-all duration-300 ease-out rounded-full"
+        ></span>
+      </a>
     </li>
     <li>
       <a
         href="/#work"
-        class="btn btn-ghost btn-sm sm:btn-md text-sm sm:text-base">Work</a
+        class="nav-link group relative px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
       >
+        Work
+        <span
+          class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-purple-600 dark:bg-purple-400 group-hover:w-1/2 group-hover:-translate-x-1/2 transition-all duration-300 ease-out rounded-full"
+        ></span>
+      </a>
     </li>
     <li>
       <a
         href="/#contact"
-        class="btn btn-ghost btn-sm sm:btn-md text-sm sm:text-base">Contact</a
+        class="nav-link group relative px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
       >
+        Contact
+        <span
+          class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-purple-600 dark:bg-purple-400 group-hover:w-1/2 group-hover:-translate-x-1/2 transition-all duration-300 ease-out rounded-full"
+        ></span>
+      </a>
     </li>
-    <div class="divider divider-horizontal mx-0 hidden sm:flex"></div>
+    <div class="w-px h-6 bg-gray-300 dark:bg-gray-700 hidden sm:block"></div>
     <li>
       <a
         href="/resume"
-        class={`btn btn-sm sm:btn-md text-sm sm:text-base ${pathname === "/resume" ? "btn-primary" : "btn-ghost"}`}
+        class={`btn btn-sm text-xs sm:text-sm rounded-full px-4 border-0 ${
+          pathname === "/resume"
+            ? "bg-purple-600 text-white hover:bg-purple-700 shadow-md shadow-purple-500/30"
+            : "bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-white/20"
+        }`}
       >
         Resume
       </a>
@@ -43,10 +68,40 @@ const { pathname } = Astro.url;
       <a
         href="https://blog.michaelduren.com"
         target="_blank"
-        class="btn btn-ghost btn-sm sm:btn-md text-sm sm:text-base"
+        class="btn btn-sm text-xs sm:text-sm btn-ghost rounded-full text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
       >
         Blog ↗
       </a>
     </li>
   </ul>
 </nav>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const sections = document.querySelectorAll("section");
+    const navLinks = document.querySelectorAll(".nav-link");
+
+    const updateActiveLink = () => {
+      let current = "";
+      sections.forEach((section) => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
+        if (window.scrollY >= sectionTop - 150) {
+          current = section.getAttribute("id") || "";
+        }
+      });
+
+      navLinks.forEach((link) => {
+        const href = link.getAttribute("href");
+        // Remove existing active classes if any (handled by span now, maybe add color)
+        if (href === `/#${current}`) {
+          link.classList.add("text-purple-600", "dark:text-purple-400");
+        } else {
+          link.classList.remove("text-purple-600", "dark:text-purple-400");
+        }
+      });
+    };
+
+    window.addEventListener("scroll", updateActiveLink);
+  });
+</script>
