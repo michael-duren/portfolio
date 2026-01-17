@@ -10,22 +10,29 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "^6.6.0",
-    "@nanostores/logger": "^0.2.3",
-    "@nanostores/persistent": "^0.9.1",
-    "@tailwindcss/vite": "^4.1.17",
-    "@types/nodemailer": "^6.4.9",
-    "astro": "^5.15.7",
-    "astro-icon": "^0.8.1",
-    "js-confetti": "^0.11.0",
-    "nanostores": "^0.9.3",
-    "nodemailer": "^7.0.10",
-    "satori": "^0.10.4",
-    "tailwindcss": "^4.1.17"
+    "@astrojs/netlify": "^6.6.4",
+    "@nanostores/logger": "^1.0.0",
+    "@nanostores/persistent": "^1.2.0",
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/nodemailer": "^7.0.5",
+    "astro": "^5.16.11",
+    "astro-icon": "^1.1.5",
+    "js-confetti": "^0.13.1",
+    "nanostores": "^1.1.0",
+    "nodemailer": "^7.0.12",
+    "satori": "^0.19.1",
+    "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
-    "daisyui": "^5.5.5",
-    "prettier": "^3.6.2",
-    "prettier-plugin-astro": "^0.14.1"
+    "@iconify-json/carbon": "^1.2.18",
+    "@iconify-json/ep": "^1.2.3",
+    "@iconify-json/ic": "^1.2.4",
+    "@iconify-json/iconoir": "^1.2.10",
+    "@iconify-json/mdi": "^1.2.3",
+    "@iconify-json/tabler": "^1.2.26",
+    "daisyui": "^5.5.14",
+    "prettier": "^3.8.0",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^5.9.3"
   }
 }

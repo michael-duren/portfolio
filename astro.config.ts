@@ -1,11 +1,11 @@
 import { defineConfig } from "astro/config";
-
+import icon from "astro-icon";
 import netlify from "@astrojs/netlify";
 
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  integrations: [],
+  integrations: [icon()],
   adapter: netlify(),
 
   vite: {

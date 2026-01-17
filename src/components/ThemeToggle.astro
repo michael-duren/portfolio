@@ -1,5 +1,5 @@
 ---
-import { Icon } from "astro-icon";
+import { Icon } from "astro-icon/components";
 ---
 
 <button
@@ -23,12 +23,10 @@ import { Icon } from "astro-icon";
     const iconSystem = document.querySelector("#theme-icon-system");
 
     if (iconLight && iconDark && iconSystem) {
-      
       iconLight.classList.add("hidden");
       iconDark.classList.add("hidden");
       iconSystem.classList.add("hidden");
 
-      
       if (currentTheme === "light") {
         iconLight.classList.remove("hidden");
       } else if (currentTheme === "dark") {
@@ -60,17 +58,13 @@ import { Icon } from "astro-icon";
     const themeToggle = document.querySelector("#theme-toggle");
     if (!themeToggle) return;
 
-    
     updateThemeIcon(theme.get());
 
-    
     if (!isSetup) {
-      
       theme.listen((value) => {
         updateThemeIcon(value);
       });
 
-      
       themeToggle.addEventListener("click", cycleTheme);
 
       isSetup = true;
