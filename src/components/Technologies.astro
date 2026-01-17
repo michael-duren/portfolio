@@ -1,245 +1,134 @@
-<div class="w-full flex justify-center py-10 perspective-1000">
-  <!-- iPhone Container -->
+---
+import LabGlassware from "./LabGlassware.astro";
+---
+
+<div class="w-full py-10">
   <div
-    class="iphone-container relative bg-gray-900 shadow-2xl border-[6px] border-gray-800 transition-all duration-700 mx-auto"
+    class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 md:gap-8 justify-items-center perspective-1000"
   >
-    <!-- Notch -->
-    <div class="notch absolute bg-black z-20 transition-all duration-700"></div>
-
-    <!-- Side Buttons -->
-    <div
-      class="btn-side btn-top absolute bg-gray-700 rounded-l-md transition-all duration-700"
-    >
-    </div>
-    <div
-      class="btn-side btn-vol-up absolute bg-gray-700 rounded-l-md transition-all duration-700"
-    >
-    </div>
-    <div
-      class="btn-side btn-vol-down absolute bg-gray-700 rounded-r-md transition-all duration-700"
-    >
-    </div>
-
-    <!-- Screen -->
-    <div
-      class="screen bg-gradient-to-br from-indigo-500 to-purple-600 overflow-hidden relative w-full h-full flex flex-col transition-all duration-700"
-    >
-      <!-- Status Bar -->
-      <div
-        class="status-bar h-8 w-full flex justify-between items-center px-6 text-white text-[10px] font-medium pt-1 z-10 transition-all duration-700"
-      >
-        <span>9:41</span>
-        <div class="flex gap-1.5">
-          <div class="w-4 h-2.5 bg-white rounded-[2px]"></div>
-          <!-- Signal -->
-          <div class="w-4 h-2.5 bg-white rounded-[2px]"></div>
-          <!-- WiFi -->
-          <div
-            class="w-5 h-2.5 bg-white rounded-[2px] border border-white/50 relative"
-          >
-            <div
-              class="absolute top-[2px] right-[2px] bottom-[2px] left-[2px] bg-white rounded-[1px]"
-            >
-            </div>
-          </div>
-          <!-- Battery -->
-        </div>
-      </div>
-
-      <!-- App Grid -->
-      <div
-        class="app-grid grid gap-x-3 gap-y-6 p-5 mt-2 flex-grow transition-all duration-700"
-      >
+    {
+      [
         {
-          [
-            { icon: "typescript-plain", name: "TS" },
-            { icon: "go-original-wordmark", name: "Go" },
-            { icon: "nodejs-plain", name: "Node" },
-            { icon: "dotnetcore-plain", name: ".NET" },
-            { icon: "java-plain", name: "Java" },
-            { icon: "kubernetes-plain", name: "K8s" },
-            { icon: "amazonwebservices-plain-wordmark", name: "AWS" },
-            { icon: "azure-plain", name: "Azure" },
-            { icon: "docker-plain", name: "Docker" },
-            { icon: "react-original", name: "React" },
-            { icon: "postgresql-plain", name: "Postgres" },
-            { icon: "microsoftsqlserver-plain", name: "SQL" },
-            { icon: "grafana-plain", name: "Grafana" },
-            { icon: "prometheus-original", name: "Prom" },
-            { icon: "python-plain", name: "Python" },
-            { icon: "lua-plain", name: "Lua" },
-          ].map((tech) => (
-            <div class="app-icon flex flex-col items-center gap-1.5 transition-all duration-700">
-              <div class="icon-bg w-[50px] h-[50px] md:w-[58px] md:h-[58px] bg-white/20 backdrop-blur-md rounded-[12px] md:rounded-[14px] flex items-center justify-center shadow-sm active:scale-95 transition-transform cursor-pointer border border-white/10">
-                <i
-                  class={`devicon-${tech.icon} colored text-3xl md:text-4xl`}
-                />
-              </div>
-              <span class="text-[10px] md:text-xs font-medium text-white/90 tracking-tight drop-shadow-sm">
-                {tech.name}
-              </span>
-            </div>
-          ))
-        }
-      </div>
-
-      <!-- Dock (Bottom Bar) -->
-      <div
-        class="dock-bar absolute bg-white/20 backdrop-blur-xl flex items-center justify-around px-2 z-10 transition-all duration-700"
-      >
-        <div
-          class="dock-icon w-[45px] h-[45px] md:w-[50px] md:h-[50px] bg-green-500 rounded-[12px] flex items-center justify-center shadow-lg"
-        >
-          <span class="text-2xl">📞</span>
+          icon: "typescript-plain",
+          name: "TS",
+          variant: "beaker",
+          color: "text-blue-500",
+        },
+        {
+          icon: "go-original-wordmark",
+          name: "Go",
+          variant: "flask-round",
+          color: "text-cyan-500",
+        },
+        {
+          icon: "nodejs-plain",
+          name: "Node",
+          variant: "flask-erlenmeyer",
+          color: "text-green-500",
+        },
+        {
+          icon: "dotnetcore-plain",
+          name: ".NET",
+          variant: "beaker",
+          color: "text-purple-500",
+        },
+        {
+          icon: "java-plain",
+          name: "Java",
+          variant: "flask-round",
+          color: "text-red-500",
+        },
+        {
+          icon: "kubernetes-plain",
+          name: "K8s",
+          variant: "flask-erlenmeyer",
+          color: "text-blue-600",
+        },
+        {
+          icon: "amazonwebservices-plain-wordmark",
+          name: "AWS",
+          variant: "beaker",
+          color: "text-yellow-600",
+        },
+        {
+          icon: "azure-plain",
+          name: "Azure",
+          variant: "flask-round",
+          color: "text-blue-400",
+        },
+        {
+          icon: "docker-plain",
+          name: "Docker",
+          variant: "flask-erlenmeyer",
+          color: "text-blue-500",
+        },
+        {
+          icon: "react-original",
+          name: "React",
+          variant: "beaker",
+          color: "text-cyan-400",
+        },
+        {
+          icon: "postgresql-plain",
+          name: "Postgres",
+          variant: "flask-round",
+          color: "text-blue-300",
+        },
+        {
+          icon: "microsoftsqlserver-plain",
+          name: "SQL",
+          variant: "flask-erlenmeyer",
+          color: "text-red-600",
+        },
+        {
+          icon: "grafana-plain",
+          name: "Grafana",
+          variant: "beaker",
+          color: "text-orange-500",
+        },
+        {
+          icon: "prometheus-original",
+          name: "Prom",
+          variant: "flask-round",
+          color: "text-orange-600",
+        },
+        {
+          icon: "python-plain",
+          name: "Python",
+          variant: "flask-erlenmeyer",
+          color: "text-yellow-500",
+        },
+        {
+          icon: "lua-plain",
+          name: "Lua",
+          variant: "beaker",
+          color: "text-blue-800",
+        },
+        {
+          icon: null, // No icon inside, the liquid is the star
+          name: "Software Solution",
+          variant: "solution",
+          color: "",
+        },
+      ].map((tech) => (
+        <div class="flex flex-col items-center gap-2 group">
+          <LabGlassware
+            variant={tech.variant as any}
+            color={tech.color}
+            class="w-20 h-24 md:w-24 md:h-32"
+          >
+            {tech.icon && (
+              <i
+                class={`devicon-${tech.icon} colored text-3xl md:text-4xl drop-shadow-md`}
+              />
+            )}
+            {!tech.icon && <div class="text-3xl animate-pulse">✨</div>}
+          </LabGlassware>
+          <span class="text-xs font-mono font-medium text-gray-400 group-hover:text-white transition-colors">
+            {tech.name}
+          </span>
         </div>
-        <div
-          class="dock-icon w-[45px] h-[45px] md:w-[50px] md:h-[50px] bg-blue-500 rounded-[12px] flex items-center justify-center shadow-lg"
-        >
-          <span class="text-2xl">🌐</span>
-        </div>
-        <div
-          class="dock-icon w-[45px] h-[45px] md:w-[50px] md:h-[50px] bg-gray-200 rounded-[12px] flex items-center justify-center shadow-lg"
-        >
-          <span class="text-2xl">⚙️</span>
-        </div>
-        <div
-          class="dock-icon w-[45px] h-[45px] md:w-[50px] md:h-[50px] bg-orange-500 rounded-[12px] flex items-center justify-center shadow-lg"
-        >
-          <span class="text-2xl">🎵</span>
-        </div>
-      </div>
-    </div>
+      ))
+    }
   </div>
 </div>
-
-<style>
-  /* Base Styles (Portrait - Mobile First) */
-  .iphone-container {
-    width: 320px;
-    height: 650px;
-    border-radius: 50px;
-  }
-
-  .screen {
-    border-radius: 40px;
-  }
-
-  .notch {
-    top: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 120px;
-    height: 30px;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-  }
-
-  .btn-side {
-    width: 3px;
-  }
-  .btn-top {
-    top: 90px;
-    left: -3px;
-    height: 35px;
-  }
-  .btn-vol-up {
-    top: 150px;
-    left: -3px;
-    height: 50px;
-  }
-  .btn-vol-down {
-    top: 90px;
-    right: -3px;
-    height: 70px;
-  }
-
-  .app-grid {
-    grid-template-columns: repeat(4, 1fr);
-    padding-top: 50px;
-  }
-
-  .dock-bar {
-    bottom: 16px;
-    left: 16px;
-    right: 16px;
-    height: 80px;
-    border-radius: 28px;
-  }
-
-  /* Desktop Landscape Mode */
-  @media (min-width: 768px) {
-    .iphone-container {
-      width: 750px;
-      height: 360px; /* Reduced vertical height */
-      border: 8px solid #1f2937; /* slightly thicker border */
-    }
-
-    .screen {
-      /* Slightly less rounded corners for landscape feel? Keep consistent */
-    }
-
-    /* Notch moves to the left in landscape */
-    .notch {
-      top: 50%;
-      left: 0;
-      transform: translateY(-50%);
-      width: 30px;
-      height: 120px;
-      border-radius: 0 16px 16px 0;
-    }
-
-    /* Buttons move to top/bottom edges basically */
-    .btn-top {
-      top: -3px;
-      left: 100px;
-      width: 35px;
-      height: 3px;
-      border-radius: 3px 3px 0 0;
-    }
-    .btn-vol-up {
-      top: -3px;
-      left: 160px;
-      width: 50px;
-      height: 3px;
-      border-radius: 3px 3px 0 0;
-    }
-    .btn-vol-down {
-      bottom: -3px;
-      right: 100px;
-      width: 70px;
-      height: 3px;
-      top: auto;
-      border-radius: 0 0 3px 3px;
-    }
-
-    /* Re-orient Content */
-    .status-bar {
-      /* Status bar needs to basically disappear or move. In landscape notch obscures side.
-         Let's keep it minimal or hide for cleaner grid space */
-      display: none;
-    }
-
-    .app-grid {
-      grid-template-columns: repeat(8, 1fr); /* 8 columns wide */
-      padding: 30px 60px 20px 60px; /* Padding left/right for notch/safe area */
-      gap: 20px;
-      align-content: center;
-    }
-
-    .dock-bar {
-      /* Horizontal dock at bottom? Or right side? 
-          iPhone landscape dock is usually at bottom relative to gravity, so bottom of screen. */
-      bottom: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 300px; /* compact dock */
-      right: auto;
-      height: 70px;
-    }
-
-    .dock-icon {
-      width: 45px;
-      height: 45px;
-    }
-  }
-</style>

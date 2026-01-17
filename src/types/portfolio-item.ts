@@ -5,4 +5,5 @@ export type PortfolioItem = {
   codeLink: string | null;
   images: ImageMetadata[];
   color: string;
+  technologies?: string[];
 };
