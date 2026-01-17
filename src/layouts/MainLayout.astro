@@ -1,6 +1,7 @@
 ---
 import { ClientRouter } from "astro:transitions";
-import Header from "../components/Header.astro";
+import CodeBackground from "../components/CodeBackground.astro";
+import AnimatedBackground from "../components/AnimatedBackground.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 const { title } = Astro.props;
@@ -47,9 +48,7 @@ import "../styles/global.styles.css";
           storedTheme = "system";
         }
 
-        const resolvedTheme =
-          storedTheme === "system" ? getSystemTheme() : storedTheme;
-
+        const resolvedTheme = "dark";
         applyThemeClass(resolvedTheme);
       })();
     </script>
@@ -92,16 +91,16 @@ import "../styles/global.styles.css";
   >
     <header
       class="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
+      transition:persist
     >
       <div class="pointer-events-auto">
         <Nav />
       </div>
-      <div class="pointer-events-auto absolute right-4 top-0">
-        <Header />
-      </div>
     </header>
 
-    <main class="flex-1 w-full pt-16 relative">
+    <main class="flex-1 w-full pt-16 relative" transition:animate="fade">
+      <CodeBackground />
+      <AnimatedBackground />
       <slot />
     </main>
 

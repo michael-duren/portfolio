@@ -1,64 +1,55 @@
 ---
 import { getCollection } from "astro:content";
 import MainLayout from "../../layouts/MainLayout.astro";
-import CodeBackground from "../../components/CodeBackground.astro";
 import { Icon } from "astro-icon/components";
 
 const posts = (await getCollection("blog")).sort(
-    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 ---
 
 <MainLayout title="Blog | Michael Duren">
-    <CodeBackground />
-    <div class="relative z-10 max-w-4xl mx-auto px-4 py-20">
-        <h1 class="text-4xl font-bold mb-2 text-gray-900 dark:text-white">
-            Blog
-        </h1>
-        <p class="text-lg text-gray-600 dark:text-gray-300 mb-12">
-            Thoughts on code, chaos, and everything in between.
-        </p>
+  <div class="relative z-10 max-w-4xl mx-auto px-4 py-20">
+    <h1 class="text-4xl font-bold mb-2 text-gray-900 dark:text-white">Blog</h1>
+    <p class="text-lg text-gray-600 dark:text-gray-300 mb-12">
+      Thoughts on code, chaos, and everything in between.
+    </p>
 
-        <div class="grid gap-8">
-            {
-                posts.map((post) => (
-                    <a
-                        href={`/blog/${post.slug}`}
-                        class="group block p-8 rounded-2xl bg-white/10 dark:bg-black/40 backdrop-blur-xl border border-white/20 dark:border-white/10 transition-all duration-300 hover:bg-white/20 dark:hover:bg-black/50 hover:scale-[1.02] hover:shadow-xl"
-                    >
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                                {post.data.title}
-                            </h2>
-                            <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                                <Icon name="mdi:calendar" class="w-4 h-4" />
-                                <time
-                                    datetime={post.data.pubDate.toISOString()}
-                                >
-                                    {post.data.pubDate.toLocaleDateString(
-                                        "en-US",
-                                        {
-                                            year: "numeric",
-                                            month: "long",
-                                            day: "numeric",
-                                        },
-                                    )}
-                                </time>
-                            </div>
-                        </div>
-                        <p class="text-gray-600 dark:text-gray-300 mb-6 line-clamp-2">
-                            {post.data.description}
-                        </p>
-                        <div class="flex flex-wrap gap-2">
-                            {post.data.tags?.map((tag) => (
-                                <span class="px-3 py-1 text-sm rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700/50">
-                                    #{tag}
-                                </span>
-                            ))}
-                        </div>
-                    </a>
-                ))
-            }
-        </div>
+    <div class="grid gap-8">
+      {
+        posts.map((post) => (
+          <a
+            href={`/blog/${post.slug}`}
+            class="group block p-8 rounded-2xl bg-white/10 dark:bg-black/40 backdrop-blur-xl border border-white/20 dark:border-white/10 transition-all duration-300 hover:bg-white/20 dark:hover:bg-black/50 hover:scale-[1.02] hover:shadow-xl"
+          >
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                {post.data.title}
+              </h2>
+              <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                <Icon name="mdi:calendar" class="w-4 h-4" />
+                <time datetime={post.data.pubDate.toISOString()}>
+                  {post.data.pubDate.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </time>
+              </div>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 mb-6 line-clamp-2">
+              {post.data.description}
+            </p>
+            <div class="flex flex-wrap gap-2">
+              {post.data.tags?.map((tag) => (
+                <span class="px-3 py-1 text-sm rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700/50">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          </a>
+        ))
+      }
     </div>
+  </div>
 </MainLayout>
