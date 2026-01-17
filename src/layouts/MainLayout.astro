@@ -2,12 +2,12 @@
 import { ClientRouter } from "astro:transitions";
 import Header from "../components/Header.astro";
 import Nav from "../components/Nav.astro";
-const { title, animated } = Astro.props;
+import Footer from "../components/Footer.astro";
+const { title } = Astro.props;
 import "../styles/global.styles.css";
-import Social from "../components/Social.astro";
 ---
 
-<html lang="en" class="transition-colors duration-300">
+<html lang="en" class="scroll-smooth">
   <head>
     <ClientRouter />
     <meta charset="utf-8" />
@@ -88,38 +88,25 @@ import Social from "../components/Social.astro";
     <title>{title}</title>
   </head>
   <body
-    class="min-h-screen flex flex-col p-4 gap-2 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 overflow-x-hidden"
+    class="min-h-screen flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 overflow-x-hidden selection:bg-primary selection:text-white"
   >
-    <div class="px-2 py-2 rounded-lg w-full" transition:persist>
-      <Header animated={animated} />
-    </div>
-    <div
-      class="flex h-full flex-1 px-2 py-2 rounded-lg gap-8 flex-col md:flex-row"
+    <header
+      class="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
     >
-      <aside
-        class="flex flex-col justify-between md:sticky top-[5%] max-h-[70vh]"
-        transition:persist
-      >
-        <div class="sticky-note">
-          <Nav />
-        </div>
-        <div class="sticky-note md:block hidden">
-          <Social />
-        </div>
-      </aside>
-      <main
-        transition:animate="slide"
-        class="flex-1 flex flex-col items-center"
-      >
-        <slot />
-      </main>
-    </div>
-    <footer>
-      <div class="sticky-note block md:hidden">
-        <Social />
+      <div class="pointer-events-auto">
+        <Nav />
       </div>
-    </footer>
-    <script src="../scripts/main.ts"></script>
+      <div class="pointer-events-auto absolute right-4 top-0">
+        <Header />
+      </div>
+    </header>
+
+    <main class="flex-1 w-full pt-16">
+      <slot />
+    </main>
+
+    <Footer />
+
     <script>
       import { initTheme, applyTheme, getTheme } from "../scripts/theme";
 

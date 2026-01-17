@@ -1,21 +1,52 @@
-<ul class="flex max-h-screen md:flex-col md:justify-start justify-center gap-4">
-  <li class="nav-link text-xs sm:text-sm md:text-base" id="home-button">
-    <a class="font-rock" href="/">Home</a>
-  </li>
-  <li class="nav-link text-xs sm:text-sm md:text-base">
-    <a class="font-rock" href="/about">About</a>
-  </li>
-  <li class="nav-link text-xs sm:text-sm md:text-base">
-    <a class="font-rock" href="/work">Work</a>
-  </li>
-  <li class="nav-link text-xs sm:text-sm md:text-base">
-    <a class="font-rock" href="/resume">Resume</a>
-  </li>
-  
-  
-  
-</ul>
+---
+const { pathname } = Astro.url;
+---
 
-<script>
-  import "../scripts/nav-audio";
-</script>
+<nav
+  class="flex items-center justify-center p-2 rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-sm border border-gray-200 dark:border-gray-700"
+>
+  <ul class="flex flex-wrap items-center justify-center gap-1 sm:gap-6">
+    <li>
+      <a
+        href="/#home"
+        class="btn btn-ghost btn-sm sm:btn-md text-sm sm:text-base">Home</a
+      >
+    </li>
+    <li>
+      <a
+        href="/#about"
+        class="btn btn-ghost btn-sm sm:btn-md text-sm sm:text-base">About</a
+      >
+    </li>
+    <li>
+      <a
+        href="/#work"
+        class="btn btn-ghost btn-sm sm:btn-md text-sm sm:text-base">Work</a
+      >
+    </li>
+    <li>
+      <a
+        href="/#contact"
+        class="btn btn-ghost btn-sm sm:btn-md text-sm sm:text-base">Contact</a
+      >
+    </li>
+    <div class="divider divider-horizontal mx-0 hidden sm:flex"></div>
+    <li>
+      <a
+        href="/resume"
+        class={`btn btn-sm sm:btn-md text-sm sm:text-base ${pathname === "/resume" ? "btn-primary" : "btn-ghost"}`}
+      >
+        Resume
+      </a>
+    </li>
+    <li>
+      <a
+        href="https://blog.michaelduren.com"
+        target="_blank"
+        class="btn btn-ghost btn-sm sm:btn-md text-sm sm:text-base"
+      >
+        Blog ↗
+      </a>
+    </li>
+  </ul>
+</nav>

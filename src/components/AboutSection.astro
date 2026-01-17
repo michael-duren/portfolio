@@ -1,0 +1,144 @@
+---
+import { Image } from "astro:assets";
+import rubberDuck from "../images/duck.png";
+import rubberDuckBlue from "../images/duck-blue.png";
+import pen from "../images/pen.svg";
+import Technologies from "./Technologies.astro";
+---
+
+<section id="about" class="py-20 px-4 w-full max-w-7xl mx-auto relative">
+    <div class="flex flex-col xl:flex-row gap-12 items-center">
+        <div
+            class="flex-1 space-y-6 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700"
+        >
+            <h2
+                class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500"
+            >
+                About Me
+            </h2>
+
+            <div class="prose dark:prose-invert max-w-none text-lg">
+                <p>
+                    I'm a software engineer with 3+ years building production
+                    systems in
+                    <span
+                        class="font-semibold text-purple-600 dark:text-purple-400"
+                        >C#/.NET</span
+                    >,
+                    <span class="font-semibold text-cyan-600 dark:text-cyan-400"
+                        >Go</span
+                    > and
+                    <span class="font-semibold text-blue-600 dark:text-blue-400"
+                        >TypeScript</span
+                    >.
+                </p>
+
+                <p>
+                    Early in my career, a mentor had me write out what every
+                    single line of code was doing. That practice changed
+                    everything. When you force yourself to see the code as the
+                    machine sees it, bugs become obvious and solutions emerge
+                    naturally.
+                </p>
+
+                <p>
+                    I've built <a
+                        href="https://www.patterninterruptinc.com/"
+                        target="_blank"
+                        class="link link-primary">Next Step CMS</a
+                    >, a SaaS platform managing chemical dependency treatment. I
+                    also maintain a home monitoring stack and contribute to open
+                    source projects.
+                </p>
+
+                <p>
+                    I'm drawn to the problems that live between services: how
+                    systems communicate, fail, recover, and scale.
+                </p>
+            </div>
+
+            <div class="mt-8">
+                <h3 class="text-2xl font-bold mb-4">Technologies</h3>
+                <Technologies />
+            </div>
+        </div>
+
+        <div
+            class="flex-1 w-full flex justify-center relative animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-300"
+        >
+            <!-- Interactive Desk Area -->
+            <div class="relative w-full max-w-lg aspect-square">
+                <div
+                    class="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-800 dark:to-gray-900 rounded-2xl transform rotate-3 shadow-2xl border border-white/20"
+                >
+                </div>
+                <div
+                    class="absolute inset-0 bg-base-100/50 backdrop-blur-sm rounded-2xl transform -rotate-2 shadow-lg p-8 flex flex-col items-center justify-center gap-8"
+                >
+                    <div class="flex justify-around w-full items-center">
+                        <div
+                            class="group cursor-pointer transform hover:scale-110 transition-transform"
+                        >
+                            <Image
+                                src={rubberDuck}
+                                alt="Rubber Duck"
+                                class="w-24 drop-shadow-lg"
+                            />
+                            <div
+                                class="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-center mt-2 absolute -bottom-6 w-full font-mono"
+                            >
+                                Talk to me!
+                            </div>
+                        </div>
+                        <div
+                            class="transform hover:rotate-12 transition-transform duration-300"
+                        >
+                            <Image
+                                src={pen}
+                                alt="Pen"
+                                class="w-8 drop-shadow-md"
+                            />
+                        </div>
+                    </div>
+                    <div
+                        class="group cursor-pointer transform hover:scale-110 transition-transform"
+                    >
+                        <Image
+                            src={rubberDuckBlue}
+                            alt="Blue Rubber Duck"
+                            class="w-24 drop-shadow-lg"
+                        />
+                    </div>
+                    <p class="text-sm text-center text-gray-500 italic mt-4">
+                        "Explain your problem out loud, until the answer reveals
+                        itself."
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.remove(
+                        "opacity-0",
+                        "translate-y-10",
+                    );
+                    observer.unobserve(entry.target);
+                }
+            });
+        },
+        {
+            threshold: 0.1,
+        },
+    );
+
+    document.querySelectorAll(".animate-on-scroll").forEach((el) => {
+        observer.observe(el);
+    });
+</script>

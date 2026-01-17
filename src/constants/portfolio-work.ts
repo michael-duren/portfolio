@@ -53,7 +53,7 @@ const portfolioList: PortfolioItem[] = [
       "Designed for intermediate developers looking to understand how their development tools work under the hood and contribute to language tooling ecosystems.",
       "Built with Go, covering LSP specification, JSON-RPC communication, and real-world editor integration.",
     ],
-    websiteLink: "go-lsp.michaelduren.com",
+    websiteLink: "https://go-lsp.michaelduren.com",
     codeLink: "https://github.com/michael-duren/go-lsp-course",
     images: [],
     color: "bg-sky-100 shadow-sky-900",
