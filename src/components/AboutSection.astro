@@ -9,6 +9,8 @@ import meThat from "../images/me-that.jpeg";
 import headshot from "../images/headshot.jpg";
 
 const images = [mePresenting, mePrime, meJem, meThat];
+
+import SketchArrow from "./SketchArrow.astro";
 ---
 
 <section
@@ -18,95 +20,108 @@ const images = [mePresenting, mePrime, meJem, meThat];
   <div class="flex flex-col gap-16 w-full">
     <!-- 1. Text Content -->
     <div
-      class="max-w-4xl mx-auto w-full space-y-8 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700"
+      class="max-w-4xl mx-auto w-full space-y-8 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 relative"
     >
-      <div class="flex flex-col md:flex-row gap-8 items-center md:items-start">
-        <div class="flex-1 space-y-2">
-          <h2
-            class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500 pb-2"
-          >
-            About Me
-          </h2>
-          <div class="h-1 w-20 bg-purple-600 rounded-full"></div>
+      <!-- Glass Card Container -->
+      <div
+        class="bg-white/50 dark:bg-gray-800/50 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 rounded-3xl p-8 md:p-12 shadow-xl"
+      >
+        <div
+          class="flex flex-col md:flex-row gap-8 items-center md:items-start"
+        >
+          <div class="flex-1 space-y-2">
+            <h2
+              class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500 pb-2"
+            >
+              About Me
+            </h2>
+            <div class="h-1 w-20 bg-purple-600 rounded-full"></div>
+          </div>
+          <div class="relative group">
+            <div
+              class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"
+            >
+            </div>
+            <div
+              class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"
+            >
+            </div>
+            <Image
+              src={headshot}
+              alt="Michael Duren Headshot"
+              class="relative w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white dark:border-gray-900 shadow-2xl z-10"
+            />
+          </div>
         </div>
-        <div class="relative group">
-          <div
-            class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"
-          >
-          </div>
-          <div
-            class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full blur opacity-50 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"
-          >
-          </div>
-          <Image
-            src={headshot}
-            alt="Michael Duren Headshot"
-            class="relative w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white dark:border-gray-900 shadow-2xl z-10"
-          />
+
+        <div
+          class="prose dark:prose-invert max-w-none text-lg leading-relaxed text-gray-700 dark:text-gray-300 mt-8"
+        >
+          <p>
+            I'm a software engineer specialized in building distributed systems,
+            cloud infrastructure, and
+            <span class="font-semibold text-gray-900 dark:text-white"
+              >Open Source</span
+            > software. I build production observability platforms and developer tools
+            using
+            <span class="font-semibold text-blue-600 dark:text-blue-400"
+              >Typescript</span
+            >,
+            <span class="font-semibold text-cyan-600 dark:text-cyan-400"
+              >Go</span
+            >,
+            <span class="font-semibold text-purple-600 dark:text-purple-400"
+              >C#/Java</span
+            >, and
+            <span class="font-semibold text-yellow-600 dark:text-yellow-400"
+              >Python</span
+            >.
+          </p>
+
+          <p>
+            I focus on delivering tangible operational improvements. I've
+            architected observability infrastructure that reduced
+            <span class="font-semibold text-gray-900 dark:text-white"
+              >Mean Time To Resolution (MTTR) by 40%</span
+            >
+            and built Go-based deployment tools that slashed deployment times by
+            <span class="font-semibold text-gray-900 dark:text-white"
+              >78% (from 90 to 20 minutes)</span
+            >.
+          </p>
+
+          <p>
+            Beyond infrastructure, I've built <a
+              href="https://www.patterninterruptinc.com/"
+              target="_blank"
+              class="text-purple-600 dark:text-purple-400 font-semibold hover:underline decoration-2 underline-offset-2"
+              >Next Step CMS</a
+            > with <a
+              href="https://www.patterninterruptinc.com/"
+              target="_blank"
+              class="text-purple-600 dark:text-purple-400 font-semibold hover:underline decoration-2 underline-offset-2"
+              >Pattern Interrupt</a
+            >, a horizontally scalable SaaS platform. I also contribute to <span
+              class="font-semibold text-gray-900 dark:text-white"
+              >Code for Recovery</span
+            >, developing open-source tools for the recovery community.
+          </p>
+
+          <p>
+            I'm drawn to the problems that live between services: how systems
+            communicate, fail, recover, and scale.
+          </p>
         </div>
       </div>
 
+      <!-- Decorative Arrow -->
       <div
-        class="prose dark:prose-invert max-w-none text-lg leading-relaxed text-gray-700 dark:text-gray-300"
+        class="hidden lg:block absolute -bottom-24 -right-12 w-32 h-32 transform rotate-12"
       >
-        <p>
-          I'm a software engineer specialized in building distributed systems,
-          cloud infrastructure, and
-          <span class="font-semibold text-gray-900 dark:text-white"
-            >Open Source</span
-          > software. I build production observability platforms and developer tools
-          using
-          <span class="font-semibold text-blue-600 dark:text-blue-400"
-            >Typescript</span
-          >,
-          <span class="font-semibold text-cyan-600 dark:text-cyan-400">Go</span
-          >,
-          <span class="font-semibold text-purple-600 dark:text-purple-400"
-            >C#/Java</span
-          >, and
-          <span class="font-semibold text-yellow-600 dark:text-yellow-400"
-            >Python</span
-          >.
-        </p>
-
-        <p>
-          I focus on delivering tangible operational improvements. I've
-          architected observability infrastructure that reduced
-          <span class="font-semibold text-gray-900 dark:text-white"
-            >Mean Time To Resolution (MTTR) by 40%</span
-          >
-          and built Go-based deployment tools that slashed deployment times by
-          <span class="font-semibold text-gray-900 dark:text-white"
-            >78% (from 90 to 20 minutes)</span
-          >.
-        </p>
-
-        <p>
-          Beyond infrastructure, I've built <a
-            href="https://www.patterninterruptinc.com/"
-            target="_blank"
-            class="text-purple-600 dark:text-purple-400 font-semibold hover:underline decoration-2 underline-offset-2"
-            >Next Step CMS</a
-          > with <a
-            href="https://www.patterninterruptinc.com/"
-            target="_blank"
-            class="text-purple-600 dark:text-purple-400 font-semibold hover:underline decoration-2 underline-offset-2"
-            >Pattern Interrupt</a
-          > with <a
-            href="https://www.patterninterruptinc.com/"
-            target="_blank"
-            class="text-purple-600 dark:text-purple-400 font-semibold hover:underline decoration-2 underline-offset-2"
-            >Pattern Interrupt</a
-          >, a horizontally scalable SaaS platform. I also contribute to <span
-            class="font-semibold text-gray-900 dark:text-white"
-            >Code for Recovery</span
-          >, developing open-source tools for the recovery community.
-        </p>
-
-        <p>
-          I'm drawn to the problems that live between services: how systems
-          communicate, fail, recover, and scale.
-        </p>
+        <SketchArrow
+          variant="curved-right"
+          class="w-full h-full text-gray-400/50"
+        />
       </div>
     </div>
 
@@ -168,6 +183,15 @@ const images = [mePresenting, mePrime, meJem, meThat];
           >
           </div>
         </div>
+      </div>
+      <!-- Decorative Arrow to Technologies -->
+      <div
+        class="hidden lg:block absolute -bottom-24 left-1/4 w-32 h-32 transform -rotate-12 z-0"
+      >
+        <SketchArrow
+          variant="curved-left"
+          class="w-full h-full text-gray-400/50"
+        />
       </div>
     </div>
 

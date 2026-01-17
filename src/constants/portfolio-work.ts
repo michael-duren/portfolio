@@ -11,10 +11,9 @@ const portfolioList: PortfolioItem[] = [
   {
     title: "Next Step CMS",
     description: [
-      "A SaaS platform serving users across chemical dependency treatment facilities, working with PHPs (physician health programs) and alternative to discipline programs across the country.",
-      "Worked with Pattern Interrupt to architect and build a multi-tenant Chemical Dependency Case Management system with role-based access control, handling sensitive PHI data with HIPAA-compliant security patterns.",
-      "Built backend with Go using Chi router and containerized deployment for horizontal scalability. Frontend developed in TypeScript with SolidJS, leveraging its 45% faster rendering performance compared to React.",
-      "Implemented background job processing for report generation, automated email notifications, and integrated payment processing. Scaled from prototype to production supporting multiple organizations with thousands of daily transactions.",
+      "Architected a HIPAA-compliant SaaS for chemical dependency treatment facilities, scaling to support thousands of daily transactions.",
+      "Built a high-performance SolidJS frontend (45% faster rendering than React) backed by a containerized Go service for horizontal scalability.",
+      "Implemented automated reporting and background processing systems to handle sensitive PHI data securely across multiple organizations.",
     ],
     websiteLink: "https://nextstepcms.com/",
     codeLink: null,
@@ -24,9 +23,8 @@ const portfolioList: PortfolioItem[] = [
   {
     title: "Code for Recovery - TSML UI Plugin",
     description: [
-      "Active contributor to Code for Recovery, a nonprofit developing open-source technology for the recovery community.",
-      "Contributed to TSML UI plugin, an interactive 12-step meeting finder that can be embedded on any web page. The plugin helps people in recovery locate support meetings in their area with real-time search and filtering.",
-      "Built with JavaScript and TypeScript, focusing on accessibility and mobile-responsive design to ensure the tool works for users in crisis situations.",
+      "Contributed to an open-source 12-step meeting finder used by recovery communities nationwide.",
+      "Optimized the React/TypeScript plugin for accessibility and mobile responsiveness, critical for users in crisis situations.",
       "Technologies: JavaScript, TypeScript, React, WordPress plugin architecture.",
     ],
     websiteLink: "https://github.com/code4recovery/tsml-ui",
@@ -37,10 +35,9 @@ const portfolioList: PortfolioItem[] = [
   {
     title: "Atmosphere",
     description: [
-      "A web-based synthesizer for learning electronic music production through interactive experimentation.",
-      "Built a real-time audio processing application with WebAudio API, managing complex state synchronization between UI controls and audio parameters. Implemented Redux for predictable state management across multiple interconnected audio modules.",
-      "Full-stack application with C#/.NET backend handling user authentication, preset storage, and API design for audio parameter serialization.",
-      "Built with TypeScript, React, Redux, C#/.NET, PostgreSQL, and WebAudio API.",
+      "Built a real-time web-based synthesizer using the WebAudio API with complex state synchronization via Redux.",
+      "Developed a full-stack architecture with a C#/.NET backend for managing audio serialization and user presets.",
+      "Technologies: TypeScript, React, Redux, C#/.NET, PostgreSQL, WebAudio API.",
     ],
     websiteLink: "https://atmosphere.fly.dev/",
     codeLink: "https://github.com/michael-duren/atmosphere",
@@ -50,10 +47,9 @@ const portfolioList: PortfolioItem[] = [
   {
     title: "Developing Developer Tools with Go",
     description: [
-      "Created comprehensive course website teaching developers how to build Language Server Protocol (LSP) implementations in Go.",
-      "Provides hands-on experience building code editor tooling from scratch, covering protocol design, parser implementation, and editor integration patterns.",
-      "Designed for intermediate developers looking to understand how their development tools work under the hood and contribute to language tooling ecosystems.",
-      "Built with Go, covering LSP specification, JSON-RPC communication, and real-world editor integration.",
+      "Created a comprehensive course on building Language Server Protocol (LSP) tools from scratch in Go.",
+      "Teaches protocol design, parser implementation, and JSON-RPC communication for creating real-world editor tooling.",
+      "Technologies: Go, LSP Specification, JSON-RPC.",
     ],
     websiteLink: "https://go-lsp.michaelduren.com",
     codeLink: "https://github.com/michael-duren/go-lsp-course",
@@ -63,10 +59,9 @@ const portfolioList: PortfolioItem[] = [
   {
     title: "Building with .NET Aspire",
     description: [
-      "Developed course site teaching cloud-native architecture and microservices patterns using .NET Aspire.",
-      "Covers distributed systems design, container orchestration, service discovery, and observability practices for modern cloud applications.",
-      "Focuses on practical patterns for building resilient microservices, implementing telemetry and monitoring, and managing distributed transactions.",
-      "Built with C#, .NET, covering .NET Aspire, distributed tracing, container orchestration, and production deployment strategies.",
+      "Developed an educational platform teaching cloud-native architecture and distributed systems design with .NET Aspire.",
+      "Focuses on practical implementation of microservices, observability, and resilient container orchestration.",
+      "Technologies: C#, .NET Aspire, Distributed Tracing, Docker.",
     ],
     websiteLink: "https://building-with-aspire.michaelduren.com/",
     codeLink: "https://github.com/michael-duren/aspire-presentation",
@@ -76,9 +71,9 @@ const portfolioList: PortfolioItem[] = [
   {
     title: "Portfolio",
     description: [
-      "A portfolio site built without UI frameworks, challenging myself to create engaging interactions using vanilla TypeScript and CSS.",
-      "Focused on performance optimization, accessibility, and clean architecture patterns. Built with Astro for static site generation with zero JavaScript by default.",
-      "Built with TypeScript, Tailwind CSS, and Astro.",
+      "Designed a high-performance static site using Astro and Tailwind CSS with zero-JavaScript defaults.",
+      "Implemented custom interactions with vanilla TypeScript to ensure optimal loading speeds and accessibility.",
+      "Technologies: TypeScript, Tailwind CSS, Astro.",
     ],
     websiteLink: "https://michaelduren.com/",
     codeLink: "https://github.com/michael-duren/portfolio",

@@ -1,0 +1,84 @@
+---
+export interface Props {
+    class?: string;
+    variant?: "curved-right" | "curved-left" | "straight-down" | "loop";
+}
+
+const { class: className = "", variant = "curved-right" } = Astro.props;
+---
+
+<svg
+    class={`text-gray-400 dark:text-gray-500 opacity-60 ${className}`}
+    viewBox="0 0 200 100"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    preserveAspectRatio="none"
+>
+    {
+        variant === "curved-right" && (
+            <path
+                d="M20 20 C 60 20, 100 80, 180 80"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                fill="none"
+                stroke-dasharray="1000"
+                pathLength="1"
+            />
+        )
+    }
+    {
+        variant === "curved-right" && (
+            <path
+                d="M170 70 L 180 80 L 165 85"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+        )
+    }
+
+    {
+        variant === "curved-left" && (
+            <path
+                d="M180 20 C 140 20, 100 80, 20 80"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                fill="none"
+            />
+        )
+    }
+    {
+        variant === "curved-left" && (
+            <path
+                d="M30 70 L 20 80 L 35 85"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+        )
+    }
+
+    {
+        variant === "straight-down" && (
+            <>
+                <path
+                    d="M100 10 L 100 90"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                />
+                <path
+                    d="M90 80 L 100 90 L 110 80"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+            </>
+        )
+    }
+</svg>

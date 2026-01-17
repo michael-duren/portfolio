@@ -51,43 +51,45 @@ import { Icon } from "astro-icon/components";
             </div>
 
             <!-- Project Details -->
-            <div class="flex-1 space-y-6">
-              <div class="flex items-center gap-4">
-                  <span class="text-4xl font-bold text-gray-200/20 font-mono">0{index + 1}</span>
-                  <h3 class="text-3xl font-bold">{project.title}</h3>
-              </div>
-              
-              <div class="prose dark:prose-invert">
-                {project.description.map((paragraph) => (
-                  <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
+            <div class="flex-1">
+               <div class="bg-white/50 dark:bg-gray-800/50 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 rounded-3xl p-8 shadow-xl space-y-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-4xl font-bold text-gray-200/20 font-mono">0{index + 1}</span>
+                    <h3 class="text-3xl font-bold">{project.title}</h3>
+                </div>
+                
+                <div class="prose dark:prose-invert">
+                  {project.description.map((paragraph) => (
+                    <p class="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
 
-              <div class="flex gap-4 pt-4">
-                {project.websiteLink && (
-                  <a
-                    href={project.websiteLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="btn btn-primary gap-2"
-                  >
-                    <Icon name="carbon:launch" class="w-5 h-5" />
-                    Visit Site
-                  </a>
-                )}
-                {project.codeLink && (
-                  <a
-                    href={project.codeLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="btn btn-outline gap-2"
-                  >
-                    <Icon name="mdi:github" class="w-5 h-5" />
-                    View Code
-                  </a>
-                )}
+                <div class="flex gap-4 pt-4">
+                  {project.websiteLink && (
+                    <a
+                      href={project.websiteLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="btn btn-primary gap-2"
+                    >
+                      <Icon name="carbon:launch" class="w-5 h-5" />
+                      Visit Site
+                    </a>
+                  )}
+                  {project.codeLink && (
+                    <a
+                      href={project.codeLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="btn btn-outline gap-2"
+                    >
+                      <Icon name="mdi:github" class="w-5 h-5" />
+                      View Code
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           </div>

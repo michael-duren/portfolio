@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import darkWork from "../images/dark-work.png";
+import SketchArrow from "./SketchArrow.astro";
 ---
 
 <section
@@ -48,20 +49,11 @@ import darkWork from "../images/dark-work.png";
   </div>
 
   <div class="absolute bottom-10 animate-bounce cursor-pointer z-20">
-    <a href="#about" aria-label="Scroll to About">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-10 w-10 text-gray-700 dark:text-gray-200"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-      </svg>
+    <a href="#about" aria-label="Scroll to About" class="block w-16 h-20">
+      <SketchArrow
+        variant="straight-down"
+        class="w-full h-full text-gray-700 dark:text-gray-200"
+      />
     </a>
   </div>
 </section>
