@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev --host",
     "start": "astro dev",
-    "build": "astro build",
+    "check": "astro check && tsc --noEmit",
+    "build": "npm run check && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -26,6 +27,7 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.6",
     "@iconify-json/carbon": "^1.2.18",
     "@iconify-json/ep": "^1.2.3",
     "@iconify-json/ic": "^1.2.4",
