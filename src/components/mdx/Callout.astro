@@ -1,0 +1,68 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+    type?: "info" | "warning" | "error" | "success";
+    title?: string;
+}
+
+const { type = "info", title } = Astro.props;
+
+const styles = {
+    info: {
+        bg: "bg-blue-500/10",
+        border: "border-blue-500/20",
+        text: "text-blue-200",
+        icon: "mdi:information",
+        iconColor: "text-blue-500",
+    },
+    warning: {
+        bg: "bg-yellow-500/10",
+        border: "border-yellow-500/20",
+        text: "text-yellow-200",
+        icon: "mdi:alert",
+        iconColor: "text-yellow-500",
+    },
+    error: {
+        bg: "bg-red-500/10",
+        border: "border-red-500/20",
+        text: "text-red-200",
+        icon: "mdi:alert-circle",
+        iconColor: "text-red-500",
+    },
+    success: {
+        bg: "bg-green-500/10",
+        border: "border-green-500/20",
+        text: "text-green-200",
+        icon: "mdi:check-circle",
+        iconColor: "text-green-500",
+    },
+};
+
+const style = styles[type];
+---
+
+<div
+    class:list={[
+        "rounded-xl border p-4 my-6 flex gap-4 backdrop-blur-sm",
+        style.bg,
+        style.border,
+    ]}
+>
+    <Icon
+        name={style.icon}
+        class:list={["w-6 h-6 flex-shrink-0", style.iconColor]}
+    />
+    <div class="flex-1">
+        {
+            title && (
+                <h3 class:list={["font-bold mb-1", style.iconColor]}>
+                    {title}
+                </h3>
+            )
+        }
+        <div class:list={["text-sm", style.text]}>
+            <slot />
+        </div>
+    </div>
+</div>

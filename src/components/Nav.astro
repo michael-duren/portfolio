@@ -66,11 +66,14 @@ const { pathname } = Astro.url;
     </li>
     <li>
       <a
-        href="https://blog.michaelduren.com"
-        target="_blank"
-        class="btn btn-sm text-xs sm:text-sm btn-ghost rounded-full text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+        href="/blog"
+        class={`btn btn-sm text-xs sm:text-sm rounded-full px-4 border-0 ${
+          pathname.startsWith("/blog")
+            ? "bg-purple-600 text-white hover:bg-purple-700 shadow-md shadow-purple-500/30"
+            : "btn-ghost text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+        }`}
       >
-        Blog ↗
+        Blog
       </a>
     </li>
   </ul>

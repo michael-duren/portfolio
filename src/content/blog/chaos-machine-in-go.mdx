@@ -1,0 +1,84 @@
+---
+title: "Building a Chaos Machine in Go"
+description: "How I built a chaos engineering tool using Go to test system resilience."
+pubDate: 2026-01-17
+tags: ["Go", "Chaos Engineering", "DevOps"]
+---
+import TerminalWindow from "../../components/mdx/TerminalWindow.astro";
+import Callout from "../../components/mdx/Callout.astro";
+
+# Building a Chaos Machine in Go
+
+Chaos engineering is the discipline of experimenting on a system in order to build confidence in the system's capability to withstand turbulent conditions in production. Today, I'm going to share how I built a simple generic chaos machine using Go.
+
+<Callout type="info" title="What is Chaos Engineering?">
+  Chaos engineering isn't just about breaking things. It's about breaking things *on purpose* to learn how to build more resilient systems.
+</Callout>
+
+## Why Go?
+
+Go is perfect for this kind of tool because of its:
+- **Concurrency primitives**: Goroutines make it easy to simulate concurrent load.
+- **Performance**: Go is fast and efficient.
+- **Simplicity**: The language is easy to read and write.
+
+## The Design
+
+The chaos machine consists of three main components:
+1.  **Orchestrator**: Manages the chaos experiments.
+2.  **Agents**: processes that run on target nodes and inject failures.
+3.  **Reporter**: Collects metrics and logs.
+
+<TerminalWindow title="chaos-agent.go">
+```go
+package main
+
+import (
+    "fmt"
+    "math/rand"
+    "time"
+)
+
+func main() {
+    fmt.Println("Starting Chaos Machine...")
+    
+    // Simulate randomness
+    rand.Seed(time.Now().UnixNano())
+    
+    if rand.Intn(10) > 5 {
+        fmt.Println("Injecting latency...")
+        time.Sleep(2 * time.Second)
+    } else {
+        fmt.Println("System operating normally.")
+    }
+}
+```
+</TerminalWindow>
+
+## Implementation Details
+
+We used the `os/exec` package to run system commands that simulate failures, such as network partitions using `iptables` or CPU spikes using simple loops.
+
+### Network Latency
+
+To simulate network latency, we can use `tc` (Traffic Control) on Linux.
+
+<TerminalWindow title="bash">
+```bash
+# Inject 100ms delay
+$ tc qdisc add dev eth0 root netem delay 100ms
+
+# Verify the delay
+$ ping google.com
+PING google.com (142.250.72.14) 56(84) bytes of data.
+64 bytes from google.com: icmp_seq=1 ttl=115 time=102 ms
+```
+</TerminalWindow>
+
+<Callout type="warning" title="Production Warning">
+  Be very careful when running `tc` commands in production! Make sure you have a way to rollback changes if you lose connectivity.
+</Callout>
+
+## Conclusion
+
+Building a chaos machine in Go was a fun project that taught me a lot about system resilience. Give it a try!

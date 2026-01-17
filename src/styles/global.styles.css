@@ -4,6 +4,7 @@
     light --default,
     dark --prefersdark;
 }
+@plugin "@tailwindcss/typography";
 @theme {
   --font-rock: "Rock Salt", cursive;
 }

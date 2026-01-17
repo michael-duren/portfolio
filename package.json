@@ -10,6 +10,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/mdx": "^4.3.13",
     "@astrojs/netlify": "^6.6.4",
     "@nanostores/logger": "^1.0.0",
     "@nanostores/persistent": "^1.2.0",
@@ -31,6 +32,7 @@
     "@iconify-json/iconoir": "^1.2.10",
     "@iconify-json/mdi": "^1.2.3",
     "@iconify-json/tabler": "^1.2.26",
+    "@tailwindcss/typography": "^0.5.19",
     "daisyui": "^5.5.14",
     "prettier": "^3.8.0",
     "prettier-plugin-astro": "^0.14.1",
