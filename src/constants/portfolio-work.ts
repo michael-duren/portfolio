@@ -1,7 +1,5 @@
 import type { PortfolioItem } from "../types/portfolio-item";
 import PortfolioHomeImage from "../images/work/portfolio/home.png";
-import PortfolioAboutImage from "../images/work/portfolio/about.png";
-import PortfolioWorkImage from "../images/work/portfolio/work.png";
 import AtmosphereImage from "../images/work/atmosphere/atmosphere.png";
 import AtmosphereImageTwo from "../images/work/atmosphere/atmosphere-running.png";
 import NextStepImage from "../images/work/next-step/home.png";
@@ -84,7 +82,7 @@ const portfolioList: PortfolioItem[] = [
     ],
     websiteLink: "https://michaelduren.com/",
     codeLink: "https://github.com/michael-duren/portfolio",
-    images: [PortfolioHomeImage, PortfolioAboutImage, PortfolioWorkImage],
+    images: [PortfolioHomeImage],
     color: "bg-rose-100 shadow-rose-900",
   },
 ];
