@@ -1,23 +1,36 @@
 ---
 import { Image } from "astro:assets";
-import rubberDuck from "../images/duck.png";
-import rubberDuckBlue from "../images/duck-blue.png";
-import pen from "../images/pen.svg";
 import Technologies from "./Technologies.astro";
+import meJem from "../images/me-jem.jpeg";
+import mePresenting from "../images/me-presenting.jpeg";
+import mePrime from "../images/me-prime.jpeg";
+import meThat from "../images/me-that.jpeg";
+import meTodd from "../images/me-todd.jpeg";
+
+const images = [mePresenting, mePrime, meJem, meTodd, meThat];
 ---
 
-<section id="about" class="py-20 px-4 w-full max-w-7xl mx-auto relative">
-    <div class="flex flex-col xl:flex-row gap-12 items-center">
+<section
+    id="about"
+    class="py-24 px-4 w-full max-w-7xl mx-auto relative scroll-mt-16"
+>
+    <div class="flex flex-col lg:flex-row gap-16 items-center">
+        <!-- Text Content -->
         <div
-            class="flex-1 space-y-6 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700"
+            class="flex-1 space-y-8 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700"
         >
-            <h2
-                class="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500"
-            >
-                About Me
-            </h2>
+            <div class="space-y-2">
+                <h2
+                    class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500 pb-2"
+                >
+                    About Me
+                </h2>
+                <div class="h-1 w-20 bg-purple-600 rounded-full"></div>
+            </div>
 
-            <div class="prose dark:prose-invert max-w-none text-lg">
+            <div
+                class="prose dark:prose-invert max-w-none text-lg leading-relaxed text-gray-700 dark:text-gray-300"
+            >
                 <p>
                     I'm a software engineer with 3+ years building production
                     systems in
@@ -45,7 +58,8 @@ import Technologies from "./Technologies.astro";
                     I've built <a
                         href="https://www.patterninterruptinc.com/"
                         target="_blank"
-                        class="link link-primary">Next Step CMS</a
+                        class="text-purple-600 dark:text-purple-400 font-semibold hover:underline decoration-2 underline-offset-2"
+                        >Next Step CMS</a
                     >, a SaaS platform managing chemical dependency treatment. I
                     also maintain a home monitoring stack and contribute to open
                     source projects.
@@ -57,70 +71,50 @@ import Technologies from "./Technologies.astro";
                 </p>
             </div>
 
-            <div class="mt-8">
-                <h3 class="text-2xl font-bold mb-4">Technologies</h3>
+            <div class="pt-4">
+                <h3
+                    class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100"
+                >
+                    Technologies
+                </h3>
                 <Technologies />
             </div>
         </div>
 
-        <div
-            class="flex-1 w-full flex justify-center relative animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-300"
-        >
-            <!-- Interactive Desk Area -->
-            <div class="relative w-full max-w-lg aspect-square">
-                <div
-                    class="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-800 dark:to-gray-900 rounded-2xl transform rotate-3 shadow-2xl border border-white/20"
-                >
-                </div>
-                <div
-                    class="absolute inset-0 bg-base-100/50 backdrop-blur-sm rounded-2xl transform -rotate-2 shadow-lg p-8 flex flex-col items-center justify-center gap-8"
-                >
-                    <div class="flex justify-around w-full items-center">
+        <!-- Image Grid -->
+        <div class="flex-1 w-full flex justify-center relative animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-300">
+             <div class="relative w-full flex flex-wrap justify-center content-center gap-4 p-4 lg:p-8">
+                {
+                    images.map((img, index) => (
                         <div
-                            class="group cursor-pointer transform hover:scale-110 transition-transform"
+                            class={`relative transition-all duration-500 hover:scale-110 hover:z-50 cursor-pointer group`}
+                            style={`
+                                transform: rotate(${Math.random() * 10 - 5}deg);
+                                margin-left: ${index % 2 === 0 ? '-20px' : '0'};
+                                margin-top: ${index > 1 ? '-30px' : '0'};
+                                z-index: ${index};
+                            `}
                         >
-                            <Image
-                                src={rubberDuck}
-                                alt="Rubber Duck"
-                                class="w-24 drop-shadow-lg"
-                            />
-                            <div
-                                class="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-center mt-2 absolute -bottom-6 w-full font-mono"
-                            >
-                                Talk to me!
+                            <div class="bg-white p-3 pb-12 shadow-lg hover:shadow-2xl transition-shadow duration-300 w-40 md:w-48 transform rotate-1">
+                                <Image
+                                    src={img}
+                                    alt={`Michael Duren photo ${index + 1}`}
+                                    class="w-full aspect-[4/5] object-cover filter sepia-[0.2] contrast-105 group-hover:sepia-0 transition-all duration-500 bg-gray-100"
+                                />
+                                <!-- Tape/Pin effect -->
+                                <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-gray-300 border-2 border-gray-400 shadow-inner z-10 flex items-center justify-center">
+                                    <div class="w-2 h-2 rounded-full bg-gray-400 opacity-50"></div>
+                                </div>
                             </div>
                         </div>
-                        <div
-                            class="transform hover:rotate-12 transition-transform duration-300"
-                        >
-                            <Image
-                                src={pen}
-                                alt="Pen"
-                                class="w-8 drop-shadow-md"
-                            />
-                        </div>
-                    </div>
-                    <div
-                        class="group cursor-pointer transform hover:scale-110 transition-transform"
-                    >
-                        <Image
-                            src={rubberDuckBlue}
-                            alt="Blue Rubber Duck"
-                            class="w-24 drop-shadow-lg"
-                        />
-                    </div>
-                    <p class="text-sm text-center text-gray-500 italic mt-4">
-                        "Explain your problem out loud, until the answer reveals
-                        itself."
-                    </p>
-                </div>
+                    ))
+                }
             </div>
         </div>
     </div>
 </section>
 
 <script>
-    // Intersection Observer for scroll animations
     const observer = new IntersectionObserver(
         (entries) => {
             entries.forEach((entry) => {
