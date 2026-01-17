@@ -11,300 +11,289 @@ const images = [mePresenting, mePrime, meJem, meTodd, meThat];
 ---
 
 <section
-    id="about"
-    class="py-24 px-4 w-full max-w-7xl mx-auto relative scroll-mt-16"
+  id="about"
+  class="py-24 px-4 w-full max-w-7xl mx-auto relative scroll-mt-16 my-8 rounded-2xl"
 >
-    <div class="flex flex-col lg:flex-row gap-16 items-center">
-        <!-- Text Content -->
-        <div
-            class="flex-1 space-y-8 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700"
+  <div class="flex flex-col lg:flex-row gap-16 items-center">
+    <!-- Text Content -->
+    <div
+      class="flex-1 space-y-8 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700"
+    >
+      <div class="space-y-2">
+        <h2
+          class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500 pb-2"
         >
-            <div class="space-y-2">
-                <h2
-                    class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500 pb-2"
-                >
-                    About Me
-                </h2>
-                <div class="h-1 w-20 bg-purple-600 rounded-full"></div>
-            </div>
+          About Me
+        </h2>
+        <div class="h-1 w-20 bg-purple-600 rounded-full"></div>
+      </div>
 
-            <div
-                class="prose dark:prose-invert max-w-none text-lg leading-relaxed text-gray-700 dark:text-gray-300"
-            >
-                <p>
-                    I'm a software engineer with 3+ years building production
-                    systems in
-                    <span
-                        class="font-semibold text-purple-600 dark:text-purple-400"
-                        >C#/.NET</span
-                    >,
-                    <span class="font-semibold text-cyan-600 dark:text-cyan-400"
-                        >Go</span
-                    > and
-                    <span class="font-semibold text-blue-600 dark:text-blue-400"
-                        >TypeScript</span
-                    >.
-                </p>
+      <div
+        class="prose dark:prose-invert max-w-none text-lg leading-relaxed text-gray-700 dark:text-gray-300"
+      >
+        <p>
+          I'm a software engineer with 3+ years building production systems in
+          <span class="font-semibold text-cyan-600 dark:text-cyan-400">Go</span
+          >,
+          <span class="font-semibold text-blue-600 dark:text-blue-400"
+            >TypeScript</span
+          >,
+          <span class="font-semibold text-purple-600 dark:text-purple-400"
+            >C#/Java</span
+          >.
+        </p>
 
-                <p>
-                    Early in my career, a mentor had me write out what every
-                    single line of code was doing. That practice changed
-                    everything. When you force yourself to see the code as the
-                    machine sees it, bugs become obvious and solutions emerge
-                    naturally.
-                </p>
+        <p>
+          Early in my career, a mentor had me write out what every single line
+          of code was doing. That practice changed everything. When you force
+          yourself to see the code as the machine sees it, bugs become obvious
+          and solutions emerge naturally.
+        </p>
 
-                <p>
-                    I've built <a
-                        href="https://www.patterninterruptinc.com/"
-                        target="_blank"
-                        class="text-purple-600 dark:text-purple-400 font-semibold hover:underline decoration-2 underline-offset-2"
-                        >Next Step CMS</a
-                    >, a SaaS platform managing chemical dependency treatment. I
-                    also maintain a home monitoring stack and contribute to open
-                    source projects.
-                </p>
+        <p>
+          I've built <a
+            href="https://www.patterninterruptinc.com/"
+            target="_blank"
+            class="text-purple-600 dark:text-purple-400 font-semibold hover:underline decoration-2 underline-offset-2"
+            >Next Step CMS</a
+          >, a SaaS platform managing chemical dependency treatment. I also
+          maintain a home monitoring stack and contribute to open source
+          projects.
+        </p>
 
-                <p>
-                    I'm drawn to the problems that live between services: how
-                    systems communicate, fail, recover, and scale.
-                </p>
-            </div>
+        <p>
+          I'm drawn to the problems that live between services: how systems
+          communicate, fail, recover, and scale.
+        </p>
+      </div>
 
-            <div class="pt-4">
-                <h3
-                    class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100"
-                >
-                    Technologies
-                </h3>
-                <Technologies />
-            </div>
-        </div>
-
-        <!-- Vintage Projector Slideshow -->
-        <div
-            class="flex-1 w-full flex flex-col items-center justify-center relative animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-300"
-        >
-            <h3
-                class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 self-start lg:self-center w-full max-w-lg"
-            >
-                Speaking and Community
-            </h3>
-
-            <div
-                class="projector-container relative w-full max-w-lg aspect-[4/3] bg-black rounded-lg shadow-2xl border-8 border-gray-800 p-4 overflow-hidden"
-            >
-                <!-- Projector Screen / Wall Texture -->
-                <div
-                    class="absolute inset-0 bg-gray-200 opacity-10 pointer-events-none z-0 pattern-dots"
-                >
-                </div>
-
-                <!-- Vignette & Grain Overlay -->
-                <div
-                    class="absolute inset-0 pointer-events-none z-20 vignette mix-blend-multiply"
-                >
-                </div>
-                <div
-                    class="absolute inset-0 pointer-events-none z-20 film-grain opacity-30"
-                >
-                </div>
-
-                <!-- Slideshow Images -->
-                <div
-                    class="relative w-full h-full flex items-center justify-center overflow-hidden bg-black z-10 projector-screen shadow-inner"
-                >
-                    {
-                        images.map((img, index) => (
-                            <div
-                                class={`slide absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === 0 ? "opacity-100" : "opacity-0"}`}
-                                data-index={index}
-                            >
-                                <Image
-                                    src={img}
-                                    alt={`Michael Duren slide ${index + 1}`}
-                                    class="w-full h-full object-contain filter sepia-[0.3] contrast-125 brightness-90 animate-flicker"
-                                />
-                            </div>
-                        ))
-                    }
-                </div>
-
-                <!-- Projector Light Beam Effect (Subtle) -->
-                <div
-                    class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none z-30 mix-blend-overlay blur-xl"
-                >
-                </div>
-
-                <!-- Controls -->
-                <div
-                    class="absolute bottom-4 left-0 right-0 z-40 flex justify-center gap-6"
-                >
-                    <button
-                        id="prev-slide"
-                        class="projector-btn p-2 rounded-full bg-gray-800 text-white hover:bg-gray-700 border-2 border-gray-600 shadow-lg active:scale-95 transition-all"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-6 w-6"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M15 19l-7-7 7-7"></path>
-                        </svg>
-                    </button>
-                    <div
-                        class="font-mono text-yellow-500/80 text-xs flex items-center tracking-widest uppercase"
-                    >
-                        Slide <span id="current-slide-num" class="mx-1">1</span> /
-                        {images.length}
-                    </div>
-                    <button
-                        id="next-slide"
-                        class="projector-btn p-2 rounded-full bg-gray-800 text-white hover:bg-gray-700 border-2 border-gray-600 shadow-lg active:scale-95 transition-all"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-6 w-6"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Click Sound Effect Placeholder (Visual only for now) -->
-            </div>
-        </div>
+      <div class="pt-4">
+        <h3 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">
+          Technologies
+        </h3>
+        <Technologies />
+      </div>
     </div>
+
+    <!-- Vintage Projector Slideshow -->
+    <div
+      class="flex-1 w-full flex flex-col items-center justify-center relative animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-300"
+    >
+      <h3
+        class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100 self-start lg:self-center w-full max-w-lg"
+      >
+        Speaking and Community
+      </h3>
+
+      <div
+        class="projector-container relative w-full max-w-lg aspect-[4/3] bg-black rounded-lg shadow-2xl border-8 border-gray-800 p-4 overflow-hidden"
+      >
+        <!-- Projector Screen / Wall Texture -->
+        <div
+          class="absolute inset-0 bg-gray-200 opacity-10 pointer-events-none z-0 pattern-dots"
+        >
+        </div>
+
+        <!-- Vignette & Grain Overlay -->
+        <div
+          class="absolute inset-0 pointer-events-none z-20 vignette mix-blend-multiply"
+        >
+        </div>
+        <div
+          class="absolute inset-0 pointer-events-none z-20 film-grain opacity-30"
+        >
+        </div>
+
+        <!-- Slideshow Images -->
+        <div
+          class="relative w-full h-full flex items-center justify-center overflow-hidden bg-black z-10 projector-screen shadow-inner"
+        >
+          {
+            images.map((img, index) => (
+              <div
+                class={`slide absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === 0 ? "opacity-100" : "opacity-0"}`}
+                data-index={index}
+              >
+                <Image
+                  src={img}
+                  alt={`Michael Duren slide ${index + 1}`}
+                  class="w-full h-full object-contain filter sepia-[0.3] contrast-125 brightness-90 animate-flicker"
+                />
+              </div>
+            ))
+          }
+        </div>
+
+        <!-- Projector Light Beam Effect (Subtle) -->
+        <div
+          class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-32 bg-gradient-to-b from-white/10 to-transparent pointer-events-none z-30 mix-blend-overlay blur-xl"
+        >
+        </div>
+
+        <!-- Controls -->
+        <div
+          class="absolute bottom-4 left-0 right-0 z-40 flex justify-center gap-6"
+        >
+          <button
+            id="prev-slide"
+            class="projector-btn p-2 rounded-full bg-gray-800 text-white hover:bg-gray-700 border-2 border-gray-600 shadow-lg active:scale-95 transition-all"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+          <div
+            class="font-mono text-yellow-500/80 text-xs flex items-center tracking-widest uppercase"
+          >
+            Slide <span id="current-slide-num" class="mx-1">1</span> /
+            {images.length}
+          </div>
+          <button
+            id="next-slide"
+            class="projector-btn p-2 rounded-full bg-gray-800 text-white hover:bg-gray-700 border-2 border-gray-600 shadow-lg active:scale-95 transition-all"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Click Sound Effect Placeholder (Visual only for now) -->
+      </div>
+    </div>
+  </div>
 </section>
 
 <style>
-    .vignette {
-        background: radial-gradient(circle, transparent 40%, black 120%);
-    }
+  .vignette {
+    background: radial-gradient(circle, transparent 40%, black 120%);
+  }
 
-    .film-grain {
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    }
+  .film-grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
 
-    @keyframes flicker {
-        0% {
-            opacity: 0.95;
-        }
-        5% {
-            opacity: 0.85;
-        }
-        10% {
-            opacity: 0.95;
-        }
-        15% {
-            opacity: 1;
-        }
-        50% {
-            opacity: 0.95;
-        }
-        55% {
-            opacity: 0.9;
-        }
-        60% {
-            opacity: 0.95;
-        }
-        100% {
-            opacity: 0.98;
-        }
+  @keyframes flicker {
+    0% {
+      opacity: 0.95;
     }
+    5% {
+      opacity: 0.85;
+    }
+    10% {
+      opacity: 0.95;
+    }
+    15% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.95;
+    }
+    55% {
+      opacity: 0.9;
+    }
+    60% {
+      opacity: 0.95;
+    }
+    100% {
+      opacity: 0.98;
+    }
+  }
 
-    .animate-flicker {
-        animation: flicker 4s infinite;
-    }
+  .animate-flicker {
+    animation: flicker 4s infinite;
+  }
 
-    .projector-btn {
-        box-shadow:
-            inset 0 2px 4px rgba(255, 255, 255, 0.1),
-            0 4px 6px rgba(0, 0, 0, 0.3);
-    }
-    .projector-btn:active {
-        box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.5);
-    }
+  .projector-btn {
+    box-shadow:
+      inset 0 2px 4px rgba(255, 255, 255, 0.1),
+      0 4px 6px rgba(0, 0, 0, 0.3);
+  }
+  .projector-btn:active {
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.5);
+  }
 </style>
 
 <script>
-    document.addEventListener("astro:page-load", () => {
-        // Animation Observer
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.remove(
-                            "opacity-0",
-                            "translate-y-10",
-                        );
-                        observer.unobserve(entry.target);
-                    }
-                });
-            },
-            { threshold: 0.1 },
-        );
-
-        document.querySelectorAll(".animate-on-scroll").forEach((el) => {
-            observer.observe(el);
+  document.addEventListener("astro:page-load", () => {
+    // Animation Observer
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove("opacity-0", "translate-y-10");
+            observer.unobserve(entry.target);
+          }
         });
+      },
+      { threshold: 0.1 },
+    );
 
-        // Slideshow Logic
-        const slides = document.querySelectorAll(".slide");
-        const prevBtn = document.getElementById("prev-slide");
-        const nextBtn = document.getElementById("next-slide");
-        const countSpan = document.getElementById("current-slide-num");
-
-        if (slides.length > 0 && prevBtn && nextBtn) {
-            let currentIndex = 0;
-            const totalSlides = slides.length;
-
-            const updateSlide = (newIndex: number) => {
-                // Vintage transition: Quick flash of black? Or simple crossfade.
-                // Current implementation is crossfade.
-
-                slides[currentIndex]?.classList.remove("opacity-100");
-                slides[currentIndex]?.classList.add("opacity-0");
-
-                currentIndex = newIndex;
-
-                slides[currentIndex]?.classList.remove("opacity-0");
-                slides[currentIndex]?.classList.add("opacity-100");
-
-                if (countSpan)
-                    countSpan.textContent = (currentIndex + 1).toString();
-            };
-
-            nextBtn.addEventListener("click", () => {
-                const nextIndex = (currentIndex + 1) % totalSlides;
-                updateSlide(nextIndex);
-            });
-
-            prevBtn.addEventListener("click", () => {
-                const prevIndex =
-                    (currentIndex - 1 + totalSlides) % totalSlides;
-                updateSlide(prevIndex);
-            });
-
-            // Auto-advance? Maybe not for a projector, manual feels more tactile.
-            // But let's add a slow interval just in case layout is static.
-            // setInterval(() => {
-            //     const nextIndex = (currentIndex + 1) % totalSlides;
-            //     updateSlide(nextIndex);
-            // }, 8000);
-        }
+    document.querySelectorAll(".animate-on-scroll").forEach((el) => {
+      observer.observe(el);
     });
+
+    // Slideshow Logic
+    const slides = document.querySelectorAll(".slide");
+    const prevBtn = document.getElementById("prev-slide");
+    const nextBtn = document.getElementById("next-slide");
+    const countSpan = document.getElementById("current-slide-num");
+
+    if (slides.length > 0 && prevBtn && nextBtn) {
+      let currentIndex = 0;
+      const totalSlides = slides.length;
+
+      const updateSlide = (newIndex: number) => {
+        // Vintage transition: Quick flash of black? Or simple crossfade.
+        // Current implementation is crossfade.
+
+        slides[currentIndex]?.classList.remove("opacity-100");
+        slides[currentIndex]?.classList.add("opacity-0");
+
+        currentIndex = newIndex;
+
+        slides[currentIndex]?.classList.remove("opacity-0");
+        slides[currentIndex]?.classList.add("opacity-100");
+
+        if (countSpan) countSpan.textContent = (currentIndex + 1).toString();
+      };
+
+      nextBtn.addEventListener("click", () => {
+        const nextIndex = (currentIndex + 1) % totalSlides;
+        updateSlide(nextIndex);
+      });
+
+      prevBtn.addEventListener("click", () => {
+        const prevIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+        updateSlide(prevIndex);
+      });
+
+      // Auto-advance? Maybe not for a projector, manual feels more tactile.
+      // But let's add a slow interval just in case layout is static.
+      // setInterval(() => {
+      //     const nextIndex = (currentIndex + 1) % totalSlides;
+      //     updateSlide(nextIndex);
+      // }, 8000);
+    }
+  });
 </script>

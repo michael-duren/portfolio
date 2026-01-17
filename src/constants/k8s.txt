@@ -1,0 +1,1480 @@
+// dominantField looks through the fields, all of which are known to
+// have the same name, to find the single field that dominates the
+// others using Go's embedding rules, modified by the presence of
+// JSON tags. If there are multiple top-level fields, the boolean
+// will be false: This condition is an error in Go and we skip all
+// the fields.
+func dominantField(fields []field) (field, bool) {
+	// The fields are sorted in increasing index-length order. The winner
+	// must therefore be one with the shortest index length. Drop all
+	// longer entries, which is easy: just truncate the slice.
+	length := len(fields[0].index)
+	tagged := -1 // Index of first tagged field.
+	for i, f := range fields {
+		if len(f.index) > length {
+			fields = fields[:i]
+			break
+		}
+		if f.tag {
+			if tagged >= 0 {
+				// Multiple tagged fields at the same level: conflict.
+				// Return no field.
+				return field{}, false
+			}
+			tagged = i
+		}
+	}
+	if tagged >= 0 {
+		return fields[tagged], true
+	}
+	// All remaining fields have the same length. If there's more than one,
+	// we have a conflict (two fields named "X" at the same level) and we
+	// return no field.
+	if len(fields) > 1 {
+		return field{}, false
+	}
+	return fields[0], true
+}
+
+var fieldCache struct {
+	sync.RWMutex
+	m map[reflect.Type][]field
+}
+
+// cachedTypeFields is like typeFields but uses a cache to avoid repeated work.
+func cachedTypeFields(t reflect.Type) []field {
+	fieldCache.RLock()
+	f := fieldCache.m[t]
+	fieldCache.RUnlock()
+	if f != nil {
+		return f
+	}
+
+	// Compute fields without lock.
+	// Might duplicate effort but won't hold other computations back.
+	f = typeFields(t)
+	if f == nil {
+		f = []field{}
+	}
+
+	fieldCache.Lock()
+	if fieldCache.m == nil {
+		fieldCache.m = map[reflect.Type][]field{}
+	}
+	fieldCache.m[t] = f
+	fieldCache.Unlock()
+	return f
+}
+
+func isValidTag(s string) bool {
+	if s == "" {
+		return false
+	}
+	for _, c := range s {
+		switch {
+		case strings.ContainsRune("!#$%&()*+-./:<=>?@[]^_{|}~ ", c):
+			// Backslash and quote chars are reserved, but
+			// otherwise any punctuation chars are allowed
+			// in a tag name.
+		default:
+			if !unicode.IsLetter(c) && !unicode.IsDigit(c) {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+const (
+	caseMask     = ^byte(0x20) // Mask to ignore case in ASCII.
+	kelvin       = '\u212a'
+	smallLongEss = '\u017f'
+)
+
+// foldFunc returns one of four different case folding equivalence
+// functions, from most general (and slow) to fastest:
+//
+// 1) bytes.EqualFold, if the key s contains any non-ASCII UTF-8
+// 2) equalFoldRight, if s contains special folding ASCII ('k', 'K', 's', 'S')
+// 3) asciiEqualFold, no special, but includes non-letters (including _)
+// 4) simpleLetterEqualFold, no specials, no non-letters.
+//
+// The letters S and K are special because they map to 3 runes, not just 2:
+//   - S maps to s and to U+017F 'ſ' Latin small letter long s
+//   - k maps to K and to U+212A 'K' Kelvin sign
+//
+// See http://play.golang.org/p/tTxjOc0OGo
+//
+// The returned function is specialized for matching against s and
+// should only be given s. It's not curried for performance reasons.
+func foldFunc(s []byte) func(s, t []byte) bool {
+	nonLetter := false
+	special := false // special letter
+	for _, b := range s {
+		if b >= utf8.RuneSelf {
+			return bytes.EqualFold
+		}
+		upper := b & caseMask
+		if upper < 'A' || upper > 'Z' {
+			nonLetter = true
+		} else if upper == 'K' || upper == 'S' {
+			// See above for why these letters are special.
+			special = true
+		}
+	}
+	if special {
+		return equalFoldRight
+	}
+	if nonLetter {
+		return asciiEqualFold
+	}
+	return simpleLetterEqualFold
+}
+
+// equalFoldRight is a specialization of bytes.EqualFold when s is
+// known to be all ASCII (including punctuation), but contains an 's',
+// 'S', 'k', or 'K', requiring a Unicode fold on the bytes in t.
+// See comments on foldFunc.
+func equalFoldRight(s, t []byte) bool {
+	for _, sb := range s {
+		if len(t) == 0 {
+			return false
+		}
+		tb := t[0]
+		if tb < utf8.RuneSelf {
+			if sb != tb {
+				sbUpper := sb & caseMask
+				if 'A' <= sbUpper && sbUpper <= 'Z' {
+					if sbUpper != tb&caseMask {
+						return false
+					}
+				} else {
+					return false
+				}
+			}
+			t = t[1:]
+			continue
+		}
+		// sb is ASCII and t is not. t must be either kelvin
+		// sign or long s; sb must be s, S, k, or K.
+		tr, size := utf8.DecodeRune(t)
+		switch sb {
+		case 's', 'S':
+			if tr != smallLongEss {
+				return false
+			}
+		case 'k', 'K':
+			if tr != kelvin {
+				return false
+			}
+		default:
+			return false
+		}
+		t = t[size:]
+
+	}
+
+	return len(t) <= 0
+}
+
+// asciiEqualFold is a specialization of bytes.EqualFold for use when
+// s is all ASCII (but may contain non-letters) and contains no
+// special-folding letters.
+// See comments on foldFunc.
+func asciiEqualFold(s, t []byte) bool {
+	if len(s) != len(t) {
+		return false
+	}
+	for i, sb := range s {
+		tb := t[i]
+		if sb == tb {
+			continue
+		}
+		if ('a' <= sb && sb <= 'z') || ('A' <= sb && sb <= 'Z') {
+			if sb&caseMask != tb&caseMask {
+				return false
+			}
+		} else {
+			return false
+		}
+	}
+	return true
+}
+
+// simpleLetterEqualFold is a specialization of bytes.EqualFold for
+// use when s is all ASCII letters (no underscores, etc) and also
+// doesn't contain 'k', 'K', 's', or 'S'.
+// See comments on foldFunc.
+func simpleLetterEqualFold(s, t []byte) bool {
+	if len(s) != len(t) {
+		return false
+	}
+	for i, b := range s {
+		if b&caseMask != t[i]&caseMask {
+			return false
+		}
+	}
+	return true
+}
+
+// tagOptions is the string following a comma in a struct field's "json"
+// tag, or the empty string. It does not include the leading comma.
+type tagOptions string
+
+// parseTag splits a struct field's json tag into its name and
+// comma-separated options.
+func parseTag(tag string) (string, tagOptions) {
+	if idx := strings.Index(tag, ","); idx != -1 {
+		return tag[:idx], tagOptions(tag[idx+1:])
+	}
+	return tag, tagOptions("")
+}
+
+// Contains reports whether a comma-separated list of options
+// contains a particular substr flag. substr must be surrounded by a
+// string boundary or commas.
+func (o tagOptions) Contains(optionName string) bool {
+	if len(o) == 0 {
+		return false
+	}
+	s := string(o)
+	for s != "" {
+		var next string
+		i := strings.Index(s, ",")
+		if i >= 0 {
+			s, next = s[:i], s[i+1:]
+		}
+		if s == optionName {
+			return true
+		}
+		s = next
+	}
+	return false
+}
+
+
+
+// Package kyaml provides an encoder for KYAML, a strict subset of YAML that is
+// designed to be explicit and unambiguous.  KYAML is YAML, so any YAML parser
+// should be able to read it.
+//
+// KYAML is designed to be halfway between YAML and JSON, with the following
+// properties:
+//   - Not whitespace-sensitive
+//   - Allows comments
+//   - Allows trailing commas
+//   - Does not require quoted keys
+//
+// KYAML is an output format, and will follow these conventions:
+//   - Always double-quote strings, even if they are not ambiguous.
+//   - Only quote keys that might be ambiguously interpreted (e.g. "no" is
+//     always quoted).
+//   - Always use `{}` for structs and maps, and `[]` for lists.
+//   - Economize on vertical space by cuddling some kinds of brackets together.
+//   - Render multi-line strings with YAML's line folding, which is close to
+//     the Go string literal format.
+//
+// KYAML also includes a document-separator "header" (still valid YAML), which
+// helps to disambiguate a KYAML document from an ill-formed JSON document.
+//
+// Because KYAML is YAML, a KYAML multi-document is a YAML multi-document.
+package kyaml
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"regexp"
+	"strconv"
+	"strings"
+	"time"
+	"unicode"
+	"unicode/utf8"
+
+	yaml "go.yaml.in/yaml/v3"
+)
+
+// Encoder formats objects or YAML data (JSON is valid YAML) into KYAML. KYAML
+// is halfway between YAML and JSON, but is a strict subset of YAML, so it
+// should should be readable by any YAML parser. It is designed to be explicit
+// and unambiguous, and eschews significant whitespace.
+type Encoder struct {
+	// Compact tells the encoder to use compact formatting. This puts all the
+	// data on one line, with no extra newlines, no comments, and no multi-line
+	// formatting.
+	Compact bool
+}
+
+// FromYAML renders a KYAML (multi-)document from YAML bytes (JSON is YAML),
+// including the KYAML header. The result always has a trailing newline.
+func (ky *Encoder) FromYAML(in io.Reader, out io.Writer) error {
+	// We need a YAML decoder to handle multi-document streams.
+	dec := yaml.NewDecoder(in)
+
+	// Process each document in the stream.
+	for {
+		var doc yaml.Node
+		err := dec.Decode(&doc)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return fmt.Errorf("error decoding: %v", err)
+		}
+		if doc.Kind != yaml.DocumentNode {
+			return fmt.Errorf("kyaml internal error: line %d: expected a document node, got %s", doc.Line, ky.nodeKindString(doc.Kind))
+		}
+
+		// Always emit a document separator, which helps disambiguate between YAML
+		// and JSON.
+		if _, err := fmt.Fprintln(out, "---"); err != nil {
+			return err
+		}
+
+		if err := ky.renderDocument(&doc, 0, ky.flags(), out); err != nil {
+			return err
+		}
+		fmt.Fprintf(out, "\n")
+	}
+
+	return nil
+}
+
+// FromObject renders a KYAML document from a Go object, including the KYAML
+// header. The result always has a trailing newline.
+func (ky *Encoder) FromObject(obj any, out io.Writer) error {
+	jb, err := json.Marshal(obj)
+	if err != nil {
+		return fmt.Errorf("error marshaling to JSON: %v", err)
+	}
+	// JSON is YAML.
+	return ky.FromYAML(bytes.NewReader(jb), out)
+}
+
+// Marshal renders a single Go object as KYAML, without the header or trailing
+// newline.
+func (ky *Encoder) Marshal(obj any) ([]byte, error) {
+	// Convert the object to JSON bytes to take advantage of all the JSON tag
+	// handling and things like that.
+	jb, err := json.Marshal(obj)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling to JSON: %v", err)
+	}
+
+	buf := &bytes.Buffer{}
+	// JSON is YAML.
+	if err := ky.fromObjectYAML(bytes.NewReader(jb), buf); err != nil {
+		return nil, fmt.Errorf("error rendering object: %v", err)
+	}
+	return buf.Bytes(), nil
+}
+
+func (ky *Encoder) fromObjectYAML(in io.Reader, out io.Writer) error {
+	yb, err := io.ReadAll(in)
+	if err != nil {
+		return err
+	}
+
+	var doc yaml.Node
+	if err := yaml.Unmarshal(yb, &doc); err != nil {
+		return fmt.Errorf("error decoding: %v", err)
+	}
+	if doc.Kind != yaml.DocumentNode {
+		return fmt.Errorf("kyaml internal error: line %d: expected document node, got %s", doc.Line, ky.nodeKindString(doc.Kind))
+	}
+
+	if err := ky.renderNode(&doc, 0, ky.flags(), out); err != nil {
+		return fmt.Errorf("error rendering document: %v", err)
+	}
+
+	return nil
+}
+
+// From the YAML spec.
+const (
+	intTag       = "!!int"
+	floatTag     = "!!float"
+	boolTag      = "!!bool"
+	strTag       = "!!str"
+	timestampTag = "!!timestamp"
+	seqTag       = "!!seq"
+	mapTag       = "!!map"
+	nullTag      = "!!null"
+	binaryTag    = "!!binary"
+	mergeTag     = "!!merge"
+)
+
+type flagMask uint64
+
+const (
+	flagsNone     flagMask = 0
+	flagLazyQuote flagMask = 0x01
+	flagCompact   flagMask = 0x02
+)
+
+// flags returns a flagMask representing the current encoding options. It can
+// be used directly or OR'ed with another mask.
+func (ky *Encoder) flags() flagMask {
+	flags := flagsNone
+	if ky.Compact {
+		flags |= flagCompact
+	}
+	return flags
+}
+
+// renderNode processes a YAML node, calling the appropriate render function
+// for its type.  Each render function should assume that the output "cursor"
+// is positioned at the start of the node and should not emit a final newline.
+// If a render function needs to linewrap or indent (e.g. a struct), it should
+// assume the indent level is currently correct for the node type itself, and
+// may need to indent more.
+func (ky *Encoder) renderNode(node *yaml.Node, indent int, flags flagMask, out io.Writer) error {
+	if node == nil {
+		return nil
+	}
+
+	switch node.Kind {
+	case yaml.DocumentNode:
+		return ky.renderDocument(node, indent, flags, out)
+	case yaml.ScalarNode:
+		return ky.renderScalar(node, indent, flags, out)
+	case yaml.SequenceNode:
+		return ky.renderSequence(node, indent, flags, out)
+	case yaml.MappingNode:
+		return ky.renderMapping(node, indent, flags, out)
+	case yaml.AliasNode:
+		return ky.renderAlias(node, indent, flags, out)
+	}
+	return fmt.Errorf("kyaml internal error: line %d: unknown node kind %v", node.Line, node.Kind)
+}
+
+// renderDocument processes a YAML document node, rendering it to the output.
+// This function assumes that the output "cursor" is positioned at the start of
+// the document. This does not emit a final newline.
+func (ky *Encoder) renderDocument(doc *yaml.Node, indent int, flags flagMask, out io.Writer) error {
+	if len(doc.Content) == 0 {
+		return fmt.Errorf("kyaml internal error: line %d: document has no content node (%d)", doc.Line, len(doc.Content))
+	}
+	if len(doc.Content) > 1 {
+		return fmt.Errorf("kyaml internal error: line %d: document has more than one content node (%d)", doc.Line, len(doc.Content))
+	}
+	if indent != 0 {
+		return fmt.Errorf("kyaml internal error: line %d: document non-zero indent (%d)", doc.Line, indent)
+	}
+
+	compact := flags&flagCompact != 0
+
+	// For document nodes, the cursor is assumed to be ready to render.
+	child := doc.Content[0]
+	if !compact {
+		if len(doc.HeadComment) > 0 {
+			ky.renderComments(doc.HeadComment, indent, out)
+			fmt.Fprint(out, "\n")
+		}
+		if len(child.HeadComment) > 0 {
+			ky.renderComments(child.HeadComment, indent, out)
+			fmt.Fprint(out, "\n")
+		}
+	}
+	if err := ky.renderNode(child, indent, flags, out); err != nil {
+		return err
+	}
+	if !compact {
+		if len(child.LineComment) > 0 {
+			ky.renderComments(" "+child.LineComment, 0, out)
+		}
+		if len(child.FootComment) > 0 {
+			fmt.Fprint(out, "\n")
+			ky.renderComments(child.FootComment, indent, out)
+		}
+		if len(doc.LineComment) > 0 {
+			fmt.Fprint(out, "\n")
+			ky.renderComments(" "+doc.LineComment, 0, out)
+		}
+		if len(doc.FootComment) > 0 {
+			fmt.Fprint(out, "\n")
+			ky.renderComments(doc.FootComment, indent, out)
+		}
+	}
+	return nil
+}
+
+// renderScalar processes a YAML scalar node, rendering it to the output.  This
+// DOES NOT render a trailing newline or head/line/foot comments, as those
+// require the parent context.
+func (ky *Encoder) renderScalar(node *yaml.Node, indent int, flags flagMask, out io.Writer) error {
+	switch node.Tag {
+	case intTag, floatTag, boolTag, nullTag:
+		fmt.Fprint(out, node.Value)
+	case strTag, timestampTag:
+		return ky.renderString(node.Value, indent+1, flags, out)
+	default:
+		return fmt.Errorf("kyaml internal error: line %d: unknown tag %q on scalar node %q", node.Line, node.Tag, node.Value)
+	}
+	return nil
+}
+
+const kyamlFoldStr = "\\\n"
+
+var regularEscapeMap = map[rune]string{
+	'\n': "\\n" + kyamlFoldStr, // use YAML's line folding to make the output more readable
+	'\t': "\t",                 // literal tab
+}
+var compactEscapeMap = map[rune]string{
+	'\n': "\\n",
+	'\t': "\\t",
+}
+
+// renderString processes a string (either single-line or multi-line),
+// rendering it to the output.  This DOES NOT render a trailing newline.
+func (ky *Encoder) renderString(val string, indent int, flags flagMask, out io.Writer) error {
+	lazyQuote := flags&flagLazyQuote != 0
+	compact := flags&flagCompact != 0
+	multi := strings.Contains(val, "\n")
+
+	if !multi && lazyQuote && !needsQuotes(val) {
+		fmt.Fprint(out, val)
+		return nil
+	}
+
+	// Special cases for certain input.
+	escapeOverrides := regularEscapeMap
+	if compact {
+		escapeOverrides = compactEscapeMap
+	}
+
+	//
+	// The rest of this is borrowed from Go's strconv.Quote implementation.
+	//
+
+	// accumulate into a buffer
+	buf := &bytes.Buffer{}
+
+	// opening quote
+	fmt.Fprint(buf, `"`)
+	if multi && !compact {
+		fmt.Fprint(buf, kyamlFoldStr)
+	}
+
+	// Iterating a string with invalid UTF8 returns RuneError rather than the
+	// bytes, so we iterate the string and decode the runes. This is a bit
+	// slower, but gives us a better result.
+	s := val
+	for width := 0; len(s) > 0; s = s[width:] {
+		r := rune(s[0])
+		width = 1
+		if r >= utf8.RuneSelf {
+			r, width = utf8.DecodeRuneInString(s)
+		}
+		if width == 1 && r == utf8.RuneError {
+			fmt.Fprint(buf, `\x`)
+			fmt.Fprintf(buf, "%02x", s[0])
+			continue
+		}
+		ky.appendEscapedRune(r, indent, escapeOverrides, buf)
+	}
+
+	// closing quote
+	afterNewline := buf.Bytes()[len(buf.Bytes())-1] == '\n'
+	if multi && !compact {
+		if !afterNewline {
+			fmt.Fprint(buf, kyamlFoldStr)
+		}
+		ky.writeIndent(indent, buf)
+	}
+	fmt.Fprint(buf, `"`)
+
+	fmt.Fprint(out, buf.String())
+
+	return nil
+}
+
+var allowedUnquotedAnywhere = map[rune]bool{
+	'_': true,
+}
+
+var allowedUnquotedInterior = map[rune]bool{
+	'-': true,
+	'.': true,
+	'/': true,
+}
+
+func needsQuotes(s string) bool {
+	if s == "" {
+		return true
+	}
+	if isTypeAmbiguous(s) {
+		return true
+	}
+	runes := []rune(s)
+	for i, r := range runes {
+		if unicode.IsLetter(r) || unicode.IsNumber(r) || allowedUnquotedAnywhere[r] {
+			continue
+		}
+		if i > 0 && i < len(runes)-1 && allowedUnquotedInterior[r] {
+			continue
+		}
+		// it's something we don't explicitly allow
+		return true
+	}
+	return false
+}
+
+// From https://yaml.org/type/int.html and https://yaml.org/type/float.html
+var sexagesimalRE = regexp.MustCompile(`^[+-]?[1-9][0-9_]*(:[0-5]?[0-9])+(\.[0-9_]*)?$`)
+
+// isTypeAmbiguous returns true if a YAML parser might interpret the unquoted
+// form of the string argument as a YAML type other than string (e.g. `true`
+// would be interpreted as a boolean).
+func isTypeAmbiguous(s string) bool {
+	// Null-like strings: https://yaml.org/type/null.html
+	if len(s) <= 5 {
+		switch strings.ToLower(s) {
+		case "null", "~", "":
+			return true
+		}
+	}
+
+	// Boolean-like strings: https://yaml.org/type/bool.html
+	if _, err := strconv.ParseBool(s); err == nil {
+		return true
+	}
+	if len(s) <= 5 {
+		switch strings.ToLower(s) {
+		case "true", "y", "yes", "on", "false", "n", "no", "off":
+			return true
+		}
+	}
+
+	// Number-like strings: https://yaml.org/type/int.html and
+	// https://yaml.org/type/float.html
+	//
+	// NOTE: the stripping of underscores is gross.
+	sWithoutUnderscores := strings.ReplaceAll(s, "_", "")
+	// Handles binary ("0b"), octal ("0" or "0o"), decimal, and hex ("0x")
+	if _, err := strconv.ParseInt(sWithoutUnderscores, 0, 64); err == nil && !isSyntaxError(err) {
+		return true
+	}
+	// Handles standard and scientific notation.
+	if _, err := strconv.ParseFloat(sWithoutUnderscores, 64); err == nil && !isSyntaxError(err) {
+		return true
+	}
+
+	// Sexagesimal strings like "11:00" (in YAML 1.1, removed in 1.2):
+	// https://yaml.org/type/int.html and https://yaml.org/type/float.html
+	if sexagesimalRE.MatchString(s) {
+		return true
+	}
+
+	// Infinity and NaN: https://yaml.org/type/float.html
+	if len(s) <= 5 {
+		switch strings.ToLower(s) {
+		case ".inf", "-.inf", "+.inf", ".nan":
+			return true
+		}
+	}
+
+	// Time-like strings
+	if _, matches := parseTimestamp(s); matches {
+		return true
+	}
+
+	return false
+}
+
+func isSyntaxError(err error) bool {
+	var numerr *strconv.NumError
+	if ok := errors.As(err, &numerr); ok {
+		return errors.Is(numerr.Err, strconv.ErrSyntax)
+	}
+	return false
+}
+
+// This is a subset of the formats allowed by the regular expression
+// defined at http://yaml.org/type/timestamp.html.
+//
+// NOTE: This was copied from go.yaml.in/yaml/v2
+var allowedTimestampFormats = []string{
+	"2006-1-2T15:4:5.999999999Z07:00", // RCF3339Nano with short date fields.
+	"2006-1-2t15:4:5.999999999Z07:00", // RFC3339Nano with short date fields and lower-case "t".
+	"2006-1-2 15:4:5.999999999",       // space separated with no time zone
+	"2006-1-2",                        // date only
+	// Notable exception: time.Parse cannot handle: "2001-12-14 21:59:43.10 -5"
+	// from the set of examples.
+}
+
+// parseTimestamp parses s as a timestamp string and
+// returns the timestamp and reports whether it succeeded.
+// Timestamp formats are defined at http://yaml.org/type/timestamp.html
+//
+// NOTE: This was copied from go.yaml.in/yaml/v2
+func parseTimestamp(s string) (time.Time, bool) {
+	// TODO write code to check all the formats supported by
+	// http://yaml.org/type/timestamp.html instead of using time.Parse.
+
+	// Quick check: all date formats start with YYYY-.
+	i := 0
+	for ; i < len(s); i++ {
+		if c := s[i]; c < '0' || c > '9' {
+			break
+		}
+	}
+	if i != 4 || i == len(s) || s[i] != '-' {
+		return time.Time{}, false
+	}
+	for _, format := range allowedTimestampFormats {
+		if t, err := time.Parse(format, s); err == nil {
+			return t, true
+		}
+	}
+	return time.Time{}, false
+}
+
+// We use a buffer here so we can peek backwards.
+func (ky *Encoder) appendEscapedRune(r rune, indent int, escapeOverrides map[rune]string, buf *bytes.Buffer) {
+	afterNewline := buf.Bytes()[len(buf.Bytes())-1] == '\n'
+
+	if afterNewline {
+		ky.writeIndent(indent, buf)
+		// We want to preserve leading whitespace in the source string, so if
+		// we find whitespace, we need to escape it.  We don't want to
+		// escape lines without leading whitespace, but we DO want to render
+		// the result with fidelity to vertical alignment, so we write an extra
+		// space.  This is OK, because all whitespace before the first
+		// non-whitespace character is dropped, as per YAML spec. If there are
+		// no lines with leading whitespace it looks like the indent is one too
+		// many, which seems OK.
+		if unicode.IsSpace(r) && r != '\n' {
+			buf.WriteRune('\\')
+		} else {
+			buf.WriteRune(' ')
+		}
+	}
+	if s, found := escapeOverrides[r]; found {
+		buf.WriteString(s)
+		return
+	}
+	if r == '"' || r == '\\' { // always escaped
+		buf.WriteRune('\\')
+		buf.WriteRune(r)
+		return
+	}
+	if unicode.IsPrint(r) {
+		buf.WriteRune(r)
+		return
+	}
+	switch r {
+	case '\a':
+		buf.WriteString(`\a`)
+	case '\b':
+		buf.WriteString(`\b`)
+	case '\f':
+		buf.WriteString(`\f`)
+	case '\n':
+		buf.WriteString(`\n`)
+	case '\r':
+		buf.WriteString(`\r`)
+	case '\t':
+		buf.WriteString(`\t`)
+	case '\v':
+		buf.WriteString(`\v`)
+	case '\x00':
+		buf.WriteString(`\0`)
+	case '\x1b':
+		buf.WriteString(`\e`)
+	case '\x85':
+		buf.WriteString(`\N`)
+	case '\xa0':
+		buf.WriteString(`\_`)
+	case '\u2028':
+		buf.WriteString(`\L`)
+	case '\u2029':
+		buf.WriteString(`\P`)
+	default:
+		const hexits = "0123456789abcdef"
+		switch {
+		case r < ' ' || r == 0x7f:
+			buf.WriteString(`\x`)
+			buf.WriteByte(hexits[byte(r)>>4])
+			buf.WriteByte(hexits[byte(r)&0xF])
+		case !utf8.ValidRune(r):
+			r = utf8.RuneError
+			fallthrough
+		case r < 0x10000:
+			buf.WriteString(`\u`)
+			for s := 12; s >= 0; s -= 4 {
+				buf.WriteByte(hexits[r>>uint(s)&0xF])
+			}
+		default:
+			buf.WriteString(`\U`)
+			for s := 28; s >= 0; s -= 4 {
+				buf.WriteByte(hexits[r>>uint(s)&0xF])
+			}
+		}
+	}
+}
+
+// renderSequence processes a YAML sequence node, rendering it to the output.  This
+// DOES NOT render a trailing newline or head/line/foot comments of the sequence
+// itself, but DOES render comments of the child nodes.
+func (ky *Encoder) renderSequence(node *yaml.Node, indent int, flags flagMask, out io.Writer) error {
+	if len(node.Content) == 0 {
+		fmt.Fprint(out, "[]")
+		return nil
+	}
+	if flags&flagCompact != 0 {
+		return ky.renderCompactSequence(node, flags, out)
+	}
+
+	// See if this list can use cuddled formatting.
+	cuddle := true
+	for _, child := range node.Content {
+		if !isCuddledKind(child) {
+			cuddle = false
+			break
+		}
+		if len(child.HeadComment)+len(child.LineComment)+len(child.FootComment) > 0 {
+			cuddle = false
+			break
+		}
+	}
+
+	if cuddle {
+		return ky.renderCuddledSequence(node, indent, flags, out)
+	}
+	return ky.renderUncuddledSequence(node, indent, flags, out)
+}
+
+// renderCompactSequence renders a YAML sequence node in compact form.
+func (ky *Encoder) renderCompactSequence(node *yaml.Node, flags flagMask, out io.Writer) error {
+	fmt.Fprint(out, "[")
+	for i, child := range node.Content {
+		if i > 0 {
+			fmt.Fprint(out, ", ")
+		}
+		if err := ky.renderNode(child, 0, flags, out); err != nil {
+			return err
+		}
+	}
+	fmt.Fprint(out, "]")
+	return nil
+}
+
+// renderCuddledSequence processes a YAML sequence node which has already been
+// determined to be cuddled.  We only cuddle sequences of structs or lists
+// which have no comments.
+func (ky *Encoder) renderCuddledSequence(node *yaml.Node, indent int, flags flagMask, out io.Writer) error {
+	fmt.Fprint(out, "[")
+	for i, child := range node.Content {
+		// Each iteration should leave us cuddled for the next item.
+		if i > 0 {
+			fmt.Fprint(out, ", ")
+		}
+		if err := ky.renderNode(child, indent, flags, out); err != nil {
+			return err
+		}
+	}
+	fmt.Fprint(out, "]")
+	return nil
+}
+
+func (ky *Encoder) renderUncuddledSequence(node *yaml.Node, indent int, flags flagMask, out io.Writer) error {
+	// Get into the right state for the first item.
+	fmt.Fprint(out, "[\n")
+	ky.writeIndent(indent, out)
+	for _, child := range node.Content {
+		// Each iteration should leave us ready to close the list. Since we
+		// have an item to render, we need 1 more indent.
+		ky.writeIndent(1, out)
+
+		if len(child.HeadComment) > 0 {
+			ky.renderComments(child.HeadComment, indent+1, out)
+			fmt.Fprint(out, "\n")
+			ky.writeIndent(indent+1, out)
+		}
+
+		if err := ky.renderNode(child, indent+1, flags, out); err != nil {
+			return err
+		}
+
+		fmt.Fprint(out, ",")
+		if len(child.LineComment) > 0 {
+			ky.renderComments(" "+child.LineComment, 0, out)
+		}
+		fmt.Fprint(out, "\n")
+		ky.writeIndent(indent, out)
+		if len(child.FootComment) > 0 {
+			ky.writeIndent(1, out)
+			ky.renderComments(child.FootComment, indent+1, out)
+			fmt.Fprint(out, "\n")
+			ky.writeIndent(indent, out)
+		}
+	}
+	fmt.Fprint(out, "]")
+
+	return nil
+}
+
+func (ky *Encoder) nodeKindString(kind yaml.Kind) string {
+	switch kind {
+	case yaml.DocumentNode:
+		return "document"
+	case yaml.ScalarNode:
+		return "scalar"
+	case yaml.MappingNode:
+		return "mapping"
+	case yaml.SequenceNode:
+		return "sequence"
+	case yaml.AliasNode:
+		return "alias"
+	default:
+		return "unknown"
+	}
+}
+
+func isCuddledKind(node *yaml.Node) bool {
+	if node == nil {
+		return false
+	}
+	switch node.Kind {
+	case yaml.SequenceNode, yaml.MappingNode:
+		return true
+	case yaml.AliasNode:
+		return isCuddledKind(node.Alias)
+	}
+	return false
+}
+
+// renderMapping processes a YAML mapping node, rendering it to the output.  This
+// DOES NOT render a trailing newline or head/line/foot comments of the mapping
+// itself, but DOES render comments of the child nodes.
+func (ky *Encoder) renderMapping(node *yaml.Node, indent int, flags flagMask, out io.Writer) error {
+	if len(node.Content) == 0 {
+		fmt.Fprint(out, "{}")
+		return nil
+	}
+
+	if flags&flagCompact != 0 {
+		return ky.renderCompactMapping(node, flags, out)
+	}
+
+	joinComments := func(a, b string) string {
+		if len(a) > 0 && len(b) > 0 {
+			return a + "\n" + b
+		}
+		return a + b
+	}
+
+	fmt.Fprint(out, "{\n")
+	for i := 0; i < len(node.Content); i += 2 {
+		key := node.Content[i]
+		val := node.Content[i+1]
+
+		ky.writeIndent(indent+1, out)
+
+		// Only one of these should be set.
+		if comments := joinComments(key.HeadComment, val.HeadComment); len(comments) > 0 {
+			ky.renderComments(comments, indent+1, out)
+			fmt.Fprint(out, "\n")
+			ky.writeIndent(indent+1, out)
+		}
+
+		// Mapping keys are always strings in KYAML, even if the YAML node says
+		// otherwise.
+		if err := ky.renderString(key.Value, indent+1, flagLazyQuote|flagCompact, out); err != nil {
+			return err
+		}
+		fmt.Fprint(out, ": ")
+		if err := ky.renderNode(val, indent+1, flags, out); err != nil {
+			return err
+		}
+		fmt.Fprint(out, ",")
+		if len(key.LineComment) > 0 && len(val.LineComment) > 0 {
+			return fmt.Errorf("kyaml internal error: line %d: both key and value have line comments", key.Line)
+		}
+		if len(key.LineComment) > 0 {
+			ky.renderComments(" "+key.LineComment, 0, out)
+		} else if len(val.LineComment) > 0 {
+			ky.renderComments(" "+val.LineComment, 0, out)
+		}
+		fmt.Fprint(out, "\n")
+		// Only one of these should be set.
+		if comments := joinComments(key.FootComment, val.FootComment); len(comments) > 0 {
+			ky.writeIndent(indent+1, out)
+			ky.renderComments(comments, indent+1, out)
+			fmt.Fprint(out, "\n")
+		}
+	}
+	ky.writeIndent(indent, out)
+	fmt.Fprint(out, "}")
+	return nil
+}
+
+// renderCompactMapping renders a YAML mapping node in compact form.
+func (ky *Encoder) renderCompactMapping(node *yaml.Node, flags flagMask, out io.Writer) error {
+	fmt.Fprint(out, "{")
+	for i := 0; i < len(node.Content); i += 2 {
+		key := node.Content[i]
+		val := node.Content[i+1]
+
+		if i > 0 {
+			fmt.Fprint(out, ", ")
+		}
+		// Mapping keys are always strings in KYAML, even if the YAML node says
+		// otherwise.
+		if err := ky.renderString(key.Value, 0, flags|flagLazyQuote|flagCompact, out); err != nil {
+			return err
+		}
+		fmt.Fprint(out, ": ")
+		if err := ky.renderNode(val, 0, flags, out); err != nil {
+			return err
+		}
+	}
+	fmt.Fprint(out, "}")
+	return nil
+}
+
+func (ky *Encoder) writeIndent(level int, out io.Writer) {
+	const indentString = "  "
+	for range level {
+		fmt.Fprint(out, indentString)
+	}
+}
+
+// renderCommentBlock writes the comments node to the output.  This assumes the
+// cursor is at the right place to start writing and DOES NOT render a trailing
+// newline.
+func (ky *Encoder) renderComments(comments string, indent int, out io.Writer) {
+	if len(comments) == 0 {
+		return
+	}
+	lines := strings.Split(comments, "\n")
+	for i, line := range lines {
+		if i > 0 {
+			fmt.Fprint(out, "\n")
+			ky.writeIndent(indent, out)
+		}
+		fmt.Fprint(out, line)
+	}
+}
+
+func (ky *Encoder) renderAlias(node *yaml.Node, indent int, flags flagMask, out io.Writer) error {
+	if node.Alias != nil {
+		return ky.renderNode(node.Alias, indent+1, flags, out)
+	}
+	return nil
+}
+
+
+package yaml
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
+	"reflect"
+	"strconv"
+
+	"go.yaml.in/yaml/v2"
+)
+
+// Marshal marshals obj into JSON using stdlib json.Marshal, and then converts JSON to YAML using JSONToYAML (see that method for more reference)
+func Marshal(obj interface{}) ([]byte, error) {
+	jsonBytes, err := json.Marshal(obj)
+	if err != nil {
+		return nil, fmt.Errorf("error marshaling into JSON: %w", err)
+	}
+
+	return JSONToYAML(jsonBytes)
+}
+
+// JSONOpt is a decoding option for decoding from JSON format.
+type JSONOpt func(*json.Decoder) *json.Decoder
+
+// Unmarshal first converts the given YAML to JSON, and then unmarshals the JSON into obj. Options for the
+// standard library json.Decoder can be optionally specified, e.g. to decode untyped numbers into json.Number instead of float64, or to disallow unknown fields (but for that purpose, see also UnmarshalStrict). obj must be a non-nil pointer.
+//
+// Important notes about the Unmarshal logic:
+//
+//   - Decoding is case-insensitive, unlike the rest of Kubernetes API machinery, as this is using the stdlib json library. This might be confusing to users.
+//   - This decodes any number (although it is an integer) into a float64 if the type of obj is unknown, e.g. *map[string]interface{}, *interface{}, or *[]interface{}. This means integers above +/- 2^53 will lose precision when round-tripping. Make a JSONOpt that calls d.UseNumber() to avoid this.
+//   - Duplicate fields, including in-case-sensitive matches, are ignored in an undefined order. Note that the YAML specification forbids duplicate fields, so this logic is more permissive than it needs to. See UnmarshalStrict for an alternative.
+//   - Unknown fields, i.e. serialized data that do not map to a field in obj, are ignored. Use d.DisallowUnknownFields() or UnmarshalStrict to override.
+//   - As per the YAML 1.1 specification, which yaml.v2 used underneath implements, literal 'yes' and 'no' strings without quotation marks will be converted to true/false implicitly.
+//   - YAML non-string keys, e.g. ints, bools and floats, are converted to strings implicitly during the YAML to JSON conversion process.
+//   - There are no compatibility guarantees for returned error values.
+func Unmarshal(yamlBytes []byte, obj interface{}, opts ...JSONOpt) error {
+	return unmarshal(yamlBytes, obj, yaml.Unmarshal, opts...)
+}
+
+// UnmarshalStrict is similar to Unmarshal (please read its documentation for reference), with the following exceptions:
+//
+//   - Duplicate fields in an object yield an error. This is according to the YAML specification.
+//   - If obj, or any of its recursive children, is a struct, presence of fields in the serialized data unknown to the struct will yield an error.
+func UnmarshalStrict(yamlBytes []byte, obj interface{}, opts ...JSONOpt) error {
+	return unmarshal(yamlBytes, obj, yaml.UnmarshalStrict, append(opts, DisallowUnknownFields)...)
+}
+
+// unmarshal unmarshals the given YAML byte stream into the given interface,
+// optionally performing the unmarshalling strictly
+func unmarshal(yamlBytes []byte, obj interface{}, unmarshalFn func([]byte, interface{}) error, opts ...JSONOpt) error {
+	jsonTarget := reflect.ValueOf(obj)
+
+	jsonBytes, err := yamlToJSONTarget(yamlBytes, &jsonTarget, unmarshalFn)
+	if err != nil {
+		return fmt.Errorf("error converting YAML to JSON: %w", err)
+	}
+
+	err = jsonUnmarshal(bytes.NewReader(jsonBytes), obj, opts...)
+	if err != nil {
+		return fmt.Errorf("error unmarshaling JSON: %w", err)
+	}
+
+	return nil
+}
+
+// jsonUnmarshal unmarshals the JSON byte stream from the given reader into the
+// object, optionally applying decoder options prior to decoding.  We are not
+// using json.Unmarshal directly as we want the chance to pass in non-default
+// options.
+func jsonUnmarshal(reader io.Reader, obj interface{}, opts ...JSONOpt) error {
+	d := json.NewDecoder(reader)
+	for _, opt := range opts {
+		d = opt(d)
+	}
+	if err := d.Decode(&obj); err != nil {
+		return fmt.Errorf("while decoding JSON: %w", err)
+	}
+	return nil
+}
+
+// JSONToYAML converts JSON to YAML. Notable implementation details:
+//
+//   - Duplicate fields, are case-sensitively ignored in an undefined order.
+//   - The sequence indentation style is compact, which means that the "- " marker for a YAML sequence will be on the same indentation level as the sequence field name.
+//   - Unlike Unmarshal, all integers, up to 64 bits, are preserved during this round-trip.
+func JSONToYAML(j []byte) ([]byte, error) {
+	// Convert the JSON to an object.
+	var jsonObj interface{}
+
+	// We are using yaml.Unmarshal here (instead of json.Unmarshal) because the
+	// Go JSON library doesn't try to pick the right number type (int, float,
+	// etc.) when unmarshalling to interface{}, it just picks float64
+	// universally. go-yaml does go through the effort of picking the right
+	// number type, so we can preserve number type throughout this process.
+	err := yaml.Unmarshal(j, &jsonObj)
+	if err != nil {
+		return nil, err
+	}
+
+	// Marshal this object into YAML.
+	yamlBytes, err := yaml.Marshal(jsonObj)
+	if err != nil {
+		return nil, err
+	}
+
+	return yamlBytes, nil
+}
+
+// YAMLToJSON converts YAML to JSON. Since JSON is a subset of YAML,
+// passing JSON through this method should be a no-op.
+//
+// Some things YAML can do that are not supported by JSON:
+//   - In YAML you can have binary and null keys in your maps. These are invalid
+//     in JSON, and therefore int, bool and float keys are converted to strings implicitly.
+//   - Binary data in YAML with the !!binary tag is not supported. If you want to
+//     use binary data with this library, encode the data as base64 as usual but do
+//     not use the !!binary tag in your YAML. This will ensure the original base64
+//     encoded data makes it all the way through to the JSON.
+//   - And more... read the YAML specification for more details.
+//
+// Notable about the implementation:
+//
+// - Duplicate fields are case-sensitively ignored in an undefined order. Note that the YAML specification forbids duplicate fields, so this logic is more permissive than it needs to. See YAMLToJSONStrict for an alternative.
+// - As per the YAML 1.1 specification, which yaml.v2 used underneath implements, literal 'yes' and 'no' strings without quotation marks will be converted to true/false implicitly.
+// - Unlike Unmarshal, all integers, up to 64 bits, are preserved during this round-trip.
+// - There are no compatibility guarantees for returned error values.
+func YAMLToJSON(y []byte) ([]byte, error) {
+	return yamlToJSONTarget(y, nil, yaml.Unmarshal)
+}
+
+// YAMLToJSONStrict is like YAMLToJSON but enables strict YAML decoding,
+// returning an error on any duplicate field names.
+func YAMLToJSONStrict(y []byte) ([]byte, error) {
+	return yamlToJSONTarget(y, nil, yaml.UnmarshalStrict)
+}
+
+func yamlToJSONTarget(yamlBytes []byte, jsonTarget *reflect.Value, unmarshalFn func([]byte, interface{}) error) ([]byte, error) {
+	// Convert the YAML to an object.
+	var yamlObj interface{}
+	err := unmarshalFn(yamlBytes, &yamlObj)
+	if err != nil {
+		return nil, err
+	}
+
+	// YAML objects are not completely compatible with JSON objects (e.g. you
+	// can have non-string keys in YAML). So, convert the YAML-compatible object
+	// to a JSON-compatible object, failing with an error if irrecoverable
+	// incompatibilties happen along the way.
+	jsonObj, err := convertToJSONableObject(yamlObj, jsonTarget)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert this object to JSON and return the data.
+	jsonBytes, err := json.Marshal(jsonObj)
+	if err != nil {
+		return nil, err
+	}
+	return jsonBytes, nil
+}
+
+func convertToJSONableObject(yamlObj interface{}, jsonTarget *reflect.Value) (interface{}, error) {
+	var err error
+
+	// Resolve jsonTarget to a concrete value (i.e. not a pointer or an
+	// interface). We pass decodingNull as false because we're not actually
+	// decoding into the value, we're just checking if the ultimate target is a
+	// string.
+	if jsonTarget != nil {
+		jsonUnmarshaler, textUnmarshaler, pointerValue := indirect(*jsonTarget, false)
+		// We have a JSON or Text Umarshaler at this level, so we can't be trying
+		// to decode into a string.
+		if jsonUnmarshaler != nil || textUnmarshaler != nil {
+			jsonTarget = nil
+		} else {
+			jsonTarget = &pointerValue
+		}
+	}
+
+	// If yamlObj is a number or a boolean, check if jsonTarget is a string -
+	// if so, coerce.  Else return normal.
+	// If yamlObj is a map or array, find the field that each key is
+	// unmarshaling to, and when you recurse pass the reflect.Value for that
+	// field back into this function.
+	switch typedYAMLObj := yamlObj.(type) {
+	case map[interface{}]interface{}:
+		// JSON does not support arbitrary keys in a map, so we must convert
+		// these keys to strings.
+		//
+		// From my reading of go-yaml v2 (specifically the resolve function),
+		// keys can only have the types string, int, int64, float64, binary
+		// (unsupported), or null (unsupported).
+		strMap := make(map[string]interface{})
+		for k, v := range typedYAMLObj {
+			// Resolve the key to a string first.
+			var keyString string
+			switch typedKey := k.(type) {
+			case string:
+				keyString = typedKey
+			case int:
+				keyString = strconv.Itoa(typedKey)
+			case int64:
+				// go-yaml will only return an int64 as a key if the system
+				// architecture is 32-bit and the key's value is between 32-bit
+				// and 64-bit. Otherwise the key type will simply be int.
+				keyString = strconv.FormatInt(typedKey, 10)
+			case float64:
+				// Stolen from go-yaml to use the same conversion to string as
+				// the go-yaml library uses to convert float to string when
+				// Marshaling.
+				s := strconv.FormatFloat(typedKey, 'g', -1, 32)
+				switch s {
+				case "+Inf":
+					s = ".inf"
+				case "-Inf":
+					s = "-.inf"
+				case "NaN":
+					s = ".nan"
+				}
+				keyString = s
+			case bool:
+				if typedKey {
+					keyString = "true"
+				} else {
+					keyString = "false"
+				}
+			default:
+				return nil, fmt.Errorf("unsupported map key of type: %s, key: %+#v, value: %+#v",
+					reflect.TypeOf(k), k, v)
+			}
+
+			// jsonTarget should be a struct or a map. If it's a struct, find
+			// the field it's going to map to and pass its reflect.Value. If
+			// it's a map, find the element type of the map and pass the
+			// reflect.Value created from that type. If it's neither, just pass
+			// nil - JSON conversion will error for us if it's a real issue.
+			if jsonTarget != nil {
+				t := *jsonTarget
+				if t.Kind() == reflect.Struct {
+					keyBytes := []byte(keyString)
+					// Find the field that the JSON library would use.
+					var f *field
+					fields := cachedTypeFields(t.Type())
+					for i := range fields {
+						ff := &fields[i]
+						if bytes.Equal(ff.nameBytes, keyBytes) {
+							f = ff
+							break
+						}
+						// Do case-insensitive comparison.
+						if f == nil && ff.equalFold(ff.nameBytes, keyBytes) {
+							f = ff
+						}
+					}
+					if f != nil {
+						// Find the reflect.Value of the most preferential
+						// struct field.
+						jtf := t.Field(f.index[0])
+						strMap[keyString], err = convertToJSONableObject(v, &jtf)
+						if err != nil {
+							return nil, err
+						}
+						continue
+					}
+				} else if t.Kind() == reflect.Map {
+					// Create a zero value of the map's element type to use as
+					// the JSON target.
+					jtv := reflect.Zero(t.Type().Elem())
+					strMap[keyString], err = convertToJSONableObject(v, &jtv)
+					if err != nil {
+						return nil, err
+					}
+					continue
+				}
+			}
+			strMap[keyString], err = convertToJSONableObject(v, nil)
+			if err != nil {
+				return nil, err
+			}
+		}
+		return strMap, nil
+	case []interface{}:
+		// We need to recurse into arrays in case there are any
+		// map[interface{}]interface{}'s inside and to convert any
+		// numbers to strings.
+
+		// If jsonTarget is a slice (which it really should be), find the
+		// thing it's going to map to. If it's not a slice, just pass nil
+		// - JSON conversion will error for us if it's a real issue.
+		var jsonSliceElemValue *reflect.Value
+		if jsonTarget != nil {
+			t := *jsonTarget
+			if t.Kind() == reflect.Slice {
+				// By default slices point to nil, but we need a reflect.Value
+				// pointing to a value of the slice type, so we create one here.
+				ev := reflect.Indirect(reflect.New(t.Type().Elem()))
+				jsonSliceElemValue = &ev
+			}
+		}
+
+		// Make and use a new array.
+		arr := make([]interface{}, len(typedYAMLObj))
+		for i, v := range typedYAMLObj {
+			arr[i], err = convertToJSONableObject(v, jsonSliceElemValue)
+			if err != nil {
+				return nil, err
+			}
+		}
+		return arr, nil
+	default:
+		// If the target type is a string and the YAML type is a number,
+		// convert the YAML type to a string.
+		if jsonTarget != nil && (*jsonTarget).Kind() == reflect.String {
+			// Based on my reading of go-yaml, it may return int, int64,
+			// float64, or uint64.
+			var s string
+			switch typedVal := typedYAMLObj.(type) {
+			case int:
+				s = strconv.FormatInt(int64(typedVal), 10)
+			case int64:
+				s = strconv.FormatInt(typedVal, 10)
+			case float64:
+				s = strconv.FormatFloat(typedVal, 'g', -1, 32)
+			case uint64:
+				s = strconv.FormatUint(typedVal, 10)
+			case bool:
+				if typedVal {
+					s = "true"
+				} else {
+					s = "false"
+				}
+			}
+			if len(s) > 0 {
+				yamlObj = interface{}(s)
+			}
+		}
+		return yamlObj, nil
+	}
+}
+
+// JSONObjectToYAMLObject converts an in-memory JSON object into a YAML in-memory MapSlice,
+// without going through a byte representation. A nil or empty map[string]interface{} input is
+// converted to an empty map, i.e. yaml.MapSlice(nil).
+//
+// interface{} slices stay interface{} slices. map[string]interface{} becomes yaml.MapSlice.
+//
+// int64 and float64 are down casted following the logic of github.com/go-yaml/yaml:
+// - float64s are down-casted as far as possible without data-loss to int, int64, uint64.
+// - int64s are down-casted to int if possible without data-loss.
+//
+// Big int/int64/uint64 do not lose precision as in the json-yaml roundtripping case.
+//
+// string, bool and any other types are unchanged.
+func JSONObjectToYAMLObject(j map[string]interface{}) yaml.MapSlice {
+	if len(j) == 0 {
+		return nil
+	}
+	ret := make(yaml.MapSlice, 0, len(j))
+	for k, v := range j {
+		ret = append(ret, yaml.MapItem{Key: k, Value: jsonToYAMLValue(v)})
+	}
+	return ret
+}
+
+func jsonToYAMLValue(j interface{}) interface{} {
+	switch j := j.(type) {
+	case map[string]interface{}:
+		if j == nil {
+			return interface{}(nil)
+		}
+		return JSONObjectToYAMLObject(j)
+	case []interface{}:
+		if j == nil {
+			return interface{}(nil)
+		}
+		ret := make([]interface{}, len(j))
+		for i := range j {
+			ret[i] = jsonToYAMLValue(j[i])
+		}
+		return ret
+	case float64:
+		// replicate the logic in https://github.com/go-yaml/yaml/blob/51d6538a90f86fe93ac480b35f37b2be17fef232/resolve.go#L151
+		if i64 := int64(j); j == float64(i64) {
+			if i := int(i64); i64 == int64(i) {
+				return i
+			}
+			return i64
+		}
+		if ui64 := uint64(j); j == float64(ui64) {
+			return ui64
+		}
+		return j
+	case int64:
+		if i := int(j); j == int64(i) {
+			return i
+		}
+		return j
+	}
+	return j
+}
+
+// DisallowUnknownFields configures the JSON decoder to error out if unknown
+// fields come along, instead of dropping them by default.
+func DisallowUnknownFields(d *json.Decoder) *json.Decoder {
+	d.DisallowUnknownFields()
+	return d
+}
