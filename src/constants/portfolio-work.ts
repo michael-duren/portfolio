@@ -4,6 +4,10 @@ import PortfolioAboutImage from "../images/work/portfolio/about.png";
 import PortfolioWorkImage from "../images/work/portfolio/work.png";
 import AtmosphereImage from "../images/work/atmosphere/atmosphere.png";
 import AtmosphereImageTwo from "../images/work/atmosphere/atmosphere-running.png";
+import NextStepImage from "../images/work/next-step/home.png";
+import TsmlImage from "../images/work/tsml/home.png";
+import GoLspImage from "../images/work/go-lsp/home.png";
+import AspireImage from "../images/work/aspire/home.png";
 
 const portfolioList: PortfolioItem[] = [
   {
@@ -16,7 +20,7 @@ const portfolioList: PortfolioItem[] = [
     ],
     websiteLink: "https://nextstepcms.com/",
     codeLink: null,
-    images: [],
+    images: [NextStepImage],
     color: "bg-indigo-100 shadow-indigo-900",
   },
   {
@@ -29,7 +33,7 @@ const portfolioList: PortfolioItem[] = [
     ],
     websiteLink: "https://github.com/code4recovery/tsml-ui",
     codeLink: "https://aasfmarin.org/meetings",
-    images: [],
+    images: [TsmlImage],
     color: "bg-purple-100 shadow-purple-900",
   },
   {
@@ -55,7 +59,7 @@ const portfolioList: PortfolioItem[] = [
     ],
     websiteLink: "https://go-lsp.michaelduren.com",
     codeLink: "https://github.com/michael-duren/go-lsp-course",
-    images: [],
+    images: [GoLspImage],
     color: "bg-sky-100 shadow-sky-900",
   },
   {
@@ -68,21 +72,8 @@ const portfolioList: PortfolioItem[] = [
     ],
     websiteLink: "https://building-with-aspire.michaelduren.com/",
     codeLink: "https://github.com/michael-duren/aspire-presentation",
-    images: [],
+    images: [AspireImage],
     color: "bg-violet-100 shadow-violet-900",
-  },
-  {
-    title: "Distributed Monitoring Stack",
-    description: [
-      "A home lab monitoring infrastructure deployed across multiple VMs for learning observability and distributed systems concepts.",
-      "Built a complete monitoring solution with Grafana for visualization, Prometheus for metrics collection, and node exporters running on separate Ubuntu VMs hosted on Proxmox.",
-      "Configured service discovery, metric scraping intervals, and custom dashboards for system health monitoring. Hands-on experience with production monitoring patterns and debugging distributed system issues.",
-      "Built with Grafana, Prometheus, node_exporter, Proxmox, Ubuntu Server. Planning AWS deployment for portfolio demonstration.",
-    ],
-    websiteLink: null,
-    codeLink: null,
-    images: [],
-    color: "bg-emerald-100 shadow-emerald-900",
   },
   {
     title: "Portfolio",

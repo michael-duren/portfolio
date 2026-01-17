@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import lightWork from "../images/light-work.jpg";
+import lightWork from "../images/light-work.png";
 import darkWork from "../images/dark-work.png";
 ---
 
@@ -25,24 +25,26 @@ import darkWork from "../images/dark-work.png";
         </div>
     </div>
 
-    <div class="z-10 text-center px-4 animate-slide-up">
+    <div
+        class="z-10 text-center px-4 animate-slide-up bg-white/80 dark:bg-gray-900/80 backdrop-blur-md p-8 rounded-xl shadow-2xl mx-4 max-w-3xl"
+    >
         <h1
-            class="text-5xl md:text-7xl font-bold mb-6 text-gray-900 dark:text-white drop-shadow-2xl"
+            class="text-4xl md:text-6xl font-bold mb-6 text-gray-900 dark:text-white drop-shadow-sm"
         >
             Michael Duren
         </h1>
         <p
-            class="text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-8 max-w-2xl mx-auto font-light"
+            class="text-lg md:text-xl text-gray-800 dark:text-gray-100 mb-8 font-light leading-relaxed"
         >
             Software Engineer & Web Developer. Building reliable details one
             line at a time.
         </p>
 
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#contact" class="btn btn-primary btn-lg shadow-xl">
+            <a href="#contact" class="btn btn-primary btn-lg shadow-lg">
                 Get in Touch
             </a>
-            <a href="#work" class="btn btn-neutral btn-lg shadow-xl">
+            <a href="#work" class="btn btn-neutral btn-lg shadow-lg">
                 View Work
             </a>
         </div>
