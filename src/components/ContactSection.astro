@@ -38,18 +38,6 @@ import { Icon } from "astro-icon/components";
                     >
                         <Icon name="carbon:email" class="w-6 h-6" />
                     </div>
-                    <div>
-                        <p
-                            class="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400"
-                        >
-                            Email Me
-                        </p>
-                        <a
-                            href="mailto:hello@michaelduren.com"
-                            class="text-lg font-medium hover:text-purple-600 transition-colors"
-                            >hello@michaelduren.com</a
-                        >
-                    </div>
                 </div>
             </div>
         </div>
@@ -61,7 +49,17 @@ import { Icon } from "astro-icon/components";
             <div
                 class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700"
             >
-                <form name="contact" method="POST" class="space-y-6">
+                <form id="contact-form" class="space-y-6">
+                    <!-- Honeypot -->
+                    <input
+                        type="text"
+                        name="first"
+                        class="hidden"
+                        style="display:none"
+                        tabindex="-1"
+                        autocomplete="off"
+                    />
+
                     <div class="space-y-4">
                         <div class="form-control">
                             <label class="label pl-1">
@@ -73,6 +71,7 @@ import { Icon } from "astro-icon/components";
                             <input
                                 type="text"
                                 name="name"
+                                id="name"
                                 class="input w-full bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300"
                                 required
                             />
@@ -88,6 +87,7 @@ import { Icon } from "astro-icon/components";
                             <input
                                 type="email"
                                 name="email"
+                                id="email"
                                 class="input w-full bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300"
                                 required
                             />
@@ -102,6 +102,7 @@ import { Icon } from "astro-icon/components";
                             </label>
                             <textarea
                                 name="message"
+                                id="message"
                                 class="textarea h-32 w-full bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300"
                                 required></textarea>
                         </div>
@@ -114,15 +115,30 @@ import { Icon } from "astro-icon/components";
                     >
                     </div>
 
+                    <!-- Feedback Messages -->
+                    <div
+                        id="form-message"
+                        class="hidden p-4 rounded-lg text-sm font-medium"
+                    >
+                    </div>
+
                     <button
                         type="submit"
-                        class="btn w-full bg-gradient-to-r from-gray-900 to-gray-800 dark:from-purple-600 dark:to-blue-600 text-white border-none rounded-xl py-4 h-auto text-lg hover:scale-[1.02] hover:shadow-lg transition-all duration-300 group"
+                        id="submit-btn"
+                        class="btn w-full bg-gradient-to-r from-gray-900 to-gray-800 dark:from-purple-600 dark:to-blue-600 text-white border-none rounded-xl py-4 h-auto text-lg hover:scale-[1.02] hover:shadow-lg transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Send Message
-                        <Icon
-                            name="carbon:send"
-                            class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
-                        />
+                        <span class="flex items-center justify-center gap-2">
+                            <span id="btn-text">Send Message</span>
+                            <Icon
+                                name="carbon:send"
+                                id="btn-icon"
+                                class="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                            />
+                            <span
+                                id="btn-loader"
+                                class="hidden loading loading-spinner loading-sm"
+                            ></span>
+                        </span>
                     </button>
                 </form>
             </div>
@@ -130,4 +146,90 @@ import { Icon } from "astro-icon/components";
     </div>
 </section>
 
-<script is:inline src="https://www.google.com/recaptcha/api.js"></script>
+<script
+    is:inline
+    src={`https://www.google.com/recaptcha/api.js?render=${import.meta.env.RECAPTCHA_SITE_KEY}`}
+></script>
+
+<script define:vars={{ siteKey: import.meta.env.RECAPTCHA_SITE_KEY }}>
+    document.addEventListener("astro:page-load", () => {
+        const form = document.getElementById("contact-form");
+        const messageDiv = document.getElementById("form-message");
+        const submitBtn = document.getElementById("submit-btn");
+        const btnText = document.getElementById("btn-text");
+        const btnIcon = document.getElementById("btn-icon");
+        const btnLoader = document.getElementById("btn-loader");
+
+        if (!form) return;
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            // Reset feedback
+            messageDiv.classList.add("hidden");
+            messageDiv.classList.remove(
+                "bg-green-100",
+                "text-green-700",
+                "bg-red-100",
+                "text-red-700",
+            );
+
+            // Set loading state
+            submitBtn.disabled = true;
+            btnText.textContent = "Sending...";
+            btnIcon.classList.add("hidden");
+            btnLoader.classList.remove("hidden");
+
+            try {
+                // Execute reCAPTCHA
+                const token = await grecaptcha.execute(siteKey, {
+                    action: "submit",
+                });
+
+                const formData = new FormData(form);
+                const data = {
+                    first: formData.get("first"), // Honeypot
+                    name: formData.get("name"),
+                    email: formData.get("email"),
+                    message: formData.get("message"),
+                    token: token,
+                };
+
+                const response = await fetch("/api/contact", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Success
+                    messageDiv.textContent =
+                        "Message sent successfully! I'll get back to you soon.";
+                    messageDiv.classList.add("bg-green-100", "text-green-700");
+                    messageDiv.classList.remove("hidden");
+                    form.reset();
+                } else {
+                    // Error
+                    throw new Error(result.message || "Failed to send message");
+                }
+            } catch (error) {
+                console.error("Form error:", error);
+                messageDiv.textContent =
+                    error.message ||
+                    "An error occurred. Please try again later.";
+                messageDiv.classList.add("bg-red-100", "text-red-700");
+                messageDiv.classList.remove("hidden");
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                btnText.textContent = "Send Message";
+                btnIcon.classList.remove("hidden");
+                btnLoader.classList.add("hidden");
+            }
+        });
+    });
+</script>
