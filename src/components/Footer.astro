@@ -1,5 +1,8 @@
 ---
+import { execSync } from "node:child_process";
 import Social from "./Social.astro";
+
+const commitHash = execSync("git rev-parse --short HEAD").toString().trim();
 ---
 
 <footer class="py-12 mt-20" transition:persist>
@@ -10,7 +13,11 @@ import Social from "./Social.astro";
       <p>
         &copy; {new Date().getFullYear()} Michael Duren. All rights reserved.
       </p>
-      <p class="mt-2 text-xs">Built with Astro, Tailwind, & ❤️</p>
+      <p class="mt-2 text-xs">
+        Built with Astro, Tailwind, & ❤️ <span class="mx-1">•</span> v.{
+          commitHash
+        }
+      </p>
     </div>
   </div>
 </footer>

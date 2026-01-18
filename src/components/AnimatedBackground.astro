@@ -168,6 +168,7 @@
         rotationSpeed: number;
         symbol: string;
       }>,
+      animating: false,
     };
   }
 
@@ -190,23 +191,28 @@
       element.className = "code-symbol";
       element.textContent = symbols[i % symbols.length] ?? null;
 
-      const x = (i / symbolCount) * 100 + Math.random() * 5;
-      const y = Math.random() * -100;
+      // Initial random position
+      const x = Math.random() * 100;
+      const y = Math.random() * 100; // Start visibly distributed
       const speed = 0.1 + Math.random() * 0.5;
       const rotation = Math.random() * 360;
       const rotationSpeed = (Math.random() - 0.5) * 2;
 
-      element.style.left = `${x}%`;
-      element.style.top = `${y}vh`;
-      element.style.transform = `rotate(${rotation}deg)`;
+      // Use transform for positioning to avoid layout thrashing
+      // We'll set left to 0 and top to 0 in CSS or assume common reset,
+      // dealing purely in transforms relative to the container
+      element.style.left = "0";
+      element.style.top = "0";
+      element.style.transform = `translate3d(${x}vw, ${y}vh, 0) rotate(${rotation}deg)`;
       element.style.opacity = "0.3";
+      element.style.willChange = "transform, opacity";
 
       container.appendChild(element);
 
       state.symbols.push({
         element,
         x,
-        y,
+        y, // y is in vh units effectively
         speed,
         rotation,
         rotationSpeed,
@@ -220,40 +226,48 @@
       item.y += item.speed;
       item.rotation += item.rotationSpeed;
 
+      // Reset if off screen
       if (item.y > 110) {
         item.y = -10;
         item.x = Math.random() * 95;
-        item.element.style.left = `${item.x}%`;
       }
 
-      item.element.style.top = `${item.y}vh`;
-      item.element.style.transform = `rotate(${item.rotation}deg)`;
+      // Use translate3d for GPU acceleration and to avoid layout shifts
+      item.element.style.transform = `translate3d(${item.x}vw, ${item.y}vh, 0) rotate(${item.rotation}deg)`;
 
+      // Opacity fade in/out at edges
+      let opacity = 0.3;
       if (item.y < 0) {
-        item.element.style.opacity = "0";
+        opacity = 0;
       } else if (item.y < 10) {
-        item.element.style.opacity = `${0.3 * (item.y / 10)}`;
+        opacity = 0.3 * (item.y / 10);
       } else if (item.y > 90) {
-        item.element.style.opacity = `${0.3 * ((110 - item.y) / 20)}`;
-      } else {
-        item.element.style.opacity = "0.3";
+        opacity = 0.3 * ((110 - item.y) / 20);
       }
+
+      item.element.style.opacity = opacity.toString();
     });
 
     requestAnimationFrame(animateCodeRain);
   }
 
   if (!state.animating) {
-    document.addEventListener("DOMContentLoaded", () => {
-      initCodeRain();
-      animateCodeRain();
-      state.animating = true;
-    });
+    // Only start animation loop once
+    state.animating = true;
+    requestAnimationFrame(animateCodeRain);
   }
 
+  // Initialize checks
   document.addEventListener("astro:page-load", () => {
     initCodeRain();
   });
+
+  // Initial load fallback
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initCodeRain);
+  } else {
+    initCodeRain();
+  }
 
   document.addEventListener("astro:before-preparation", () => {
     const container = document.getElementById("code-rain");
