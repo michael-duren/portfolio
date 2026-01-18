@@ -248,37 +248,42 @@ import TechFlowChart from "./TechFlowChart.astro";
     // 2. Pouring Animation Logic
     const chartContainer = document.getElementById("chart-container");
     const statusTextContainer = document.getElementById("mixing-status");
+    const skipBtn = document.getElementById("skip-animation-btn");
     let hasRunAnimation = false;
+    let isSkipped = false;
+
+    // Helper to update status
+    const updateStatus = (text: string, color: string = "text-purple-300") => {
+      if (!statusTextContainer) return;
+      // Fade out
+      statusTextContainer.classList.remove("opacity-100");
+      statusTextContainer.classList.add("opacity-0");
+
+      setTimeout(() => {
+        const span = statusTextContainer.querySelector("span");
+        if (span) {
+          span.textContent = text;
+          span.className = `inline-block px-4 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-mono shadow-xl ${color}`;
+        }
+        statusTextContainer.classList.remove("opacity-0");
+        statusTextContainer.classList.add("opacity-100");
+      }, 100); // Faster fade transition
+    };
 
     const runPouringSequence = async () => {
       if (hasRunAnimation) return;
       hasRunAnimation = true;
 
+      // Show Skip Button
+      if (skipBtn) {
+        skipBtn.classList.remove("opacity-0", "pointer-events-none");
+      }
+
       const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-      // Helper to update status
-      const updateStatus = (
-        text: string,
-        color: string = "text-purple-300",
-      ) => {
-        if (!statusTextContainer) return;
-        // Fade out
-        statusTextContainer.classList.remove("opacity-100");
-        statusTextContainer.classList.add("opacity-0");
-
-        setTimeout(() => {
-          const span = statusTextContainer.querySelector("span");
-          if (span) {
-            span.textContent = text;
-            span.className = `inline-block px-4 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-mono shadow-xl ${color}`;
-          }
-          statusTextContainer.classList.remove("opacity-0");
-          statusTextContainer.classList.add("opacity-100");
-        }, 150); // Faster fade transition
-      };
 
       // Helper to animate particle
       const animateParticle = (sourceEl: Element, targetId: string) => {
+        if (isSkipped) return;
         const sourceRect = sourceEl.getBoundingClientRect();
         const targetEl = document.getElementById(targetId);
         if (!targetEl) return;
@@ -291,7 +296,7 @@ import TechFlowChart from "./TechFlowChart.astro";
           "z-50",
           "pointer-events-none",
           "transition-all",
-          "duration-700", // Faster flight duration
+          "duration-500", // Faster flight duration
           "ease-in-out",
         );
         particle.style.left = `${sourceRect.left + sourceRect.width / 2}px`;
@@ -315,7 +320,7 @@ import TechFlowChart from "./TechFlowChart.astro";
         // Cleanup
         setTimeout(() => {
           particle.remove();
-        }, 700);
+        }, 500);
       };
 
       // Sequence Groups
@@ -358,6 +363,7 @@ import TechFlowChart from "./TechFlowChart.astro";
       ];
 
       for (const step of sequence) {
+        if (isSkipped) break;
         updateStatus(step.label, step.color);
 
         // Find sources for this target
@@ -367,14 +373,16 @@ import TechFlowChart from "./TechFlowChart.astro";
 
         // Launch particles
         sources.forEach((source, idx) => {
-          setTimeout(() => animateParticle(source, step.target), idx * 50); // Faster stagger
+          if (!isSkipped) {
+            setTimeout(() => animateParticle(source, step.target), idx * 30);
+          }
         });
 
-        await sleep(400 + sources.length * 50); // Less wait for particles
+        if (!isSkipped) await sleep(200 + sources.length * 30);
 
         // Reveal Target Node
         const targetNode = document.getElementById(step.target);
-        if (targetNode) {
+        if (targetNode && !isSkipped) {
           targetNode.classList.remove(
             "opacity-0",
             "translate-y-4",
@@ -389,11 +397,38 @@ import TechFlowChart from "./TechFlowChart.astro";
           }
         }
 
-        await sleep(100); // Minimal pause before next group
+        if (!isSkipped) await sleep(50);
       }
 
+      finishAnimation();
+    };
+
+    const finishAnimation = () => {
+      isSkipped = true;
+
+      // Hide Skip Button
+      if (skipBtn) {
+        skipBtn.classList.add("opacity-0", "pointer-events-none");
+      }
+
+      // Force reveal all nodes
+      const allNodes = document.querySelectorAll(".flow-node");
+      allNodes.forEach((node) => {
+        node.classList.remove(
+          "opacity-0",
+          "translate-y-4",
+          "-translate-x-4",
+          "translate-x-4",
+        );
+      });
+
+      // Force reveal all arrows
+      const allArrows = document.querySelectorAll(".arrow-connector");
+      allArrows.forEach((arrow) => {
+        arrow.classList.remove("opacity-0");
+      });
+
       updateStatus("Solution Engineered.", "text-green-400 font-bold");
-      await sleep(500);
 
       // Reveal Solution Context
       const solContext = document.getElementById("solution-context");
@@ -404,13 +439,17 @@ import TechFlowChart from "./TechFlowChart.astro";
       }
     };
 
+    if (skipBtn) {
+      skipBtn.addEventListener("click", finishAnimation);
+    }
+
     // Trigger animation when chart comes into view
     const chartObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && !hasRunAnimation) {
             // Wait a bit for the chart to be fully visible and refined
-            setTimeout(runPouringSequence, 500);
+            setTimeout(runPouringSequence, 200);
             chartObserver.disconnect();
           }
         });

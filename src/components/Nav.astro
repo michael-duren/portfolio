@@ -6,7 +6,24 @@ const { pathname } = Astro.url;
   id="main-nav"
   class="flex items-center justify-center px-6 py-3 rounded-full bg-black/40 backdrop-blur-xl shadow-lg border border-white/10 transition-all duration-300 hover:bg-black/50 hover:scale-[1.02]"
 >
-  <ul class="flex flex-wrap items-center justify-center gap-2 sm:gap-8">
+  <ul class="flex flex-wrap items-center justify-center gap-2 sm:gap-6">
+    <li>
+      <a href="/" class="group relative block mr-4">
+        <div
+          class="absolute -inset-1 bg-orange-500 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-200"
+        >
+        </div>
+        <div
+          class="relative px-3 py-1 bg-black/50 border border-orange-500/50 rounded-lg backdrop-blur-sm transform group-hover:scale-105 transition duration-200"
+        >
+          <span
+            class="font-mono text-sm font-bold tracking-tighter text-orange-400"
+          >
+            &lt;durendev /&gt;
+          </span>
+        </div>
+      </a>
+    </li>
     <li>
       <a
         href="/#home"
