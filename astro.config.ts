@@ -8,6 +8,15 @@ export default defineConfig({
   integrations: [icon(), mdx()],
   adapter: netlify(),
 
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+      config: {
+        limitInputPixels: false,
+      },
+    },
+  },
+
   vite: {
     // @ts-expect-error -- types are incorrect either astro or for tailwindcss vite plugin
     plugins: [tailwindcss()],

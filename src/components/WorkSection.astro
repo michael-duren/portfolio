@@ -39,6 +39,11 @@ import { Icon } from "astro-icon/components";
                     <Image
                       src={project.images[0]!}
                       alt={project.title}
+                      widths={[400, 600, 800, 1200]}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
+                      format="webp"
+                      quality={85}
+                      loading={index === 0 ? "eager" : "lazy"}
                       class="w-full h-full object-cover opacity-90 transition-opacity group-hover:opacity-100"
                     />
                   ) : (
