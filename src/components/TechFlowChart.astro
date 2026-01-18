@@ -1,0 +1,604 @@
+---
+import { Icon } from "astro-icon/components";
+
+// Icon mapping matching the refined sketch
+const nodes = {
+    web: {
+        title: "Web Client",
+        icons: ["react", "typescript", "html5", "css3"],
+        description:
+            "Responsive, high-performance static site with interactive islands.",
+    },
+    cloud: {
+        title: "Cloud",
+        icons: ["amazonwebservices-wordmark", "azure"],
+        description:
+            "Cloud-native infrastructure handling routing, compute, and storage.",
+    },
+    services: {
+        title: "Services",
+        icons: ["csharp", "java"],
+        description:
+            "Microservices ensuring business logic scalability and separation of concerns.",
+    },
+    db: {
+        title: "Data Layer",
+        icons: ["postgresql", "microsoftsqlserver"],
+        description:
+            "Reliable relational data storage with optimized query performance.",
+    },
+    k8s: {
+        title: "Orchestration",
+        icon: "kubernetes",
+        description:
+            "Container orchestration for automated deployment, scaling, and management.",
+    },
+    tools: {
+        title: "Tools & Scripting",
+        icons: ["python", "lua"],
+        description:
+            "Automation scripts for CI/CD pipelines and infrastructure management.",
+    },
+    observability: {
+        title: "Observability",
+        icons: ["grafana", "prometheus", "go"],
+        description: "Real-time metrics and log monitoring.",
+    },
+};
+---
+
+<div
+    class="relative w-full max-w-4xl mx-auto p-4 md:p-8"
+    id="flow-chart-container"
+>
+    <!-- Mobile Layout (Vertical Vial) -->
+    <div class="md:hidden relative w-full aspect-[1/2]">
+        <!-- Vial SVG -->
+        <svg
+            class="absolute inset-0 w-full h-full pointer-events-none drop-shadow-2xl"
+            viewBox="0 0 200 600"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
+        >
+            <defs>
+                <linearGradient id="vial-liquid" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="rgba(147, 51, 234, 0.4)"
+                    ></stop>
+                    <stop offset="100%" stop-color="rgba(59, 130, 246, 0.4)"
+                    ></stop>
+                </linearGradient>
+                <linearGradient id="glass-gradient" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="rgba(255,255,255,0.4)"></stop>
+                    <stop offset="50%" stop-color="rgba(255,255,255,0.1)"
+                    ></stop>
+                    <stop offset="100%" stop-color="rgba(255,255,255,0.3)"
+                    ></stop>
+                </linearGradient>
+            </defs>
+            <!-- Glass Body -->
+            <path
+                d="M50 50 L50 550 C50 580 70 600 100 600 C130 600 150 580 150 550 L150 50"
+                stroke="url(#glass-gradient)"
+                stroke-width="2"
+                fill="rgba(255, 255, 255, 0.05)"></path>
+            <!-- Liquid -->
+            <path
+                d="M55 150 L55 550 C55 575 75 595 100 595 C125 595 145 575 145 550 L145 150 Z"
+                fill="url(#vial-liquid)"></path>
+            <!-- Rim -->
+            <ellipse
+                cx="100"
+                cy="50"
+                rx="50"
+                ry="10"
+                stroke="white"
+                stroke-width="2"
+                class="opacity-40"
+                fill="none"></ellipse>
+        </svg>
+
+        <!-- Vertical Content -->
+        <div
+            class="absolute inset-x-0 top-20 bottom-10 flex flex-col justify-between items-center py-8 z-10 px-8"
+        >
+            <!-- Web -->
+            <div
+                class="flow-node hover:scale-105 transition-transform"
+                data-desc={nodes.web.description}
+            >
+                <div
+                    class="flex gap-2 justify-center bg-gray-900/60 p-2 rounded-lg border border-white/10 backdrop-blur-sm"
+                >
+                    {
+                        nodes.web.icons.map((i) => (
+                            <Icon name={`devicon:${i}`} class="w-6 h-6" />
+                        ))
+                    }
+                </div>
+                <div class="text-[10px] text-center text-gray-300 mt-1">
+                    Web
+                </div>
+            </div>
+            <!-- Arrow Down -->
+            <div class="w-px h-6 bg-white/30"></div>
+
+            <!-- K8s -->
+            <div
+                class="flow-node hover:scale-105 transition-transform"
+                data-desc={nodes.k8s.description}
+            >
+                <div
+                    class="bg-blue-900/40 p-2 rounded-full border border-blue-400/30"
+                >
+                    <Icon name={`devicon:${nodes.k8s.icon}`} class="w-8 h-8" />
+                </div>
+                <div class="text-[10px] text-center text-gray-300 mt-1">
+                    Orch
+                </div>
+            </div>
+
+            <!-- Arrow Down -->
+            <div class="w-px h-6 bg-white/30"></div>
+
+            <!-- Cloud Group -->
+            <div
+                class="bg-gray-900/40 border border-purple-500/30 rounded-xl p-3 w-full flex flex-col gap-3 backdrop-blur-sm"
+            >
+                <div
+                    class="text-[10px] text-center text-purple-300 font-bold tracking-widest uppercase"
+                >
+                    Cloud
+                </div>
+
+                <!-- Gateway/Cloud Prov -->
+                <div
+                    class="flow-node flex justify-center gap-2"
+                    data-desc={nodes.cloud.description}
+                >
+                    {
+                        nodes.cloud.icons.map((i) => (
+                            <Icon name={`devicon:${i}`} class="w-5 h-5" />
+                        ))
+                    }
+                </div>
+
+                <!-- Services -->
+                <div
+                    class="flow-node flex justify-center gap-2"
+                    data-desc={nodes.services.description}
+                >
+                    {
+                        nodes.services.icons.map((i) => (
+                            <Icon name={`devicon:${i}`} class="w-5 h-5" />
+                        ))
+                    }
+                </div>
+
+                <!-- DBs -->
+                <div
+                    class="flow-node flex justify-center gap-2"
+                    data-desc={nodes.db.description}
+                >
+                    {
+                        nodes.db.icons.map((i) => (
+                            <Icon name={`devicon:${i}`} class="w-5 h-5" />
+                        ))
+                    }
+                </div>
+            </div>
+
+            <!-- Arrow Down -->
+            <div class="w-px h-6 bg-white/30"></div>
+
+            <!-- Tools & Obs -->
+            <div class="flex gap-4">
+                <div
+                    class="flow-node flex flex-col items-center"
+                    data-desc={nodes.tools.description}
+                >
+                    <div
+                        class="flex gap-1 bg-gray-900/60 p-1.5 rounded border border-yellow-500/30"
+                    >
+                        {
+                            nodes.tools.icons.map((i) => (
+                                <Icon name={`devicon:${i}`} class="w-4 h-4" />
+                            ))
+                        }
+                    </div>
+                    <div class="text-[8px] text-center text-gray-300 mt-1">
+                        Tools
+                    </div>
+                </div>
+                <div
+                    class="flow-node flex flex-col items-center"
+                    data-desc={nodes.observability.description}
+                >
+                    <div
+                        class="flex gap-1 bg-gray-900/60 p-1.5 rounded border border-red-500/30"
+                    >
+                        {
+                            nodes.observability.icons.map((i) => (
+                                <Icon name={`devicon:${i}`} class="w-4 h-4" />
+                            ))
+                        }
+                    </div>
+                    <div class="text-[8px] text-center text-gray-300 mt-1">
+                        Obs
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Description -->
+            <div
+                class="pointer-events-none mt-4 w-full flex justify-center h-12"
+            >
+                <div
+                    id="flow-description-mobile"
+                    class="bg-black/80 backdrop-blur-xl border border-white/20 px-4 py-2 rounded-xl text-xs text-gray-100 shadow-2xl transition-all duration-300 opacity-0 translate-y-4 text-center z-50"
+                >
+                    Hover components
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Desktop Layout (Wide Reaction Vessel) -->
+<div class="hidden md:block relative w-full aspect-[2/1] xl:aspect-[2.2/1]">
+    <!-- SVG Wide Vessel Graphic -->
+    <svg
+        class="absolute inset-0 w-full h-full pointer-events-none drop-shadow-2xl"
+        viewBox="0 0 1000 500"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        preserveAspectRatio="xMidYMid meet"
+    >
+        <defs>
+            <linearGradient id="wide-liquid" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="rgba(30, 64, 175, 0.1)"></stop>
+                <stop offset="50%" stop-color="rgba(147, 51, 234, 0.15)"></stop>
+                <stop offset="100%" stop-color="rgba(59, 130, 246, 0.1)"></stop>
+            </linearGradient>
+            <linearGradient id="wide-glass" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(255,255,255,0.4)"></stop>
+                <stop offset="100%" stop-color="rgba(255,255,255,0.1)"></stop>
+            </linearGradient>
+            <mask id="liquid-mask">
+                <path
+                    d="M100 150 L100 400 C100 450 150 480 200 480 H800 C850 480 900 450 900 400 L900 150 H100 Z"
+                    fill="white"></path>
+            </mask>
+        </defs>
+
+        <!-- Vessel Body -->
+        <!-- Rim -->
+        <path
+            d="M90 150 H910"
+            stroke="rgba(255,255,255,0.3)"
+            stroke-width="4"
+            stroke-linecap="round"></path>
+
+        <!-- Sides & Bottom -->
+        <path
+            d="M100 150 L100 400 C100 450 150 480 200 480 H800 C850 480 900 450 900 400 L900 150"
+            stroke="url(#wide-glass)"
+            stroke-width="4"
+            fill="rgba(255, 255, 255, 0.02)"></path>
+
+        <!-- Liquid Level -->
+        <path
+            d="M105 400 C105 440 150 475 200 475 H800 C850 475 895 440 895 400 L895 180 C700 190 300 170 105 180 L105 400 Z"
+            fill="url(#wide-liquid)"
+            class="opacity-80"></path>
+    </svg>
+
+    <!-- Content Container -->
+    <div
+        class="absolute inset-0 z-10 p-8 w-[80%] mx-auto h-full flex flex-col justify-between items-center top-12 left-[10%]"
+    >
+        <!-- Top Row: Sources -->
+        <div
+            class="w-full flex justify-between items-start px-12 relative z-20"
+        >
+            <!-- Web Client -->
+            <div
+                class="flow-node -translate-x-4 hover:scale-105 transition-transform cursor-help"
+                data-desc={nodes.web.description}
+            >
+                <div
+                    class="bg-gray-900/80 border border-blue-400/30 p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg backdrop-blur-sm"
+                >
+                    <div
+                        class="flex gap-2 animate-drop-in"
+                        style="animation-delay: 0.2s"
+                    >
+                        {
+                            nodes.web.icons.map((i) => (
+                                <Icon name={`devicon:${i}`} class="w-6 h-6" />
+                            ))
+                        }
+                    </div>
+                    <span class="text-sm text-blue-200 font-mono font-bold"
+                        >Web Client</span
+                    >
+                </div>
+            </div>
+
+            <!-- Top Pipe Animation Source (Visual only) -->
+            <div
+                class="absolute left-1/2 -translate-x-1/2 -top-12 z-0 opacity-50"
+            >
+                <div
+                    class="w-16 h-24 bg-gradient-to-b from-white/10 to-transparent border-x border-white/20"
+                >
+                </div>
+            </div>
+
+            <!-- Orchestration -->
+            <div
+                class="flow-node translate-x-4 hover:scale-105 transition-transform cursor-help"
+                data-desc={nodes.k8s.description}
+            >
+                <div
+                    class="bg-blue-900/60 border border-blue-300/30 p-4 rounded-xl shadow-xl shadow-blue-900/50 backdrop-blur-md flex flex-col items-center gap-2"
+                >
+                    <div class="animate-drop-in" style="animation-delay: 0.4s">
+                        <Icon
+                            name={`devicon:${nodes.k8s.icon}`}
+                            class="w-8 h-8"
+                        />
+                    </div>
+                    <span
+                        class="text-sm text-blue-200 font-bold tracking-widest"
+                        >KUBERNETES</span
+                    >
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle Row: The Mix (Animating In) -->
+        <div
+            class="flex-1 w-full flex justify-center items-center gap-12 relative my-4"
+        >
+            <!-- Cloud Ingredients Dropping In -->
+
+            <!-- Gateway -->
+            <div
+                class="flow-node group relative hover:scale-105 transition-transform cursor-help"
+                data-desc={nodes.cloud.description}
+            >
+                <div
+                    class="bg-gray-800/80 p-4 rounded-xl border border-white/10 flex flex-col items-center gap-3 animate-drop-in-bounce"
+                    style="animation-delay: 0.8s"
+                >
+                    <span
+                        class="text-xs text-gray-400 font-mono uppercase tracking-wider"
+                        >Cloud</span
+                    >
+                    <div class="flex gap-2">
+                        {
+                            nodes.cloud.icons.map((i) => (
+                                <Icon name={`devicon:${i}`} class="w-8 h-8" />
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow -->
+            <Icon
+                name="mdi:arrow-right"
+                class="w-8 h-8 text-purple-400/50 animate-fade-in"
+                style="animation-delay: 1.2s"
+            />
+
+            <!-- Services -->
+            <div
+                class="flow-node group relative hover:scale-105 transition-transform cursor-help"
+                data-desc={nodes.services.description}
+            >
+                <div
+                    class="bg-indigo-900/40 p-6 rounded-2xl border border-indigo-400/30 flex flex-col items-center gap-3 shadow-lg animate-drop-in-bounce"
+                    style="animation-delay: 1s"
+                >
+                    <span
+                        class="text-xs text-indigo-200 font-mono uppercase tracking-wider"
+                        >Services</span
+                    >
+                    <div class="flex gap-4">
+                        {
+                            nodes.services.icons.map((i) => (
+                                <Icon name={`devicon:${i}`} class="w-10 h-10" />
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow -->
+            <Icon
+                name="mdi:arrow-right"
+                class="w-8 h-8 text-purple-400/50 animate-fade-in"
+                style="animation-delay: 1.4s"
+            />
+
+            <!-- Data -->
+            <div
+                class="flow-node group relative hover:scale-105 transition-transform cursor-help"
+                data-desc={nodes.db.description}
+            >
+                <div
+                    class="bg-gray-800/80 p-4 rounded-full border border-green-500/30 flex flex-col items-center gap-3 animate-drop-in-bounce"
+                    style="animation-delay: 1.2s"
+                >
+                    <span
+                        class="text-xs text-green-200 font-mono uppercase tracking-wider"
+                        >Data</span
+                    >
+                    <div class="flex gap-2">
+                        {
+                            nodes.db.icons.map((i) => (
+                                <Icon name={`devicon:${i}`} class="w-8 h-8" />
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Row: Supporting Tools -->
+        <div class="w-full flex justify-between items-end px-4 pb-4">
+            <!-- Tools -->
+            <div
+                class="flow-node bg-yellow-900/20 border border-yellow-500/30 p-4 rounded-2xl backdrop-blur-sm hover:scale-105 transition-transform cursor-help"
+                data-desc={nodes.tools.description}
+            >
+                <div
+                    class="text-xs text-yellow-200/80 mb-2 font-bold uppercase tracking-wider"
+                >
+                    Tools & Scripting
+                </div>
+                <div class="flex gap-3">
+                    {
+                        nodes.tools.icons.map((i) => (
+                            <Icon name={`devicon:${i}`} class="w-6 h-6" />
+                        ))
+                    }
+                </div>
+            </div>
+
+            <!-- Description Bubble -->
+            <div
+                class="absolute bottom-4 left-1/2 -translate-x-1/2 w-96 text-center pointer-events-none z-30"
+            >
+                <div
+                    id="flow-description-desktop"
+                    class="bg-black/80 backdrop-blur-xl border border-white/20 px-6 py-3 rounded-full text-sm text-gray-100 shadow-2xl transition-all duration-300 opacity-0 translate-y-4"
+                >
+                    Hover components to reveal details
+                </div>
+            </div>
+
+            <!-- Observability -->
+            <div
+                class="flow-node bg-red-900/20 border border-red-500/30 p-4 rounded-2xl backdrop-blur-sm hover:scale-105 transition-transform cursor-help"
+                data-desc={nodes.observability.description}
+            >
+                <div
+                    class="text-xs text-red-200/80 mb-2 font-bold uppercase tracking-wider text-right"
+                >
+                    Observability
+                </div>
+                <div class="flex gap-3">
+                    {
+                        nodes.observability.icons.map((i) => (
+                            <Icon name={`devicon:${i}`} class="w-6 h-6" />
+                        ))
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes drop-in {
+        0% {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        100% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    @keyframes drop-in-bounce {
+        0% {
+            transform: translateY(-150px) scale(0.8);
+            opacity: 0;
+        }
+        60% {
+            transform: translateY(10px) scale(1.05);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+    }
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 0.5;
+        } /* Target opacity for arrows */
+    }
+
+    .animate-drop-in {
+        animation: drop-in 0.6s ease-out backwards;
+    }
+    .animate-drop-in-bounce {
+        animation: drop-in-bounce 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)
+            backwards;
+    }
+    .animate-fade-in {
+        animation: fade-in 0.5s ease-out backwards;
+    }
+</style>
+
+<script>
+    function setupInteractions() {
+        // Desktop
+        const containerDesktop = document.querySelector(".hidden.md\\:block");
+        const descDesktop = document.getElementById("flow-description-desktop");
+
+        if (containerDesktop && descDesktop) {
+            containerDesktop.querySelectorAll(".flow-node").forEach((node) => {
+                node.addEventListener("mouseenter", () => {
+                    const text = node.getAttribute("data-desc");
+                    if (text) {
+                        descDesktop.textContent = text;
+                        descDesktop.classList.remove(
+                            "opacity-0",
+                            "translate-y-4",
+                        );
+                    }
+                });
+                node.addEventListener("mouseleave", () => {
+                    descDesktop.classList.add("opacity-0", "translate-y-4");
+                });
+            });
+        }
+
+        // Mobile
+        const containerMobile = document.querySelector(".md\\:hidden");
+        const descMobile = document.getElementById("flow-description-mobile");
+
+        if (containerMobile && descMobile) {
+            containerMobile.querySelectorAll(".flow-node").forEach((node) => {
+                // For mobile we might want click/touch instead of hover, but hover works for long press usually
+                // Adding click for better mobile support
+                node.addEventListener("click", (e) => {
+                    e.stopPropagation(); // prevent immediate close if we add body click listener
+                    const text = node.getAttribute("data-desc");
+                    if (text) {
+                        descMobile.textContent = text;
+                        descMobile.classList.remove(
+                            "opacity-0",
+                            "translate-y-4",
+                        );
+                    }
+                });
+            });
+
+            // Clear on outside click for mobile
+            document.addEventListener("click", () => {
+                descMobile.classList.add("opacity-0", "translate-y-4");
+            });
+        }
+    }
+
+    document.addEventListener("astro:page-load", setupInteractions);
+</script>

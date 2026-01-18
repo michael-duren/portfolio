@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import Technologies from "./Technologies.astro";
+import TechFlowChart from "./TechFlowChart.astro";
 import meJem from "../images/me-jem.jpeg";
 import mePresenting from "../images/me-presenting.jpeg";
 import mePrime from "../images/me-prime.jpeg";
@@ -195,9 +196,22 @@ import SketchArrow from "./SketchArrow.astro";
         Step into my laboratory
       </h3>
       <p class="text-center text-gray-400 text-sm mb-6 font-mono">
-        chemicals and potions I use to craft cutting edge solutions:
+        chemicals and potions I use to craft cutting edge solutions
       </p>
       <Technologies />
+
+      <!-- Tech Flow Chart -->
+      <div
+        class="mt-16 w-full animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-400"
+      >
+        <h3 class="text-2xl font-bold mb-2 text-gray-100 text-center">
+          Crafted engineered solutions.
+        </h3>
+        <p class="text-center text-gray-400 text-sm mb-6 font-mono">
+          Measuring, mixing, and combining technologies...
+        </p>
+        <TechFlowChart />
+      </div>
     </div>
   </div>
 </section>
