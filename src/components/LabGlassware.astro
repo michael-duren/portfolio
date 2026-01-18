@@ -1,16 +1,11 @@
 ---
 export interface Props {
-  variant?: string; // Kept as optional legacy prop to avoid breaking callers, but unused internally
   color?: string;
   bgColor?: string;
   class?: string;
 }
 
-const {
-  color = "text-blue-500",
-  bgColor = "bg-blue-500",
-  class: className = "",
-} = Astro.props;
+const { bgColor = "bg-blue-500", class: className = "" } = Astro.props;
 ---
 
 <div class={`relative flex items-center justify-center ${className} group`}>

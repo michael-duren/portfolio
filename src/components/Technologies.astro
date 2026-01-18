@@ -12,7 +12,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "typescript",
           name: "TS",
-          variant: "beaker",
           color: "text-blue-500",
           bgColor: "bg-blue-500",
           targetNode: "node-web",
@@ -20,7 +19,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "go",
           name: "Go",
-          variant: "flask-round",
           color: "text-cyan-500",
           bgColor: "bg-cyan-500",
           targetNode: "node-observability", // or services
@@ -28,7 +26,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "nodejs",
           name: "Node",
-          variant: "flask-erlenmeyer",
           color: "text-green-500",
           bgColor: "bg-green-500",
           targetNode: "node-services",
@@ -36,7 +33,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "dotnetcore",
           name: ".NET",
-          variant: "beaker",
           color: "text-purple-500",
           bgColor: "bg-purple-500",
           targetNode: "node-services",
@@ -44,7 +40,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "java",
           name: "Java",
-          variant: "flask-round",
           color: "text-red-500",
           bgColor: "bg-red-500",
           targetNode: "node-services",
@@ -52,7 +47,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "kubernetes",
           name: "K8s",
-          variant: "flask-erlenmeyer",
           color: "text-blue-600",
           bgColor: "bg-blue-600",
           targetNode: "node-k8s",
@@ -60,7 +54,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "amazonwebservices-wordmark",
           name: "AWS",
-          variant: "beaker",
           color: "text-yellow-600",
           bgColor: "bg-yellow-600",
           targetNode: "node-cloud",
@@ -68,7 +61,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "azure",
           name: "Azure",
-          variant: "flask-round",
           color: "text-blue-400",
           bgColor: "bg-blue-400",
           targetNode: "node-cloud",
@@ -76,7 +68,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "docker",
           name: "Docker",
-          variant: "flask-erlenmeyer",
           color: "text-blue-500",
           bgColor: "bg-blue-500",
           targetNode: "node-k8s",
@@ -84,7 +75,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "react",
           name: "React",
-          variant: "beaker",
           color: "text-cyan-400",
           bgColor: "bg-cyan-400",
           targetNode: "node-web",
@@ -92,7 +82,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "postgresql",
           name: "Postgres",
-          variant: "flask-round",
           color: "text-blue-300",
           bgColor: "bg-blue-300",
           targetNode: "node-db",
@@ -100,7 +89,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "microsoftsqlserver",
           name: "SQL",
-          variant: "flask-erlenmeyer",
           color: "text-red-600",
           bgColor: "bg-red-600",
           targetNode: "node-db",
@@ -108,7 +96,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "grafana",
           name: "Grafana",
-          variant: "beaker",
           color: "text-orange-500",
           bgColor: "bg-orange-500",
           targetNode: "node-observability",
@@ -116,7 +103,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "prometheus",
           name: "Prom",
-          variant: "flask-round",
           color: "text-orange-600",
           bgColor: "bg-orange-600",
           targetNode: "node-observability",
@@ -124,7 +110,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "python",
           name: "Python",
-          variant: "flask-erlenmeyer",
           color: "text-yellow-500",
           bgColor: "bg-yellow-500",
           targetNode: "node-tools",
@@ -132,7 +117,6 @@ import { Icon } from "astro-icon/components";
         {
           icon: "lua",
           name: "Lua",
-          variant: "beaker",
           color: "text-blue-800",
           bgColor: "bg-blue-800",
           targetNode: "node-tools",
@@ -144,7 +128,6 @@ import { Icon } from "astro-icon/components";
           data-target={tech.targetNode}
         >
           <LabGlassware
-            variant={tech.variant as any}
             color={tech.color}
             bgColor={tech.bgColor}
             class="w-20 h-20 md:w-24 md:h-24"

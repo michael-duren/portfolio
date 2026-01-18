@@ -20,12 +20,12 @@ import contactIllustration from "../images/contact-illustration.png";
   >
     <!-- Illustration Background -->
     <div
-      class="border-pink-500 border w-[100%] h-[100%] opacity-20 pointer-events-none -z-50 select-none mix-blend-screen rounded-full"
+      class="w-[50%] h-[50%] md:w-[100%] md:h-[100%] opacity-50 pointer-events-none -z-50 select-none mix-blend-screen items-center flex w-full"
     >
       <Image
         src={contactIllustration}
         alt="Developer building software sketch"
-        class="w-full h-full object-contain invert-0"
+        class="w-full h-full object-contain invert-0 rounded-full"
         loading="lazy"
       />
     </div>
@@ -179,7 +179,10 @@ import contactIllustration from "../images/contact-illustration.png";
     </div>
   </div>
 
-  <script define:vars={{ siteKey: import.meta.env.RECAPTCHA_SITE_KEY }}>
+  <script
+    is:inline
+    define:vars={{ siteKey: import.meta.env.RECAPTCHA_SITE_KEY }}
+  >
     document.addEventListener("astro:page-load", () => {
       const form = document.getElementById("contact-form");
       const messageDiv = document.getElementById("form-message");
