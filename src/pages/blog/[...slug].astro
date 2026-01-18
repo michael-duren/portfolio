@@ -2,6 +2,7 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import MainLayout from "../../layouts/MainLayout.astro";
 import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -55,6 +56,20 @@ const { Content } = await post.render();
             <span>{post.data.author}</span>
           </div>
         </div>
+        {
+          post.data.heroImage && (
+            <div class="mt-8 mb-8 rounded-2xl overflow-hidden shadow-2xl border border-white/10 aspect-video">
+              <Image
+                src={post.data.heroImage}
+                alt={post.data.title}
+                width={1200}
+                height={675}
+                class="w-full h-full object-cover"
+                loading="eager"
+              />
+            </div>
+          )
+        }
         {
           post.data.tags && (
             <div class="flex flex-wrap gap-2 mt-6">

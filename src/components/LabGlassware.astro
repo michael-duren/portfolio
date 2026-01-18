@@ -1,52 +1,46 @@
 ---
 export interface Props {
-  variant?:
-    | "beaker"
-    | "flask-round"
-    | "flask-erlenmeyer"
-    | "test-tube"
-    | "solution";
+  variant?: string; // Kept as optional legacy prop to avoid breaking callers, but unused internally
   color?: string;
+  bgColor?: string;
   class?: string;
 }
 
 const {
-  variant = "beaker",
   color = "text-blue-500",
+  bgColor = "bg-blue-500",
   class: className = "",
 } = Astro.props;
 ---
 
 <div class={`relative flex items-center justify-center ${className} group`}>
-  <!-- Circular container pretending to be zoomed-in flask liquid -->
   <div
     class="relative w-full h-full rounded-full overflow-hidden border-2 border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)] backdrop-blur-sm bg-gray-900/40"
   >
-    <!-- Liquid Background -->
     <div
-      class={`absolute inset-0 opacity-40 group-hover:opacity-50 transition-opacity duration-500 ${color.replace("text-", "bg-")}`}
+      class={`absolute inset-0 opacity-40 group-hover:opacity-50 transition-opacity duration-500 ${bgColor}`}
     >
     </div>
 
     <!-- Bubbles Animation -->
     <div class="absolute inset-0 overflow-hidden">
       <div
-        class={`absolute bottom-0 left-[20%] w-1.5 h-1.5 rounded-full ${color.replace("text-", "bg-")} animate-bubble opacity-80`}
+        class={`absolute bottom-0 left-[20%] w-1.5 h-1.5 rounded-full ${bgColor} animate-bubble opacity-80`}
         style="animation-duration: 2s; animation-delay: 0s;"
       >
       </div>
       <div
-        class={`absolute bottom-0 left-[50%] w-2 h-2 rounded-full ${color.replace("text-", "bg-")} animate-bubble opacity-80`}
+        class={`absolute bottom-0 left-[50%] w-2 h-2 rounded-full ${bgColor} animate-bubble opacity-80`}
         style="animation-duration: 3s; animation-delay: 1s;"
       >
       </div>
       <div
-        class={`absolute bottom-0 left-[70%] w-1 h-1 rounded-full ${color.replace("text-", "bg-")} animate-bubble opacity-80`}
+        class={`absolute bottom-0 left-[70%] w-1 h-1 rounded-full ${bgColor} animate-bubble opacity-80`}
         style="animation-duration: 2.5s; animation-delay: 0.5s;"
       >
       </div>
       <div
-        class={`absolute bottom-0 right-[30%] w-1.5 h-1.5 rounded-full ${color.replace("text-", "bg-")} animate-bubble opacity-80`}
+        class={`absolute bottom-0 right-[30%] w-1.5 h-1.5 rounded-full ${bgColor} animate-bubble opacity-80`}
         style="animation-duration: 2.2s; animation-delay: 1.2s;"
       >
       </div>

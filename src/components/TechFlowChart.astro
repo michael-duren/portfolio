@@ -5,7 +5,7 @@ import { Icon } from "astro-icon/components";
 const nodes = {
     web: {
         title: "Web Client",
-        icons: ["react", "typescript", "html5", "css3"],
+        icons: ["react", "typescript"],
         description:
             "Responsive, high-performance static site with interactive islands.",
     },
@@ -47,206 +47,10 @@ const nodes = {
 };
 ---
 
+<!-- Responsive Layout (Big Circle Reaction Vessel) -->
 <div
-    class="relative w-full max-w-4xl mx-auto p-4 md:p-8"
+    class="relative w-full aspect-square max-w-2xl mx-auto my-8 md:my-12"
     id="flow-chart-container"
->
-    <!-- Mobile Layout (Vertical Vial) -->
-    <div class="md:hidden relative w-full aspect-[1/2]">
-        <!-- Vial SVG -->
-        <svg
-            class="absolute inset-0 w-full h-full pointer-events-none drop-shadow-2xl"
-            viewBox="0 0 200 600"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="none"
-        >
-            <defs>
-                <linearGradient id="vial-liquid" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="rgba(147, 51, 234, 0.4)"
-                    ></stop>
-                    <stop offset="100%" stop-color="rgba(59, 130, 246, 0.4)"
-                    ></stop>
-                </linearGradient>
-                <linearGradient id="glass-gradient" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="rgba(255,255,255,0.4)"></stop>
-                    <stop offset="50%" stop-color="rgba(255,255,255,0.1)"
-                    ></stop>
-                    <stop offset="100%" stop-color="rgba(255,255,255,0.3)"
-                    ></stop>
-                </linearGradient>
-            </defs>
-            <!-- Glass Body -->
-            <path
-                d="M50 50 L50 550 C50 580 70 600 100 600 C130 600 150 580 150 550 L150 50"
-                stroke="url(#glass-gradient)"
-                stroke-width="2"
-                fill="rgba(255, 255, 255, 0.05)"></path>
-            <!-- Liquid -->
-            <path
-                d="M55 150 L55 550 C55 575 75 595 100 595 C125 595 145 575 145 550 L145 150 Z"
-                fill="url(#vial-liquid)"></path>
-            <!-- Rim -->
-            <ellipse
-                cx="100"
-                cy="50"
-                rx="50"
-                ry="10"
-                stroke="white"
-                stroke-width="2"
-                class="opacity-40"
-                fill="none"></ellipse>
-        </svg>
-
-        <!-- Vertical Content -->
-        <div
-            class="absolute inset-x-0 top-20 bottom-10 flex flex-col justify-between items-center py-8 z-10 px-8"
-        >
-            <!-- Web -->
-            <div
-                class="flow-node hover:scale-105 transition-transform"
-                data-desc={nodes.web.description}
-            >
-                <div
-                    class="flex gap-2 justify-center bg-gray-900/60 p-2 rounded-lg border border-white/10 backdrop-blur-sm"
-                >
-                    {
-                        nodes.web.icons.map((i) => (
-                            <Icon name={`devicon:${i}`} class="w-6 h-6" />
-                        ))
-                    }
-                </div>
-                <div class="text-[10px] text-center text-gray-300 mt-1">
-                    Web
-                </div>
-            </div>
-            <!-- Arrow Down -->
-            <div class="w-px h-6 bg-white/30"></div>
-
-            <!-- K8s -->
-            <div
-                class="flow-node hover:scale-105 transition-transform"
-                data-desc={nodes.k8s.description}
-            >
-                <div
-                    class="bg-blue-900/40 p-2 rounded-full border border-blue-400/30"
-                >
-                    <Icon name={`devicon:${nodes.k8s.icon}`} class="w-8 h-8" />
-                </div>
-                <div class="text-[10px] text-center text-gray-300 mt-1">
-                    Orch
-                </div>
-            </div>
-
-            <!-- Arrow Down -->
-            <div class="w-px h-6 bg-white/30"></div>
-
-            <!-- Cloud Group -->
-            <div
-                class="bg-gray-900/40 border border-purple-500/30 rounded-xl p-3 w-full flex flex-col gap-3 backdrop-blur-sm"
-            >
-                <div
-                    class="text-[10px] text-center text-purple-300 font-bold tracking-widest uppercase"
-                >
-                    Cloud
-                </div>
-
-                <!-- Gateway/Cloud Prov -->
-                <div
-                    class="flow-node flex justify-center gap-2"
-                    data-desc={nodes.cloud.description}
-                >
-                    {
-                        nodes.cloud.icons.map((i) => (
-                            <Icon name={`devicon:${i}`} class="w-5 h-5" />
-                        ))
-                    }
-                </div>
-
-                <!-- Services -->
-                <div
-                    class="flow-node flex justify-center gap-2"
-                    data-desc={nodes.services.description}
-                >
-                    {
-                        nodes.services.icons.map((i) => (
-                            <Icon name={`devicon:${i}`} class="w-5 h-5" />
-                        ))
-                    }
-                </div>
-
-                <!-- DBs -->
-                <div
-                    class="flow-node flex justify-center gap-2"
-                    data-desc={nodes.db.description}
-                >
-                    {
-                        nodes.db.icons.map((i) => (
-                            <Icon name={`devicon:${i}`} class="w-5 h-5" />
-                        ))
-                    }
-                </div>
-            </div>
-
-            <!-- Arrow Down -->
-            <div class="w-px h-6 bg-white/30"></div>
-
-            <!-- Tools & Obs -->
-            <div class="flex gap-4">
-                <div
-                    class="flow-node flex flex-col items-center"
-                    data-desc={nodes.tools.description}
-                >
-                    <div
-                        class="flex gap-1 bg-gray-900/60 p-1.5 rounded border border-yellow-500/30"
-                    >
-                        {
-                            nodes.tools.icons.map((i) => (
-                                <Icon name={`devicon:${i}`} class="w-4 h-4" />
-                            ))
-                        }
-                    </div>
-                    <div class="text-[8px] text-center text-gray-300 mt-1">
-                        Tools
-                    </div>
-                </div>
-                <div
-                    class="flow-node flex flex-col items-center"
-                    data-desc={nodes.observability.description}
-                >
-                    <div
-                        class="flex gap-1 bg-gray-900/60 p-1.5 rounded border border-red-500/30"
-                    >
-                        {
-                            nodes.observability.icons.map((i) => (
-                                <Icon name={`devicon:${i}`} class="w-4 h-4" />
-                            ))
-                        }
-                    </div>
-                    <div class="text-[8px] text-center text-gray-300 mt-1">
-                        Obs
-                    </div>
-                </div>
-            </div>
-
-            <!-- Mobile Description -->
-            <div
-                class="pointer-events-none mt-4 w-full flex justify-center h-12"
-            >
-                <div
-                    id="flow-description-mobile"
-                    class="bg-black/80 backdrop-blur-xl border border-white/20 px-4 py-2 rounded-xl text-xs text-gray-100 shadow-2xl transition-all duration-300 opacity-0 translate-y-4 text-center z-50"
-                >
-                    Hover components
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Desktop Layout (Big Circle Reaction Vessel) -->
-<div
-    class="hidden md:block relative w-full aspect-square max-w-2xl mx-auto my-12"
 >
     <!-- Circle Container Background -->
     <div
@@ -301,7 +105,7 @@ const nodes = {
 
     <!-- Content Container -->
     <div
-        class="absolute inset-0 z-10 p-12 w-full h-full flex flex-col justify-evenly items-center"
+        class="absolute inset-0 z-10 p-4 md:p-12 w-full h-full flex flex-col justify-evenly items-center"
     >
         <!-- Top Row: Sources -->
         <div
@@ -376,11 +180,8 @@ const nodes = {
 
         <!-- Middle Row: The Mix (Animating In) -->
         <div
-            class="flex-1 w-full flex justify-center items-center gap-12 relative my-4"
+            class="flex-1 w-full flex justify-center items-center md:gap-12 relative my-4"
         >
-            <!-- Cloud Ingredients Dropping In -->
-
-            <!-- Gateway -->
             <div
                 id="node-cloud"
                 class="flow-node opacity-0 group relative hover:scale-105 transition-all duration-500 cursor-help"
@@ -567,12 +368,13 @@ const nodes = {
 
 <script>
     function setupInteractions() {
-        // Desktop
-        const containerDesktop = document.querySelector(".hidden.md\\:block");
+        const container = document.getElementById("flow-chart-container");
         const descDesktop = document.getElementById("flow-description-desktop");
 
-        if (containerDesktop && descDesktop) {
-            containerDesktop.querySelectorAll(".flow-node").forEach((node) => {
+        // We use the same description element for simplicity now, or we can keep just one
+        if (container && descDesktop) {
+            container.querySelectorAll(".flow-node").forEach((node) => {
+                // Mouse enter
                 node.addEventListener("mouseenter", () => {
                     const text = node.getAttribute("data-desc");
                     if (text) {
@@ -583,26 +385,19 @@ const nodes = {
                         );
                     }
                 });
+
+                // Mouse leave
                 node.addEventListener("mouseleave", () => {
                     descDesktop.classList.add("opacity-0", "translate-y-4");
                 });
-            });
-        }
 
-        // Mobile
-        const containerMobile = document.querySelector(".md\\:hidden");
-        const descMobile = document.getElementById("flow-description-mobile");
-
-        if (containerMobile && descMobile) {
-            containerMobile.querySelectorAll(".flow-node").forEach((node) => {
-                // For mobile we might want click/touch instead of hover, but hover works for long press usually
-                // Adding click for better mobile support
+                // Click (for mobile support)
                 node.addEventListener("click", (e) => {
-                    e.stopPropagation(); // prevent immediate close if we add body click listener
+                    e.stopPropagation();
                     const text = node.getAttribute("data-desc");
                     if (text) {
-                        descMobile.textContent = text;
-                        descMobile.classList.remove(
+                        descDesktop.textContent = text;
+                        descDesktop.classList.remove(
                             "opacity-0",
                             "translate-y-4",
                         );
@@ -610,9 +405,9 @@ const nodes = {
                 });
             });
 
-            // Clear on outside click for mobile
+            // Clear on outside click
             document.addEventListener("click", () => {
-                descMobile.classList.add("opacity-0", "translate-y-4");
+                descDesktop.classList.add("opacity-0", "translate-y-4");
             });
         }
     }
