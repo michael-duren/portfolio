@@ -274,7 +274,7 @@ import TechFlowChart from "./TechFlowChart.astro";
           }
           statusTextContainer.classList.remove("opacity-0");
           statusTextContainer.classList.add("opacity-100");
-        }, 300);
+        }, 150); // Faster fade transition
       };
 
       // Helper to animate particle
@@ -291,7 +291,7 @@ import TechFlowChart from "./TechFlowChart.astro";
           "z-50",
           "pointer-events-none",
           "transition-all",
-          "duration-1000",
+          "duration-700", // Faster flight duration
           "ease-in-out",
         );
         particle.style.left = `${sourceRect.left + sourceRect.width / 2}px`;
@@ -315,7 +315,7 @@ import TechFlowChart from "./TechFlowChart.astro";
         // Cleanup
         setTimeout(() => {
           particle.remove();
-        }, 1000);
+        }, 700);
       };
 
       // Sequence Groups
@@ -367,10 +367,10 @@ import TechFlowChart from "./TechFlowChart.astro";
 
         // Launch particles
         sources.forEach((source, idx) => {
-          setTimeout(() => animateParticle(source, step.target), idx * 100);
+          setTimeout(() => animateParticle(source, step.target), idx * 50); // Faster stagger
         });
 
-        await sleep(800 + sources.length * 100); // Wait for particles
+        await sleep(400 + sources.length * 50); // Less wait for particles
 
         // Reveal Target Node
         const targetNode = document.getElementById(step.target);
@@ -389,11 +389,11 @@ import TechFlowChart from "./TechFlowChart.astro";
           }
         }
 
-        await sleep(400); // Pause before next group
+        await sleep(100); // Minimal pause before next group
       }
 
       updateStatus("Solution Engineered.", "text-green-400 font-bold");
-      await sleep(1000);
+      await sleep(500);
 
       // Reveal Solution Context
       const solContext = document.getElementById("solution-context");
