@@ -24,7 +24,7 @@ import SketchArrow from "./SketchArrow.astro";
     >
       <!-- Glass Card Container -->
       <div
-        class="bg-white/50 dark:bg-gray-800/50 backdrop-blur-md border border-gray-200/50 dark:border-gray-700/50 rounded-3xl p-8 md:p-12 shadow-xl"
+        class="bg-gray-800/50 backdrop-blur-md border border-gray-700/50 rounded-3xl p-8 md:p-12 shadow-xl"
       >
         <div
           class="flex flex-col md:flex-row gap-8 items-center md:items-start"
@@ -49,43 +49,33 @@ import SketchArrow from "./SketchArrow.astro";
             <Image
               src={headshot}
               alt="Michael Duren Headshot"
-              class="relative w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white dark:border-gray-900 shadow-2xl z-10"
+              class="relative w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-gray-900 shadow-2xl z-10"
             />
           </div>
         </div>
 
         <div
-          class="prose dark:prose-invert max-w-none text-lg leading-relaxed text-gray-700 dark:text-gray-300 mt-8"
+          class="prose prose-invert max-w-none text-lg leading-relaxed text-gray-300 mt-8"
         >
           <p>
             I'm a software engineer specialized in building distributed systems,
             cloud infrastructure, and
-            <span class="font-semibold text-gray-900 dark:text-white"
-              >Open Source</span
-            > software. I build production observability platforms and developer tools
-            using
-            <span class="font-semibold text-blue-600 dark:text-blue-400"
-              >Typescript</span
-            >,
-            <span class="font-semibold text-cyan-600 dark:text-cyan-400"
-              >Go</span
-            >,
-            <span class="font-semibold text-purple-600 dark:text-purple-400"
-              >C#/Java</span
-            >, and
-            <span class="font-semibold text-yellow-600 dark:text-yellow-400"
-              >Python</span
-            >.
+            <span class="font-semibold text-white">Open Source</span> software. I
+            build production observability platforms and developer tools using
+            <span class="font-semibold text-blue-400">Typescript</span>,
+            <span class="font-semibold text-cyan-400">Go</span>,
+            <span class="font-semibold text-purple-400">C#/Java</span>, and
+            <span class="font-semibold text-yellow-400">Python</span>.
           </p>
 
           <p>
             I focus on delivering tangible operational improvements. I've
             architected observability infrastructure that reduced
-            <span class="font-semibold text-gray-900 dark:text-white"
+            <span class="font-semibold text-white"
               >Mean Time To Resolution (MTTR) by 40%</span
             >
             and built Go-based deployment tools that slashed deployment times by
-            <span class="font-semibold text-gray-900 dark:text-white"
+            <span class="font-semibold text-white"
               >78% (from 90 to 20 minutes)</span
             >.
           </p>
@@ -94,16 +84,15 @@ import SketchArrow from "./SketchArrow.astro";
             Beyond infrastructure, I've built <a
               href="https://www.patterninterruptinc.com/"
               target="_blank"
-              class="text-purple-600 dark:text-purple-400 font-semibold hover:underline decoration-2 underline-offset-2"
+              class="text-purple-400 font-semibold hover:underline decoration-2 underline-offset-2"
               >Next Step CMS</a
             > with <a
               href="https://www.patterninterruptinc.com/"
               target="_blank"
-              class="text-purple-600 dark:text-purple-400 font-semibold hover:underline decoration-2 underline-offset-2"
+              class="text-purple-400 font-semibold hover:underline decoration-2 underline-offset-2"
               >Pattern Interrupt</a
             >, a horizontally scalable SaaS platform. I also contribute to <span
-              class="font-semibold text-gray-900 dark:text-white"
-              >Code for Recovery</span
+              class="font-semibold text-white">Code for Recovery</span
             >, developing open-source tools for the recovery community.
           </p>
 
@@ -130,14 +119,10 @@ import SketchArrow from "./SketchArrow.astro";
       class="w-full flex flex-col items-center justify-center relative animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-200"
     >
       <div class="w-full max-w-4xl space-y-8">
-        <h3
-          class="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center"
-        >
+        <h3 class="text-2xl font-bold text-gray-100 text-center">
           Speaking and Community
         </h3>
-        <p
-          class="text-center text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
-        >
+        <p class="text-center text-gray-300 max-w-2xl mx-auto">
           I've given talks, taught courses on popular topics in .NET and Go,
           community is huge and through my career I've got to meet and learn
           from some of the best engineers in the world.
@@ -206,14 +191,10 @@ import SketchArrow from "./SketchArrow.astro";
     <div
       class="w-full max-w-4xl mx-auto animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-300"
     >
-      <h3
-        class="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100 text-center"
-      >
+      <h3 class="text-2xl font-bold mb-2 text-gray-100 text-center">
         Step into my laboratory
       </h3>
-      <p
-        class="text-center text-gray-500 dark:text-gray-400 text-sm mb-6 font-mono"
-      >
+      <p class="text-center text-gray-400 text-sm mb-6 font-mono">
         chemicals and potions I use to craft cutting edge solutions:
       </p>
       <Technologies />

@@ -4,61 +4,61 @@ const { pathname } = Astro.url;
 
 <nav
   id="main-nav"
-  class="flex items-center justify-center px-6 py-3 rounded-full bg-white/10 dark:bg-black/40 backdrop-blur-xl shadow-lg border border-white/20 dark:border-white/10 transition-all duration-300 hover:bg-white/20 dark:hover:bg-black/50 hover:scale-[1.02]"
+  class="flex items-center justify-center px-6 py-3 rounded-full bg-black/40 backdrop-blur-xl shadow-lg border border-white/10 transition-all duration-300 hover:bg-black/50 hover:scale-[1.02]"
 >
   <ul class="flex flex-wrap items-center justify-center gap-2 sm:gap-8">
     <li>
       <a
         href="/#home"
-        class="nav-link group relative px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+        class="nav-link group relative px-3 py-2 text-sm font-medium text-gray-200 hover:text-purple-400 transition-colors"
       >
         Home
         <span
-          class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-purple-600 dark:bg-purple-400 group-hover:w-1/2 group-hover:-translate-x-1/2 transition-all duration-300 ease-out rounded-full"
+          class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-purple-400 group-hover:w-1/2 group-hover:-translate-x-1/2 transition-all duration-300 ease-out rounded-full"
         ></span>
       </a>
     </li>
     <li>
       <a
         href="/#about"
-        class="nav-link group relative px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+        class="nav-link group relative px-3 py-2 text-sm font-medium text-gray-200 hover:text-purple-400 transition-colors"
       >
         About
         <span
-          class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-purple-600 dark:bg-purple-400 group-hover:w-1/2 group-hover:-translate-x-1/2 transition-all duration-300 ease-out rounded-full"
+          class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-purple-400 group-hover:w-1/2 group-hover:-translate-x-1/2 transition-all duration-300 ease-out rounded-full"
         ></span>
       </a>
     </li>
     <li>
       <a
         href="/#work"
-        class="nav-link group relative px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+        class="nav-link group relative px-3 py-2 text-sm font-medium text-gray-200 hover:text-purple-400 transition-colors"
       >
         Work
         <span
-          class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-purple-600 dark:bg-purple-400 group-hover:w-1/2 group-hover:-translate-x-1/2 transition-all duration-300 ease-out rounded-full"
+          class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-purple-400 group-hover:w-1/2 group-hover:-translate-x-1/2 transition-all duration-300 ease-out rounded-full"
         ></span>
       </a>
     </li>
     <li>
       <a
         href="/#contact"
-        class="nav-link group relative px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+        class="nav-link group relative px-3 py-2 text-sm font-medium text-gray-200 hover:text-purple-400 transition-colors"
       >
         Contact
         <span
-          class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-purple-600 dark:bg-purple-400 group-hover:w-1/2 group-hover:-translate-x-1/2 transition-all duration-300 ease-out rounded-full"
+          class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-purple-400 group-hover:w-1/2 group-hover:-translate-x-1/2 transition-all duration-300 ease-out rounded-full"
         ></span>
       </a>
     </li>
-    <div class="w-px h-6 bg-gray-300 dark:bg-gray-700 hidden sm:block"></div>
+    <div class="w-px h-6 bg-gray-700 hidden sm:block"></div>
     <li>
       <a
         href="/resume"
         class={`btn btn-sm text-xs sm:text-sm rounded-full px-4 border-0 ${
           pathname === "/resume"
             ? "bg-purple-600 text-white hover:bg-purple-700 shadow-md shadow-purple-500/30"
-            : "bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-white/20"
+            : "bg-white/10 text-gray-200 hover:bg-white/20"
         }`}
       >
         Resume
@@ -70,7 +70,7 @@ const { pathname } = Astro.url;
         class={`btn btn-sm text-xs sm:text-sm rounded-full px-4 border-0 ${
           pathname.startsWith("/blog")
             ? "bg-purple-600 text-white hover:bg-purple-700 shadow-md shadow-purple-500/30"
-            : "btn-ghost text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            : "btn-ghost text-gray-400 hover:text-white"
         }`}
       >
         Blog
@@ -97,9 +97,9 @@ const { pathname } = Astro.url;
         const href = link.getAttribute("href");
         // Remove existing active classes if any (handled by span now, maybe add color)
         if (href === `/#${current}`) {
-          link.classList.add("text-purple-600", "dark:text-purple-400");
+          link.classList.add("text-purple-400");
         } else {
-          link.classList.remove("text-purple-600", "dark:text-purple-400");
+          link.classList.remove("text-purple-400");
         }
       });
     };

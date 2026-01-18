@@ -2,257 +2,249 @@
 import { Icon } from "astro-icon/components";
 ---
 
-<section id="contact" class="py-24 px-4 w-full relative overflow-hidden">
-  <div
-    class="absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-gray-100 to-transparent dark:from-gray-900 pointer-events-none -z-10"
-  >
-  </div>
-
-  <div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-12 items-center">
-    <div
-      class="flex-1 space-y-8 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700"
-    >
-      <h2
-        class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-gray-100 leading-tight"
-      >
-        Let's Build Something <span
-          class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-500"
-          >Great</span
-        >
-      </h2>
-      <p
-        class="text-xl text-gray-600 dark:text-gray-300 leading-relaxed font-light"
-      >
-        Have a project in mind or just want to say hi? I'm always open to
-        discussing new opportunities and ideas.
-      </p>
-
-      <div class="grid grid-cols-2 gap-4 py-4">
-        <div
-          class="p-4 rounded-2xl bg-white/50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 backdrop-blur-sm"
-        >
-          <div
-            class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-1"
-          >
-            Response Time
-          </div>
-          <code
-            class="text-purple-600 dark:text-purple-400 font-bold bg-purple-100 dark:bg-purple-900/30 px-2 py-0.5 rounded text-sm"
-            >&lt; 24 hrs</code
-          >
-        </div>
-        <div
-          class="p-4 rounded-2xl bg-white/50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 backdrop-blur-sm"
-        >
-          <div
-            class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-semibold mb-1"
-          >
-            Availability
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="relative flex h-2.5 w-2.5">
-              <span
-                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
-              ></span>
-              <span
-                class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"
-              ></span>
-            </span>
-            <code
-              class="text-green-600 dark:text-green-400 font-bold bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded text-sm"
-              >Open to Work</code
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Contact Form Card -->
-    <div
-      class="flex-1 w-full max-w-lg animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-200"
-    >
-      <div
-        class="p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700"
-      >
-        <form id="contact-form" class="space-y-6">
-          <!-- Honeypot -->
-          <input
-            type="text"
-            name="first"
-            class="hidden"
-            style="display:none"
-            tabindex="-1"
-            autocomplete="off"
-          />
-
-          <div class="space-y-4">
-            <div class="form-control">
-              <label class="label pl-1">
-                <span
-                  class="label-text font-medium text-gray-700 dark:text-gray-300"
-                  >Your Name</span
-                >
-              </label>
-              <input
-                type="text"
-                name="name"
-                id="name"
-                class="input w-full bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300"
-                required
-              />
-            </div>
-
-            <div class="form-control">
-              <label class="label pl-1">
-                <span
-                  class="label-text font-medium text-gray-700 dark:text-gray-300"
-                  >Email Address</span
-                >
-              </label>
-              <input
-                type="email"
-                name="email"
-                id="email"
-                class="input w-full bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300"
-                required
-              />
-            </div>
-
-            <div class="form-control">
-              <label class="label pl-1">
-                <span
-                  class="label-text font-medium text-gray-700 dark:text-gray-300"
-                  >Message</span
-                >
-              </label>
-              <textarea
-                name="message"
-                id="message"
-                class="textarea h-32 w-full bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-700 rounded-xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300"
-                required></textarea>
-            </div>
-          </div>
-
-          <div
-            class="g-recaptcha"
-            data-sitekey={import.meta.env.RECAPTCHA_SITE_KEY}
-            data-size="invisible"
-          >
-          </div>
-
-          <!-- Feedback Messages -->
-          <div
-            id="form-message"
-            class="hidden p-4 rounded-lg text-sm font-medium"
-          >
-          </div>
-
-          <button
-            type="submit"
-            id="submit-btn"
-            class="btn w-full bg-gradient-to-r from-gray-900 to-gray-800 dark:from-purple-600 dark:to-blue-600 text-white border-none rounded-xl py-4 h-auto text-lg hover:scale-[1.02] hover:shadow-lg transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span class="flex items-center justify-center gap-2">
-              <span id="btn-text">Send Message</span>
-              <Icon
-                name="carbon:send"
-                id="btn-icon"
-                class="w-5 h-5 group-hover:translate-x-1 transition-transform"
-              />
-              <span
-                id="btn-loader"
-                class="hidden loading loading-spinner loading-sm"></span>
-            </span>
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
+<section
+  id="contact"
+  class="py-24 px-4 w-full relative overflow-hidden
+  absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-gray-900
+  pointer-events-none -z-10"
+>
 </section>
 
-<script
-  is:inline
-  src={`https://www.google.com/recaptcha/api.js?render=${import.meta.env.RECAPTCHA_SITE_KEY}`}
-></script>
+<div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-12 items-center">
+  <div
+    class="flex-1 space-y-8 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700"
+  >
+    <h2 class="text-4xl md:text-5xl font-bold text-gray-100 leading-tight">
+      Let's Build Something <span
+        class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-500"
+        >Great</span
+      >
+    </h2>
+    <p class="text-xl text-gray-300 leading-relaxed font-light">
+      Have a project in mind or just want to say hi? I'm always open to
+      discussing new opportunities and ideas.
+    </p>
 
-<script define:vars={{ siteKey: import.meta.env.RECAPTCHA_SITE_KEY }}>
-  document.addEventListener("astro:page-load", () => {
-    const form = document.getElementById("contact-form");
-    const messageDiv = document.getElementById("form-message");
-    const submitBtn = document.getElementById("submit-btn");
-    const btnText = document.getElementById("btn-text");
-    const btnIcon = document.getElementById("btn-icon");
-    const btnLoader = document.getElementById("btn-loader");
+    <div class="grid grid-cols-2 gap-4 py-4">
+      <div
+        class="p-4 rounded-2xl bg-gray-800/50 border border-gray-700 backdrop-blur-sm"
+      >
+        <div
+          class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1"
+        >
+          Response Time
+        </div>
+        <div class="">
+          <span
+            class="text-purple-400 font-bold bg-purple-900/30 px-2 py-0.5 rounded text-sm"
+          >
+            &lt; 24 hrs
+          </span>
+        </div>
+      </div>
+      <div
+        class="p-4 rounded-2xl bg-gray-800/50 border border-gray-700 backdrop-blur-sm"
+      >
+        <div
+          class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1"
+        >
+          Availability
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="relative flex h-2.5 w-2.5">
+            <span
+              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
+            ></span>
+            <span
+              class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"
+            ></span>
+          </span>
+          <code
+            class="text-green-400 font-bold bg-green-900/30 px-2 py-0.5 rounded text-sm"
+            >Open to Work</code
+          >
+        </div>
+      </div>
+    </div>
+  </div>
 
-    if (!form) return;
+  <!-- Contact Form Card -->
+  <div
+    class="flex-1 w-full max-w-lg animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-200"
+  >
+    <div class="p-8 rounded-3xl shadow-xl border border-gray-700">
+      <form id="contact-form" class="space-y-6">
+        <!-- Honeypot -->
+        <input
+          type="text"
+          name="first"
+          class="hidden"
+          style="display:none"
+          tabindex="-1"
+          autocomplete="off"
+        />
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+        <div class="space-y-4">
+          <div class="form-control">
+            <label class="label pl-1">
+              <span class="label-text font-medium text-gray-300">Your Name</span
+              >
+            </label>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              class="input w-full bg-gray-900/50 border-gray-700 rounded-xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300"
+              required
+            />
+          </div>
 
-      // Reset feedback
-      messageDiv.classList.add("hidden");
-      messageDiv.classList.remove(
-        "bg-green-100",
-        "text-green-700",
-        "bg-red-100",
-        "text-red-700",
-      );
+          <div class="form-control">
+            <label class="label pl-1">
+              <span class="label-text font-medium text-gray-300"
+                >Email Address</span
+              >
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              class="input w-full bg-gray-900/50 border-gray-700 rounded-xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300"
+              required
+            />
+          </div>
 
-      // Set loading state
-      submitBtn.disabled = true;
-      btnText.textContent = "Sending...";
-      btnIcon.classList.add("hidden");
-      btnLoader.classList.remove("hidden");
+          <div class="form-control">
+            <label class="label pl-1">
+              <span class="label-text font-medium text-gray-300">Message</span>
+            </label>
+            <textarea
+              name="message"
+              id="message"
+              class="textarea h-32 w-full bg-gray-900/50 border-gray-700 rounded-xl focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-300"
+              required></textarea>
+          </div>
+        </div>
 
-      try {
-        // Execute reCAPTCHA
-        const token = await grecaptcha.execute(siteKey, {
-          action: "submit",
-        });
+        <div
+          class="g-recaptcha"
+          data-sitekey={import.meta.env.RECAPTCHA_SITE_KEY}
+          data-size="invisible"
+        >
+        </div>
 
-        const formData = new FormData(form);
-        const data = {
-          first: formData.get("first"), // Honeypot
-          name: formData.get("name"),
-          email: formData.get("email"),
-          message: formData.get("message"),
-          token: token,
-        };
+        <!-- Feedback Messages -->
+        <div
+          id="form-message"
+          class="hidden p-4 rounded-lg text-sm font-medium"
+        >
+        </div>
 
-        const response = await fetch("/api/contact", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
+        <button
+          type="submit"
+          id="submit-btn"
+          class="btn w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white border-none rounded-xl py-4 h-auto text-lg hover:scale-[1.02] hover:shadow-lg transition-all duration-300 group disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span class="flex items-center justify-center gap-2">
+            <span id="btn-text">Send Message</span>
+            <Icon
+              name="carbon:send"
+              id="btn-icon"
+              class="w-5 h-5 group-hover:translate-x-1 transition-transform"
+            />
+            <span
+              id="btn-loader"
+              class="hidden loading loading-spinner loading-sm"></span>
+          </span>
+        </button>
+      </form>
+    </div>
+  </div>
 
-        const result = await response.json();
+  <script
+    is:inline
+    src={`https://www.google.com/recaptcha/api.js?render=${import.meta.env.RECAPTCHA_SITE_KEY}`}
+  ></script>
 
-        if (response.ok) {
-          // Success
+  <script define:vars={{ siteKey: import.meta.env.RECAPTCHA_SITE_KEY }}>
+    document.addEventListener("astro:page-load", () => {
+      const form = document.getElementById("contact-form");
+      const messageDiv = document.getElementById("form-message");
+      const submitBtn = document.getElementById("submit-btn");
+      const btnText = document.getElementById("btn-text");
+      const btnIcon = document.getElementById("btn-icon");
+      const btnLoader = document.getElementById("btn-loader");
+
+      if (!form) return;
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Reset feedback
+        messageDiv.classList.add("hidden");
+        messageDiv.classList.remove(
+          "bg-green-100",
+          "text-green-700",
+          "bg-red-100",
+          "text-red-700",
+        );
+
+        // Set loading state
+        submitBtn.disabled = true;
+        btnText.textContent = "Sending...";
+        btnIcon.classList.add("hidden");
+        btnLoader.classList.remove("hidden");
+
+        try {
+          // Execute reCAPTCHA
+          const token = await grecaptcha.execute(siteKey, {
+            action: "submit",
+          });
+
+          const formData = new FormData(form);
+          const data = {
+            first: formData.get("first"), // Honeypot
+            name: formData.get("name"),
+            email: formData.get("email"),
+            message: formData.get("message"),
+            token: token,
+          };
+
+          const response = await fetch("/api/contact", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            // Success
+            messageDiv.textContent =
+              "Message sent successfully! I'll get back to you soon.";
+            messageDiv.classList.add("bg-green-100", "text-green-700");
+            messageDiv.classList.remove("hidden");
+            form.reset();
+          } else {
+            // Error
+            throw new Error(result.message || "Failed to send message");
+          }
+        } catch (error) {
+          console.error("Form error:", error);
           messageDiv.textContent =
-            "Message sent successfully! I'll get back to you soon.";
-          messageDiv.classList.add("bg-green-100", "text-green-700");
+            error.message || "An error occurred. Please try again later.";
+          messageDiv.classList.add("bg-red-100", "text-red-700");
           messageDiv.classList.remove("hidden");
-          form.reset();
-        } else {
-          // Error
-          throw new Error(result.message || "Failed to send message");
+        } finally {
+          // Reset button state
+          submitBtn.disabled = false;
+          btnText.textContent = "Send Message";
+          btnIcon.classList.remove("hidden");
+          btnLoader.classList.add("hidden");
         }
-      } catch (error) {
-        console.error("Form error:", error);
-        messageDiv.textContent =
-          error.message || "An error occurred. Please try again later.";
-        messageDiv.classList.add("bg-red-100", "text-red-700");
-        messageDiv.classList.remove("hidden");
-      } finally {
-        // Reset button state
-        submitBtn.disabled = false;
-        btnText.textContent = "Send Message";
-        btnIcon.classList.remove("hidden");
-        btnLoader.classList.add("hidden");
-      }
+      });
     });
-  });
-</script>
+  </script>
+</div>

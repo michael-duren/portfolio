@@ -12,30 +12,26 @@ import SketchArrow from "./SketchArrow.astro";
     <Image
       src={darkWork}
       alt="Hero Background Dark"
-      class="w-full h-full object-cover hidden dark:block"
+      class="w-full h-full object-cover block"
     />
     <div
-      class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white dark:to-gray-900"
+      class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-gray-900"
     >
     </div>
   </div>
 
   <div
-    class="z-10 text-center px-4 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 bg-white/80 dark:bg-gray-900/30 backdrop-blur-md p-8 rounded-xl shadow-2xl mx-4 max-w-3xl"
+    class="z-10 text-center px-4 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 bg-gray-900/30 backdrop-blur-md p-8 rounded-xl shadow-2xl mx-4 max-w-3xl"
   >
-    <h1
-      class="text-4xl md:text-6xl font-bold mb-6 text-gray-900 dark:text-white drop-shadow-sm"
-    >
+    <h1 class="text-4xl md:text-6xl font-bold mb-6 text-white drop-shadow-sm">
       Michael Duren
     </h1>
     <p
-      class="text-lg md:text-xl text-gray-800 dark:text-gray-100 mb-8 font-light leading-relaxed max-w-2xl mx-auto"
+      class="text-lg md:text-xl text-gray-100 mb-8 font-light leading-relaxed max-w-2xl mx-auto"
     >
       Software Engineer specialized in <span
-        class="font-semibold text-purple-600 dark:text-purple-400"
-        >distributed systems</span
-      > and <span class="font-semibold text-cyan-600 dark:text-cyan-400"
-        >cloud infrastructure</span
+        class="font-semibold text-purple-400">distributed systems</span
+      > and <span class="font-semibold text-cyan-400">cloud infrastructure</span
       >. Building reliable Observability platforms, Developer Tools, and
       Scalable SaaS with Typescript, Go, C#/Java, and Python.
     </p>
@@ -52,7 +48,7 @@ import SketchArrow from "./SketchArrow.astro";
     <a href="#about" aria-label="Scroll to About" class="block w-16 h-20">
       <SketchArrow
         variant="straight-down"
-        class="w-full h-full text-gray-700 dark:text-gray-200"
+        class="w-full h-full text-gray-200"
       />
     </a>
   </div>
