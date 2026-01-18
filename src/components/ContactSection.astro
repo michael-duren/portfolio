@@ -1,5 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import contactIllustration from "../images/contact-illustration.png";
 ---
 
 <section
@@ -14,22 +16,36 @@ import { Icon } from "astro-icon/components";
   class="max-w-5xl mx-auto flex flex-col md:flex-row gap-12 items-center px-4"
 >
   <div
-    class="flex-1 space-y-8 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700"
+    class="flex-1 space-y-8 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 relative"
   >
-    <h2 class="text-4xl md:text-5xl font-bold text-gray-100 leading-tight">
+    <!-- Illustration Background -->
+    <div
+      class="border-pink-500 border w-[100%] h-[100%] opacity-20 pointer-events-none -z-50 select-none mix-blend-screen rounded-full"
+    >
+      <Image
+        src={contactIllustration}
+        alt="Developer building software sketch"
+        class="w-full h-full object-contain invert-0"
+        loading="lazy"
+      />
+    </div>
+
+    <h2
+      class="text-4xl md:text-5xl font-bold text-gray-100 leading-tight relative z-10"
+    >
       Let's Build Something <span
         class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-500"
         >Great</span
       >
     </h2>
-    <p class="text-xl text-gray-300 leading-relaxed font-light">
+    <p class="text-xl text-gray-300 leading-relaxed font-light relative z-10">
       Have a project in mind or just want to say hi? I'm always open to
       discussing new opportunities and ideas.
     </p>
 
-    <div class="grid grid-cols-2 gap-4 py-4">
+    <div class="grid grid-cols-2 gap-4 py-4 relative z-10">
       <div
-        class="p-4 rounded-2xl bg-gray-800/50 border border-gray-700 backdrop-blur-sm"
+        class="p-4 rounded-2xl bg-gray-800/80 border border-gray-700 backdrop-blur-md"
       >
         <div
           class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1"
@@ -45,7 +61,7 @@ import { Icon } from "astro-icon/components";
         </div>
       </div>
       <div
-        class="p-4 rounded-2xl bg-gray-800/50 border border-gray-700 backdrop-blur-sm"
+        class="p-4 rounded-2xl bg-gray-800/80 border border-gray-700 backdrop-blur-md"
       >
         <div
           class="text-xs text-gray-400 uppercase tracking-wider font-semibold mb-1"
