@@ -303,16 +303,14 @@ const nodes = {
         >
             <!-- Web Client -->
             <div
-                class="flow-node -translate-x-4 hover:scale-105 transition-transform cursor-help"
+                id="node-web"
+                class="flow-node opacity-0 -translate-x-4 hover:scale-105 transition-all duration-500 cursor-help"
                 data-desc={nodes.web.description}
             >
                 <div
                     class="bg-gray-900/80 border border-blue-400/30 p-4 rounded-2xl flex flex-col items-center gap-2 shadow-lg backdrop-blur-sm"
                 >
-                    <div
-                        class="flex gap-2 animate-drop-in"
-                        style="animation-delay: 0.2s"
-                    >
+                    <div class="flex gap-2">
                         {
                             nodes.web.icons.map((i) => (
                                 <Icon name={`devicon:${i}`} class="w-6 h-6" />
@@ -337,13 +335,14 @@ const nodes = {
 
             <!-- Orchestration -->
             <div
-                class="flow-node translate-x-4 hover:scale-105 transition-transform cursor-help"
+                id="node-k8s"
+                class="flow-node opacity-0 translate-x-4 hover:scale-105 transition-all duration-500 cursor-help"
                 data-desc={nodes.k8s.description}
             >
                 <div
                     class="bg-blue-900/60 border border-blue-300/30 p-4 rounded-xl shadow-xl shadow-blue-900/50 backdrop-blur-md flex flex-col items-center gap-2"
                 >
-                    <div class="animate-drop-in" style="animation-delay: 0.4s">
+                    <div class="">
                         <Icon
                             name={`devicon:${nodes.k8s.icon}`}
                             class="w-8 h-8"
@@ -357,6 +356,18 @@ const nodes = {
             </div>
         </div>
 
+        <!-- Status Text Container -->
+        <div
+            id="mixing-status"
+            class="absolute top-1/3 left-0 w-full text-center pointer-events-none z-30 transition-opacity duration-500 opacity-0"
+        >
+            <span
+                class="inline-block px-4 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-mono text-purple-300 shadow-xl"
+            >
+                Initializing...
+            </span>
+        </div>
+
         <!-- Middle Row: The Mix (Animating In) -->
         <div
             class="flex-1 w-full flex justify-center items-center gap-12 relative my-4"
@@ -365,12 +376,12 @@ const nodes = {
 
             <!-- Gateway -->
             <div
-                class="flow-node group relative hover:scale-105 transition-transform cursor-help"
+                id="node-cloud"
+                class="flow-node opacity-0 group relative hover:scale-105 transition-all duration-500 cursor-help"
                 data-desc={nodes.cloud.description}
             >
                 <div
-                    class="bg-gray-800/80 p-4 rounded-xl border border-white/10 flex flex-col items-center gap-3 animate-drop-in-bounce"
-                    style="animation-delay: 0.8s"
+                    class="bg-gray-800/80 p-4 rounded-xl border border-white/10 flex flex-col items-center gap-3"
                 >
                     <span
                         class="text-xs text-gray-400 font-mono uppercase tracking-wider"
@@ -389,18 +400,17 @@ const nodes = {
             <!-- Arrow -->
             <Icon
                 name="mdi:arrow-right"
-                class="w-8 h-8 text-purple-400/50 animate-fade-in"
-                style="animation-delay: 1.2s"
+                class="w-8 h-8 text-purple-400/50 arrow-connector opacity-0 transition-opacity duration-500"
             />
 
             <!-- Services -->
             <div
-                class="flow-node group relative hover:scale-105 transition-transform cursor-help"
+                id="node-services"
+                class="flow-node opacity-0 group relative hover:scale-105 transition-all duration-500 cursor-help"
                 data-desc={nodes.services.description}
             >
                 <div
-                    class="bg-indigo-900/40 p-6 rounded-2xl border border-indigo-400/30 flex flex-col items-center gap-3 shadow-lg animate-drop-in-bounce"
-                    style="animation-delay: 1s"
+                    class="bg-indigo-900/40 p-6 rounded-2xl border border-indigo-400/30 flex flex-col items-center gap-3 shadow-lg"
                 >
                     <span
                         class="text-xs text-indigo-200 font-mono uppercase tracking-wider"
@@ -419,18 +429,17 @@ const nodes = {
             <!-- Arrow -->
             <Icon
                 name="mdi:arrow-right"
-                class="w-8 h-8 text-purple-400/50 animate-fade-in"
-                style="animation-delay: 1.4s"
+                class="w-8 h-8 text-purple-400/50 arrow-connector opacity-0 transition-opacity duration-500"
             />
 
             <!-- Data -->
             <div
-                class="flow-node group relative hover:scale-105 transition-transform cursor-help"
+                id="node-db"
+                class="flow-node opacity-0 group relative hover:scale-105 transition-all duration-500 cursor-help"
                 data-desc={nodes.db.description}
             >
                 <div
-                    class="bg-gray-800/80 p-4 rounded-full border border-green-500/30 flex flex-col items-center gap-3 animate-drop-in-bounce"
-                    style="animation-delay: 1.2s"
+                    class="bg-gray-800/80 p-4 rounded-full border border-green-500/30 flex flex-col items-center gap-3"
                 >
                     <span
                         class="text-xs text-green-200 font-mono uppercase tracking-wider"
@@ -451,7 +460,8 @@ const nodes = {
         <div class="w-full flex justify-between items-end px-4 pb-4">
             <!-- Tools -->
             <div
-                class="flow-node bg-yellow-900/20 border border-yellow-500/30 p-4 rounded-2xl backdrop-blur-sm hover:scale-105 transition-transform cursor-help"
+                id="node-tools"
+                class="flow-node opacity-0 bg-yellow-900/20 border border-yellow-500/30 p-4 rounded-2xl backdrop-blur-sm hover:scale-105 transition-all duration-500 cursor-help"
                 data-desc={nodes.tools.description}
             >
                 <div
@@ -482,7 +492,8 @@ const nodes = {
 
             <!-- Observability -->
             <div
-                class="flow-node bg-red-900/20 border border-red-500/30 p-4 rounded-2xl backdrop-blur-sm hover:scale-105 transition-transform cursor-help"
+                id="node-observability"
+                class="flow-node opacity-0 bg-red-900/20 border border-red-500/30 p-4 rounded-2xl backdrop-blur-sm hover:scale-105 transition-all duration-500 cursor-help"
                 data-desc={nodes.observability.description}
             >
                 <div

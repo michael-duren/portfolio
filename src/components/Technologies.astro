@@ -14,99 +14,119 @@ import { Icon } from "astro-icon/components";
           name: "TS",
           variant: "beaker",
           color: "text-blue-500",
+          targetNode: "node-web",
         },
         {
           icon: "go",
           name: "Go",
           variant: "flask-round",
           color: "text-cyan-500",
+          targetNode: "node-observability", // or services
         },
         {
           icon: "nodejs",
           name: "Node",
           variant: "flask-erlenmeyer",
           color: "text-green-500",
+          targetNode: "node-services",
         },
         {
           icon: "dotnetcore",
           name: ".NET",
           variant: "beaker",
           color: "text-purple-500",
+          targetNode: "node-services",
         },
         {
           icon: "java",
           name: "Java",
           variant: "flask-round",
           color: "text-red-500",
+          targetNode: "node-services",
         },
         {
           icon: "kubernetes",
           name: "K8s",
           variant: "flask-erlenmeyer",
           color: "text-blue-600",
+          targetNode: "node-k8s",
         },
         {
           icon: "amazonwebservices-wordmark",
           name: "AWS",
           variant: "beaker",
           color: "text-yellow-600",
+          targetNode: "node-cloud",
         },
         {
           icon: "azure",
           name: "Azure",
           variant: "flask-round",
           color: "text-blue-400",
+          targetNode: "node-cloud",
         },
         {
           icon: "docker",
           name: "Docker",
           variant: "flask-erlenmeyer",
           color: "text-blue-500",
+          targetNode: "node-k8s",
         },
         {
           icon: "react",
           name: "React",
           variant: "beaker",
           color: "text-cyan-400",
+          targetNode: "node-web",
         },
         {
           icon: "postgresql",
           name: "Postgres",
           variant: "flask-round",
           color: "text-blue-300",
+          targetNode: "node-db",
         },
         {
           icon: "microsoftsqlserver",
           name: "SQL",
           variant: "flask-erlenmeyer",
           color: "text-red-600",
+          targetNode: "node-db",
         },
         {
           icon: "grafana",
           name: "Grafana",
           variant: "beaker",
           color: "text-orange-500",
+          targetNode: "node-observability",
         },
         {
           icon: "prometheus",
           name: "Prom",
           variant: "flask-round",
           color: "text-orange-600",
+          targetNode: "node-observability",
         },
         {
           icon: "python",
           name: "Python",
           variant: "flask-erlenmeyer",
           color: "text-yellow-500",
+          targetNode: "node-tools",
         },
         {
           icon: "lua",
           name: "Lua",
           variant: "beaker",
           color: "text-blue-800",
+          targetNode: "node-tools",
         },
       ].map((tech) => (
-        <div class="flex flex-col items-center gap-2 group">
+        <div
+          class="flex flex-col items-center gap-2 group source-tech-icon"
+          data-tech={tech.icon}
+          data-target={tech.targetNode}
+        >
           <LabGlassware
             variant={tech.variant as any}
             color={tech.color}

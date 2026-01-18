@@ -1,7 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import Technologies from "./Technologies.astro";
-import TechFlowChart from "./TechFlowChart.astro";
+import SolutionContext from "./SolutionContext.astro";
 import meJem from "../images/me-jem.jpeg";
 import mePresenting from "../images/me-presenting.jpeg";
 import mePrime from "../images/me-prime.jpeg";
@@ -12,6 +11,8 @@ import headshot from "../images/headshot.jpg";
 const images = [mePresenting, mePrime, meJem, meThat];
 
 import SketchArrow from "./SketchArrow.astro";
+import Technologies from "./Technologies.astro";
+import TechFlowChart from "./TechFlowChart.astro";
 ---
 
 <section
@@ -198,11 +199,16 @@ import SketchArrow from "./SketchArrow.astro";
       <p class="text-center text-gray-400 text-sm mb-6 font-mono">
         chemicals and potions I use to craft cutting edge solutions
       </p>
-      <Technologies />
+
+      <!-- Technologies Grid with IDs for animation targeting -->
+      <div id="technologies-container">
+        <Technologies />
+      </div>
 
       <!-- Tech Flow Chart -->
       <div
-        class="mt-16 w-full animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-400"
+        class="mt-16 w-full animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-400 group/chart"
+        id="chart-container"
       >
         <h3 class="text-2xl font-bold mb-2 text-gray-100 text-center">
           Crafted engineered solutions.
@@ -212,13 +218,17 @@ import SketchArrow from "./SketchArrow.astro";
         </p>
         <TechFlowChart />
       </div>
+
+      <!-- 4. Solution Context -->
+      <SolutionContext />
     </div>
   </div>
 </section>
 
 <script>
+  // Animation Orchestration
   document.addEventListener("astro:page-load", () => {
-    // Animation Observer
+    // 1. Initial Scroll Reveal
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -234,5 +244,182 @@ import SketchArrow from "./SketchArrow.astro";
     document.querySelectorAll(".animate-on-scroll").forEach((el) => {
       observer.observe(el);
     });
+
+    // 2. Pouring Animation Logic
+    const chartContainer = document.getElementById("chart-container");
+    const statusTextContainer = document.getElementById("mixing-status");
+    let hasRunAnimation = false;
+
+    const runPouringSequence = async () => {
+      if (hasRunAnimation) return;
+      hasRunAnimation = true;
+
+      const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+      // Helper to update status
+      const updateStatus = (
+        text: string,
+        color: string = "text-purple-300",
+      ) => {
+        if (!statusTextContainer) return;
+        // Fade out
+        statusTextContainer.classList.remove("opacity-100");
+        statusTextContainer.classList.add("opacity-0");
+
+        setTimeout(() => {
+          const span = statusTextContainer.querySelector("span");
+          if (span) {
+            span.textContent = text;
+            span.className = `inline-block px-4 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-mono shadow-xl ${color}`;
+          }
+          statusTextContainer.classList.remove("opacity-0");
+          statusTextContainer.classList.add("opacity-100");
+        }, 300);
+      };
+
+      // Helper to animate particle
+      const animateParticle = (sourceEl: Element, targetId: string) => {
+        const sourceRect = sourceEl.getBoundingClientRect();
+        const targetEl = document.getElementById(targetId);
+        if (!targetEl) return;
+        const targetRect = targetEl.getBoundingClientRect();
+
+        // Create particle
+        const particle = document.createElement("div");
+        particle.classList.add(
+          "fixed",
+          "z-50",
+          "pointer-events-none",
+          "transition-all",
+          "duration-1000",
+          "ease-in-out",
+        );
+        particle.style.left = `${sourceRect.left + sourceRect.width / 2}px`;
+        particle.style.top = `${sourceRect.top + sourceRect.height / 2}px`;
+        particle.style.width = "12px";
+        particle.style.height = "12px";
+        particle.style.borderRadius = "50%";
+        particle.style.backgroundColor =
+          getComputedStyle(sourceEl.querySelector("span") || sourceEl).color ||
+          "white";
+        particle.style.boxShadow = "0 0 10px currentColor";
+
+        document.body.appendChild(particle);
+
+        // Animate
+        requestAnimationFrame(() => {
+          particle.style.transform = `translate(${targetRect.left - sourceRect.left}px, ${targetRect.top - sourceRect.top}px) scale(0.5)`;
+          particle.style.opacity = "0";
+        });
+
+        // Cleanup
+        setTimeout(() => {
+          particle.remove();
+        }, 1000);
+      };
+
+      // Sequence Groups
+      const sequence = [
+        {
+          target: "node-web",
+          label: "Building Interactive UI...",
+          color: "text-blue-300",
+        },
+        {
+          target: "node-k8s",
+          label: "Orchestrating Infrastructure...",
+          color: "text-blue-500",
+        },
+        {
+          target: "node-cloud",
+          label: "Provisioning Cloud Resources...",
+          color: "text-yellow-500",
+        },
+        {
+          target: "node-services",
+          label: "Deploying Microservices...",
+          color: "text-indigo-400",
+        },
+        {
+          target: "node-db",
+          label: "Connecting Data Layer...",
+          color: "text-green-400",
+        },
+        {
+          target: "node-tools",
+          label: "Automating Pipelines...",
+          color: "text-yellow-600",
+        },
+        {
+          target: "node-observability",
+          label: "Adding Observability...",
+          color: "text-red-400",
+        },
+      ];
+
+      for (const step of sequence) {
+        updateStatus(step.label, step.color);
+
+        // Find sources for this target
+        const sources = document.querySelectorAll(
+          `[data-target="${step.target}"]`,
+        );
+
+        // Launch particles
+        sources.forEach((source, idx) => {
+          setTimeout(() => animateParticle(source, step.target), idx * 100);
+        });
+
+        await sleep(800 + sources.length * 100); // Wait for particles
+
+        // Reveal Target Node
+        const targetNode = document.getElementById(step.target);
+        if (targetNode) {
+          targetNode.classList.remove(
+            "opacity-0",
+            "translate-y-4",
+            "-translate-x-4",
+            "translate-x-4",
+          );
+          // Reveal arrow connectors if any exist near this node (simplified)
+          const parent = targetNode.parentElement;
+          if (parent) {
+            const arrows = parent.querySelectorAll(".arrow-connector");
+            arrows.forEach((a) => a.classList.remove("opacity-0"));
+          }
+        }
+
+        await sleep(400); // Pause before next group
+      }
+
+      updateStatus("Solution Engineered.", "text-green-400 font-bold");
+      await sleep(1000);
+
+      // Reveal Solution Context
+      const solContext = document.getElementById("solution-context");
+      if (solContext) {
+        solContext.classList.remove("opacity-0");
+        const items = solContext.querySelectorAll("[data-animate-solution]");
+        items.forEach((item) => item.classList.add("show"));
+      }
+    };
+
+    // Trigger animation when chart comes into view
+    const chartObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasRunAnimation) {
+            // Wait a bit for the chart to be fully visible and refined
+            setTimeout(runPouringSequence, 500);
+            chartObserver.disconnect();
+          }
+        });
+      },
+      { threshold: 0.5 },
+    );
+
+    if (chartContainer) {
+      chartObserver.observe(chartContainer);
+    }
   });
 </script>

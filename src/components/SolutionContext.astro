@@ -1,0 +1,108 @@
+---
+import { Icon } from "astro-icon/components";
+
+const solutions = [
+    {
+        problem: "Slow Deployment Cycles (90+ mins)",
+        solution: "Go-based CLI + Parallelized Pipelines",
+        result: "Deployment time reduced to 20 mins (78% faster)",
+        icon: "rocket-launch",
+        color: "text-purple-400",
+        borderColor: "border-purple-500/30",
+        bgGradient: "from-purple-900/20 to-blue-900/20",
+    },
+    {
+        problem: "Opaque System Failures",
+        solution: "Distributed Tracing & Metrics (Otell/Prom)",
+        result: "MTTR reduced by 40%, proactive alerting",
+        icon: "eye",
+        color: "text-blue-400",
+        borderColor: "border-blue-500/30",
+        bgGradient: "from-blue-900/20 to-cyan-900/20",
+    },
+    {
+        problem: "Unreliable Legacy Data Sync",
+        solution: "Event-Driven Architecture (Kafka/NATS)",
+        result: "99.99% data consistency & real-time updates",
+        icon: "database-check",
+        color: "text-green-400",
+        borderColor: "border-green-500/30",
+        bgGradient: "from-green-900/20 to-emerald-900/20",
+    },
+];
+---
+
+<div
+    class="w-full max-w-4xl mx-auto mt-24 opacity-0 transition-opacity duration-1000"
+    id="solution-context"
+>
+    <div class="text-center mb-12">
+        <h3 class="text-2xl font-bold text-gray-100 mb-2">The Result</h3>
+        <p class="text-gray-400 font-mono text-sm max-w-xl mx-auto">
+            Technology is just the means. The end is a solved problem.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {
+            solutions.map((item, index) => (
+                <div
+                    class={`
+          relative group p-6 rounded-2xl border ${item.borderColor} bg-gradient-to-br ${item.bgGradient} backdrop-blur-sm
+          hover:scale-105 transition-all duration-300 shadow-xl
+          opacity-0 translate-y-8
+        `}
+                    style={`transition-delay: ${index * 200}ms`}
+                    data-animate-solution
+                >
+                    <div class="absolute -inset-px bg-gradient-to-r from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                    <div class="flex flex-col h-full gap-4">
+                        <div class="flex items-start justify-between">
+                            <div
+                                class={`p-3 rounded-xl bg-black/20 ${item.color}`}
+                            >
+                                <Icon
+                                    name={`mdi:${item.icon}`}
+                                    class="w-6 h-6"
+                                />
+                            </div>
+                            <div class="text-xs font-mono text-gray-500 uppercase tracking-widest mt-1">
+                                Case Study
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <h4 class="text-gray-300 font-semibold text-sm leading-tight">
+                                <span class="text-red-400/80 line-through mr-2 text-xs">
+                                    Problem
+                                </span>
+                                <br />
+                                {item.problem}
+                            </h4>
+                        </div>
+
+                        <div class="mt-auto pt-4 border-t border-white/5 space-y-2">
+                            <div class="text-xs text-gray-400 font-mono">
+                                Solution Applied
+                            </div>
+                            <div class="text-gray-200 text-sm font-medium">
+                                {item.solution}
+                            </div>
+                            <div class={`text-xs font-bold ${item.color} mt-2`}>
+                                {item.result}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ))
+        }
+    </div>
+</div>
+
+<style>
+    [data-animate-solution].show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
