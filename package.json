@@ -13,6 +13,8 @@
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",
     "@astrojs/netlify": "^6.6.4",
+    "@fontsource/rock-salt": "^5.2.8",
+    "@iconify-json/devicon": "^1.2.57",
     "@nanostores/logger": "^1.0.0",
     "@nanostores/persistent": "^1.2.0",
     "@tailwindcss/vite": "^4.1.18",

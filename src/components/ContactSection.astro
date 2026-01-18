@@ -161,11 +161,6 @@ import { Icon } from "astro-icon/components";
     </div>
   </div>
 
-  <script
-    is:inline
-    src={`https://www.google.com/recaptcha/api.js?render=${import.meta.env.RECAPTCHA_SITE_KEY}`}
-  ></script>
-
   <script define:vars={{ siteKey: import.meta.env.RECAPTCHA_SITE_KEY }}>
     document.addEventListener("astro:page-load", () => {
       const form = document.getElementById("contact-form");
@@ -177,8 +172,45 @@ import { Icon } from "astro-icon/components";
 
       if (!form) return;
 
+      // Lazy Load reCAPTCHA
+      let recaptchaLoaded = false;
+      const loadRecaptcha = () => {
+        if (recaptchaLoaded) return;
+        recaptchaLoaded = true;
+        const script = document.createElement("script");
+        script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+      };
+
+      // Load on interaction
+      const inputs = form.querySelectorAll("input, textarea");
+      inputs.forEach((input) => {
+        input.addEventListener("focus", loadRecaptcha, { once: true });
+      });
+
+      // Wait for reCAPTCHA to be ready
+      const waitForRecaptcha = () => {
+        return new Promise((resolve) => {
+          if (typeof grecaptcha !== "undefined" && grecaptcha.execute) {
+            resolve();
+          } else {
+            const check = setInterval(() => {
+              if (typeof grecaptcha !== "undefined" && grecaptcha.execute) {
+                clearInterval(check);
+                resolve();
+              }
+            }, 100);
+          }
+        });
+      };
+
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
+
+        // Ensure we try to load if they somehow submitted without focusing (e.g. autofill + enter)
+        loadRecaptcha();
 
         // Reset feedback
         messageDiv.classList.add("hidden");
@@ -196,6 +228,7 @@ import { Icon } from "astro-icon/components";
         btnLoader.classList.remove("hidden");
 
         try {
+          await waitForRecaptcha();
           // Execute reCAPTCHA
           const token = await grecaptcha.execute(siteKey, {
             action: "submit",

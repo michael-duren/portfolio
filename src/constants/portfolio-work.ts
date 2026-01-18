@@ -19,7 +19,15 @@ const portfolioList: PortfolioItem[] = [
     codeLink: null,
     images: [NextStepImage],
     color: "bg-indigo-100 shadow-indigo-900",
-    technologies: ["typescript-plain", "go-original-wordmark", "postgresql-plain", "docker-plain"],
+    technologies: [
+      "typescript",
+      "go",
+      "postgresql",
+      "docker",
+      "terraform",
+      "kubernetes",
+      "solidjs",
+    ],
   },
   {
     title: "Code for Recovery - TSML UI Plugin",
@@ -31,7 +39,7 @@ const portfolioList: PortfolioItem[] = [
     codeLink: "https://aasfmarin.org/meetings",
     images: [TsmlImage],
     color: "bg-purple-100 shadow-purple-900",
-    technologies: ["javascript-plain", "typescript-plain", "react-original", "wordpress-plain"],
+    technologies: ["javascript", "typescript", "react", "wordpress"],
   },
   {
     title: "Atmosphere",
@@ -43,7 +51,14 @@ const portfolioList: PortfolioItem[] = [
     codeLink: "https://github.com/michael-duren/atmosphere",
     images: [AtmosphereImage, AtmosphereImageTwo],
     color: "bg-green-100 shadow-green-900",
-    technologies: ["typescript-plain", "react-original", "redux-original", "csharp-plain", "dotnetcore-plain", "postgresql-plain"],
+    technologies: [
+      "typescript",
+      "react",
+      "redux",
+      "csharp",
+      "dotnetcore",
+      "postgresql",
+    ],
   },
   {
     title: "Developing Developer Tools with Go",
@@ -55,7 +70,7 @@ const portfolioList: PortfolioItem[] = [
     codeLink: "https://github.com/michael-duren/go-lsp-course",
     images: [GoLspImage],
     color: "bg-sky-100 shadow-sky-900",
-    technologies: ["go-original-wordmark", "json-plain", "vscode-plain"],
+    technologies: ["go", "json", "neovim", "vscode"],
   },
   {
     title: "Building with .NET Aspire",
@@ -67,7 +82,7 @@ const portfolioList: PortfolioItem[] = [
     codeLink: "https://github.com/michael-duren/aspire-presentation",
     images: [AspireImage],
     color: "bg-violet-100 shadow-violet-900",
-    technologies: ["csharp-plain", "dotnetcore-plain", "docker-plain", "azure-plain"],
+    technologies: ["csharp", "dotnetcore", "docker", "azure", "kubernetes"],
   },
   {
     title: "Portfolio",
@@ -79,7 +94,7 @@ const portfolioList: PortfolioItem[] = [
     codeLink: "https://github.com/michael-duren/portfolio",
     images: [PortfolioHomeImage],
     color: "bg-rose-100 shadow-rose-900",
-    technologies: ["typescript-plain", "tailwindcss-original", "astro-original"],
+    technologies: ["typescript", "tailwindcss", "astro", "netlify"],
   },
 ];
 

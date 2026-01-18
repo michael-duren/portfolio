@@ -6,6 +6,8 @@ import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 const { title } = Astro.props;
 import "../styles/global.styles.css";
+// Supports weights 400
+import "@fontsource/rock-salt";
 ---
 
 <html lang="en" class="scroll-smooth">
@@ -24,11 +26,6 @@ import "../styles/global.styles.css";
       name="description"
       content="Michael Duren portfolio incues types, software engineering, skills, computer science, Web Developer JavaScript, Typescript, C#, .NET. "
     />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
-    />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://michaelduren.com/" />
     <meta property="og:title" content="Michael Duren" />
@@ -45,12 +42,6 @@ import "../styles/global.styles.css";
       content="Michael Duren is a software engineer and developer."
     />
     <meta property="twitter:image" content="https://michaelduren.com/og.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap"
-      rel="stylesheet"
-    />
     <title>{title}</title>
   </head>
   <body

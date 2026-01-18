@@ -1,5 +1,6 @@
 ---
 import LabGlassware from "./LabGlassware.astro";
+import { Icon } from "astro-icon/components";
 ---
 
 <div class="w-full py-10">
@@ -9,97 +10,97 @@ import LabGlassware from "./LabGlassware.astro";
     {
       [
         {
-          icon: "typescript-plain",
+          icon: "typescript",
           name: "TS",
           variant: "beaker",
           color: "text-blue-500",
         },
         {
-          icon: "go-original-wordmark",
+          icon: "go",
           name: "Go",
           variant: "flask-round",
           color: "text-cyan-500",
         },
         {
-          icon: "nodejs-plain",
+          icon: "nodejs",
           name: "Node",
           variant: "flask-erlenmeyer",
           color: "text-green-500",
         },
         {
-          icon: "dotnetcore-plain",
+          icon: "dotnetcore",
           name: ".NET",
           variant: "beaker",
           color: "text-purple-500",
         },
         {
-          icon: "java-plain",
+          icon: "java",
           name: "Java",
           variant: "flask-round",
           color: "text-red-500",
         },
         {
-          icon: "kubernetes-plain",
+          icon: "kubernetes",
           name: "K8s",
           variant: "flask-erlenmeyer",
           color: "text-blue-600",
         },
         {
-          icon: "amazonwebservices-plain-wordmark",
+          icon: "amazonwebservices-wordmark",
           name: "AWS",
           variant: "beaker",
           color: "text-yellow-600",
         },
         {
-          icon: "azure-plain",
+          icon: "azure",
           name: "Azure",
           variant: "flask-round",
           color: "text-blue-400",
         },
         {
-          icon: "docker-plain",
+          icon: "docker",
           name: "Docker",
           variant: "flask-erlenmeyer",
           color: "text-blue-500",
         },
         {
-          icon: "react-original",
+          icon: "react",
           name: "React",
           variant: "beaker",
           color: "text-cyan-400",
         },
         {
-          icon: "postgresql-plain",
+          icon: "postgresql",
           name: "Postgres",
           variant: "flask-round",
           color: "text-blue-300",
         },
         {
-          icon: "microsoftsqlserver-plain",
+          icon: "microsoftsqlserver",
           name: "SQL",
           variant: "flask-erlenmeyer",
           color: "text-red-600",
         },
         {
-          icon: "grafana-plain",
+          icon: "grafana",
           name: "Grafana",
           variant: "beaker",
           color: "text-orange-500",
         },
         {
-          icon: "prometheus-original",
+          icon: "prometheus",
           name: "Prom",
           variant: "flask-round",
           color: "text-orange-600",
         },
         {
-          icon: "python-plain",
+          icon: "python",
           name: "Python",
           variant: "flask-erlenmeyer",
           color: "text-yellow-500",
         },
         {
-          icon: "lua-plain",
+          icon: "lua",
           name: "Lua",
           variant: "beaker",
           color: "text-blue-800",
@@ -118,8 +119,9 @@ import LabGlassware from "./LabGlassware.astro";
             class="w-20 h-24 md:w-24 md:h-32"
           >
             {tech.icon && (
-              <i
-                class={`devicon-${tech.icon} colored text-3xl md:text-4xl drop-shadow-md`}
+              <Icon
+                name={`devicon:${tech.icon}`}
+                class="text-3xl md:text-4xl drop-shadow-md"
               />
             )}
             {!tech.icon && <div class="text-3xl animate-pulse">✨</div>}

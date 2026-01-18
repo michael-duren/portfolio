@@ -75,7 +75,7 @@ import { Icon } from "astro-icon/components";
                   <div class="flex flex-wrap gap-4 pt-4 border-t border-gray-700/50">
                     {project.technologies.map(tech => (
                       <div class="w-8 h-8 md:w-10 md:h-10 text-gray-400 hover:text-gray-200 transition-colors" title={tech.split('-')[0]}>
-                         <i class={`devicon-${tech} colored text-2xl md:text-3xl`} />
+                         <Icon name={`devicon:${tech}`} class="w-full h-full" />
                       </div>
                     ))}
                   </div>
