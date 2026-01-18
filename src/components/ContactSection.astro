@@ -18,16 +18,19 @@ import contactIllustration from "../images/contact-illustration.png";
   <div
     class="flex-1 space-y-8 animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 relative"
   >
-    <!-- Illustration Background -->
     <div
-      class="w-[50%] h-[50%] md:w-[100%] md:h-[100%] opacity-50 pointer-events-none -z-50 select-none mix-blend-screen items-center flex w-full"
+      class="w-full flex justify-center mb-0 md:mb-4 pointer-events-none select-none mix-blend-screen"
     >
-      <Image
-        src={contactIllustration}
-        alt="Developer building software sketch"
-        class="w-full h-full object-contain invert-0 rounded-full"
-        loading="lazy"
-      />
+      <div
+        class="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden"
+      >
+        <Image
+          src={contactIllustration}
+          alt="Developer building software sketch"
+          class="w-full h-full object-cover object-center invert-0"
+          loading="lazy"
+        />
+      </div>
     </div>
 
     <h2
@@ -86,7 +89,6 @@ import contactIllustration from "../images/contact-illustration.png";
     </div>
   </div>
 
-  <!-- Contact Form Card -->
   <div
     class="flex-1 w-full max-w-lg animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 delay-200"
   >
@@ -151,7 +153,6 @@ import contactIllustration from "../images/contact-illustration.png";
         >
         </div>
 
-        <!-- Feedback Messages -->
         <div
           id="form-message"
           class="hidden p-4 rounded-lg text-sm font-medium"
