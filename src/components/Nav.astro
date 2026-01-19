@@ -85,7 +85,7 @@ const { pathname } = Astro.url;
       <a
         href="/blog"
         class={`btn btn-sm text-xs sm:text-sm rounded-full px-4 border-0 ${
-          pathname.startsWith("/blog")
+          pathname.includes("/blog")
             ? "bg-purple-600 text-white hover:bg-purple-700 shadow-md shadow-purple-500/30"
             : "btn-ghost text-gray-400 hover:text-white"
         }`}

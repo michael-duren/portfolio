@@ -1,7 +1,6 @@
 ---
 import { ClientRouter } from "astro:transitions";
 import CodeBackground from "../components/CodeBackground.astro";
-import AnimatedBackground from "../components/AnimatedBackground.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 const { title } = Astro.props;
@@ -57,8 +56,9 @@ import "@fontsource/rock-salt";
     </header>
 
     <main class="flex-1 w-full pt-16 relative" transition:animate="fade">
-      <CodeBackground />
-      <AnimatedBackground />
+      <div transition:persist="code-background">
+        <CodeBackground />
+      </div>
       <slot />
     </main>
 
