@@ -1,0 +1,410 @@
+---
+title: "Building PicoWeather Watch: From Embedded C to Cloud Monitoring"
+description: "A deep dive into building a complete IoT weather monitoring system with Raspberry Pi Pico W, exploring binary protocols, USB serial communication, and Prometheus metrics."
+pubDate: 2026-03-14
+tags: ["Go", "Embedded", "IoT", "C", "Prometheus", "Grafana", "Docker"]
+---
+import TerminalWindow from "../../components/mdx/TerminalWindow.astro";
+import Callout from "../../components/mdx/Callout.astro";
+import BinaryProtocolAnimation from "./BinaryProtocolAnimation.astro";
+
+# Building PicoWeather Watch: From Embedded C to Cloud Monitoring
+
+Ever wondered how to bridge the gap between embedded systems and modern cloud monitoring? In this post, I'll walk you through building PicoWeather Watch—a complete IoT weather monitoring system that reads temperature and humidity from a Raspberry Pi Pico W and visualizes the data in Grafana.
+
+This project showcases the full stack: embedded C firmware, Go services, binary protocol design, Docker containerization, and Prometheus metrics. Let's dive in!
+
+## The Big Picture
+
+The system architecture is beautifully simple:
+
+1. **Raspberry Pi Pico W** with DHT11 sensor reads temperature/humidity
+2. **Firmware** (C or Go) sends data via USB serial using a custom binary protocol
+3. **Go Reader Service** parses the binary frames and exposes Prometheus metrics
+4. **Prometheus** scrapes the metrics every 5 seconds
+5. **Grafana** visualizes the data in real-time dashboards
+
+<Callout type="info" title="Why Two Firmware Implementations?">
+  I implemented the firmware in both C and Go (using TinyGo) to explore different embedded development approaches. Both use the exact same binary protocol, making them interchangeable!
+</Callout>
+
+## The Binary Protocol: Keeping It Simple
+
+When you're sending data from a microcontroller over USB serial, every byte counts. I designed a minimal 4-byte frame format:
+
+```
+{0xAA, temperature, humidity, 0x55}
+```
+
+- **Byte 0**: Start marker (`0xAA`)
+- **Byte 1**: Temperature in degrees Celsius (0-255)
+- **Byte 2**: Humidity in percent RH (0-100)
+- **Byte 3**: End marker (`0x55`)
+
+Why this design?
+
+1. **Fixed-length frames** are easier to parse than variable-length
+2. **Start/end markers** provide frame synchronization even if bytes are lost
+3. **Single-byte values** keep it simple (DHT11 only provides integer readings anyway)
+4. **Total of 4 bytes** means minimal bandwidth usage
+
+<BinaryProtocolAnimation />
+
+## Reading Binary Data: The Frame Parser
+
+The most interesting part of the Go reader service is the frame parser. Here's how it handles the binary stream:
+
+<TerminalWindow title="frame-parser.go">
+```go
+func (r *Reader) Start(ctx context.Context) error {
+    buffer := make([]byte, 256)
+    frameBuffer := make([]byte, 0, FrameSize)
+
+    for {
+        select {
+        case <-ctx.Done():
+            return ctx.Err()
+        default:
+            n, err := r.port.Read(buffer)
+            if err != nil {
+                r.logger.Error("error reading", "error", err)
+                continue
+            }
+
+            for i := 0; i < n; i++ {
+                b := buffer[i]
+
+                // Start of frame
+                if b == FrameStart && len(frameBuffer) == 0 {
+                    frameBuffer = append(frameBuffer, b)
+                    continue
+                }
+
+                // Building frame
+                if len(frameBuffer) > 0 && len(frameBuffer) < FrameSize {
+                    frameBuffer = append(frameBuffer, b)
+
+                    // Complete frame received
+                    if len(frameBuffer) == FrameSize {
+                        if frameBuffer[3] == FrameEnd {
+                            r.processFrame(frameBuffer)
+                        }
+                        frameBuffer = frameBuffer[:0]
+                    }
+                }
+            }
+        }
+    }
+}
+```
+</TerminalWindow>
+
+### How the Parser Works
+
+The parser uses a state machine approach:
+
+1. **Wait for START marker** (`0xAA`): Ignore all bytes until we see the start marker
+2. **Collect 4 bytes**: Once we have a start marker, collect the next 3 bytes
+3. **Verify END marker** (`0x55`): Check if byte 4 is the end marker
+4. **Process or discard**: If valid, process the frame; otherwise, reset and wait for the next start marker
+
+This approach handles several edge cases:
+
+- **Partial frames**: If we only receive 2 bytes before the stream stops, we'll timeout and reset
+- **Noise**: Random bytes before the start marker are safely ignored
+- **Desync**: If we get corrupted data, the end marker check catches it
+
+<Callout type="warning" title="Binary Parsing Gotcha">
+  Always use a buffer and never assume bytes arrive together! USB serial can deliver data in chunks of any size. The parser must handle receiving bytes one at a time or all four at once.
+</Callout>
+
+## The C Firmware: Talking to DHT11
+
+The C implementation uses the Pico SDK to read from the DHT11 sensor and send data over USB:
+
+<TerminalWindow title="pico_weather_watch.c">
+```c
+int main() {
+    init();
+
+    while (1) {
+        dht11_reading reading;
+        int rc = read_from_dht11(&reading);
+
+        if (rc == SUCCESS) {
+            uint8_t packet[4] = {
+                0xAA,
+                (uint8_t)reading.temperature,
+                (uint8_t)reading.humidity,
+                0x55
+            };
+            stdio_put_string((char *)packet, 4, 0, 0);
+        }
+
+        sleep_ms(2000);
+    }
+}
+```
+</TerminalWindow>
+
+The DHT11 sensor uses a one-wire protocol that's notoriously timing-sensitive. The Pico handles this beautifully with its dual-core ARM Cortex-M0+ running at 133 MHz.
+
+## The Go Firmware: TinyGo Magic
+
+The Go version uses TinyGo—a Go compiler for embedded systems. Here's the equivalent code:
+
+<TerminalWindow title="send_usb.go">
+```go
+func send(temperature, humidity int32) error {
+    tempByte := byte(temperature / 1000) // millidegrees -> degrees
+    humByte := byte(humidity / 1000)     // millipercent -> percent
+
+    packet := [4]byte{0xAA, tempByte, humByte, 0x55}
+    _, err := machine.Serial.Write(packet[:])
+    return err
+}
+```
+</TerminalWindow>
+
+<Callout type="info" title="TinyGo vs C">
+  TinyGo produces binaries only slightly larger than C (about 20-30% bigger) but gives you memory safety, better abstractions, and familiar Go syntax. For hobby projects, the tradeoff is often worth it!
+</Callout>
+
+## Prometheus Metrics: Making Data Observable
+
+The Go reader service exposes metrics in Prometheus text format:
+
+<TerminalWindow title="metrics-endpoint">
+```bash
+$ curl http://localhost:8080/metrics
+
+# HELP weather_temperature_celsius Current temperature in Celsius
+# TYPE weather_temperature_celsius gauge
+weather_temperature_celsius 23.00
+
+# HELP weather_humidity_percent Current relative humidity percentage
+# TYPE weather_humidity_percent gauge
+weather_humidity_percent 45.00
+
+# HELP weather_last_update_timestamp_seconds Timestamp of last sensor reading
+# TYPE weather_last_update_timestamp_seconds gauge
+weather_last_update_timestamp_seconds 1709481234
+```
+</TerminalWindow>
+
+The metrics handler is straightforward:
+
+<TerminalWindow title="metrics-handler.go">
+```go
+func MetricsHandler(reader *Reader) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        data := reader.GetCurrentData()
+
+        fmt.Fprintf(w, "# HELP weather_temperature_celsius Current temperature in Celsius\n")
+        fmt.Fprintf(w, "# TYPE weather_temperature_celsius gauge\n")
+        fmt.Fprintf(w, "weather_temperature_celsius %.2f\n", data.Temperature)
+
+        fmt.Fprintf(w, "# HELP weather_humidity_percent Current relative humidity percentage\n")
+        fmt.Fprintf(w, "# TYPE weather_humidity_percent gauge\n")
+        fmt.Fprintf(w, "weather_humidity_percent %.2f\n", data.Humidity)
+
+        fmt.Fprintf(w, "# HELP weather_last_update_timestamp_seconds Timestamp of last sensor reading\n")
+        fmt.Fprintf(w, "# TYPE weather_last_update_timestamp_seconds gauge\n")
+        fmt.Fprintf(w, "weather_last_update_timestamp_seconds %d\n", data.Timestamp.Unix())
+    }
+}
+```
+</TerminalWindow>
+
+## Dockerizing Everything
+
+To make deployment easy, I containerized the entire stack with Docker Compose:
+
+<TerminalWindow title="docker-compose.yml">
+```yaml
+services:
+  weather-reader:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    environment:
+      - USB_PORT=/dev/ttyACM0
+      - HTTP_PORT=8080
+    ports:
+      - "8080:8080"
+    networks:
+      - weather-network
+
+  prometheus:
+    build:
+      context: .
+      dockerfile: Dockerfile.prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - weather-network
+    depends_on:
+      - weather-reader
+
+  grafana:
+    build:
+      context: .
+      dockerfile: Dockerfile.grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - weather-network
+    depends_on:
+      - prometheus
+```
+</TerminalWindow>
+
+The key detail here is the `devices` section—this passes the USB serial device into the container so the Go service can read from it.
+
+## Structured Logging with slog
+
+I used Go's new `log/slog` package for structured logging throughout the reader service:
+
+<TerminalWindow title="logging.go">
+```go
+logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+    Level: slog.LevelInfo,
+}))
+
+logger.Info("received weather data",
+    "temperature_c", temperature,
+    "humidity_pct", humidity,
+)
+```
+</TerminalWindow>
+
+This produces beautiful JSON logs:
+
+<TerminalWindow title="json-logs">
+```json
+{
+  "time": "2024-03-14T12:00:00Z",
+  "level": "INFO",
+  "msg": "received weather data",
+  "temperature_c": 23,
+  "humidity_pct": 45
+}
+```
+</TerminalWindow>
+
+Structured logs are far easier to query, filter, and aggregate than traditional text logs—especially when you're debugging production issues.
+
+## Handling Concurrency: Thread-Safe Data Access
+
+Since the reader goroutine and HTTP handlers run concurrently, I needed thread-safe access to the current weather data:
+
+<TerminalWindow title="thread-safety.go">
+```go
+type Reader struct {
+    port        *serial.Port
+    currentData WeatherData
+    mu          sync.RWMutex
+    logger      *slog.Logger
+}
+
+func (r *Reader) GetCurrentData() WeatherData {
+    r.mu.RLock()
+    defer r.mu.RUnlock()
+    return r.currentData
+}
+
+func (r *Reader) processFrame(frame []byte) {
+    temperature := float64(frame[1])
+    humidity := float64(frame[2])
+
+    r.mu.Lock()
+    r.currentData = WeatherData{
+        Temperature: temperature,
+        Humidity:    humidity,
+        Timestamp:   time.Now(),
+    }
+    r.mu.Unlock()
+}
+```
+</TerminalWindow>
+
+Using `sync.RWMutex` instead of `sync.Mutex` allows multiple readers (HTTP handlers) to read simultaneously while ensuring exclusive access for writes (frame processing).
+
+## Grafana Dashboards: Visualizing the Data
+
+Once Prometheus is scraping the metrics, creating Grafana dashboards is simple. Here are some example queries:
+
+**Current Temperature:**
+```promql
+weather_temperature_celsius
+```
+
+**Temperature Over Last Hour:**
+```promql
+weather_temperature_celsius[1h]
+```
+
+**Humidity Change Rate:**
+```promql
+rate(weather_humidity_percent[5m])
+```
+
+<Callout type="success" title="Pro Tip">
+  Add alerts in Grafana to notify you when temperature goes above/below thresholds. Perfect for monitoring server rooms, greenhouses, or your home office!
+</Callout>
+
+## Running the System
+
+Getting everything running is as simple as:
+
+<TerminalWindow title="bash">
+```bash
+# Navigate to the reader directory
+$ cd reader
+
+# Start all services
+$ docker-compose up -d
+
+# Watch the logs
+$ docker-compose logs -f weather-reader
+
+# Access Grafana
+$ open http://localhost:3000
+```
+</TerminalWindow>
+
+## Lessons Learned
+
+1. **Binary protocols are fun**: Designing a minimal protocol taught me a lot about frame synchronization and error handling.
+
+2. **TinyGo is production-ready**: For non-critical embedded projects, TinyGo offers a great developer experience with minimal overhead.
+
+3. **Structured logging is essential**: JSON logs made debugging the frame parser infinitely easier than printf debugging.
+
+4. **Docker simplifies deployment**: Being able to run `docker-compose up` and have Prometheus + Grafana ready is powerful.
+
+5. **Observability matters**: Even for hobby projects, proper metrics and monitoring make development much smoother.
+
+## What's Next?
+
+Some ideas for extending this project:
+
+- **Bluetooth support**: Use the Pico W's Bluetooth to send data wirelessly
+- **Multiple sensors**: Add more DHT11 sensors and implement a sensor ID in the protocol
+- **Historical data**: Store readings in a time-series database like InfluxDB
+- **Remote access**: Expose the Grafana dashboard securely over the internet
+- **Power optimization**: Use deep sleep modes to run on battery power
+
+## Conclusion
+
+Building PicoWeather Watch was a great exercise in full-stack IoT development. From bit-level binary protocols to cloud-native monitoring, the project touches on numerous interesting topics.
+
+The source code is available on GitHub, and I encourage you to build your own version. Whether you choose C or Go for the firmware, you'll learn a ton about embedded systems, binary protocols, and modern observability practices.
+
+Happy hacking!
+
+---
+
+*Have questions or built something similar? Reach out on GitHub!*
