@@ -1,0 +1,253 @@
+---
+// Binary Protocol Animation Component
+// Shows how the PicoWeather Watch parses USB serial frames
+---
+
+<div class="binary-protocol-animation">
+  <svg
+    viewBox="0 0 800 600"
+    xmlns="http://www.w3.org/2000/svg"
+    class="w-full max-w-4xl mx-auto"
+  >
+    <defs>
+      <!-- Gradient for USB cable -->
+      <linearGradient id="usbGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
+      </linearGradient>
+
+      <!-- Glow effect -->
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+        <feMerge>
+          <feMergeNode in="coloredBlur" />
+          <feMergeNode in="SourceGraphic" />
+        </feMerge>
+      </filter>
+    </defs>
+
+    <!-- Title -->
+    <text x="400" y="30" text-anchor="middle" class="text-xl font-bold fill-purple-300">
+      USB Serial Binary Protocol
+    </text>
+
+    <!-- Pico W Device -->
+    <g id="pico">
+      <rect
+        x="50"
+        y="100"
+        width="120"
+        height="80"
+        rx="8"
+        class="fill-gray-800 stroke-purple-500"
+        stroke-width="2"
+      />
+      <text x="110" y="125" text-anchor="middle" class="text-sm fill-purple-300 font-semibold">
+        Pico W
+      </text>
+      <text x="110" y="145" text-anchor="middle" class="text-xs fill-gray-400">
+        DHT11 Sensor
+      </text>
+      <text x="110" y="165" text-anchor="middle" class="text-xs fill-green-400">
+        23°C / 45%
+      </text>
+    </g>
+
+    <!-- USB Cable -->
+    <path
+      d="M 170 140 Q 300 140 350 140"
+      stroke="url(#usbGradient)"
+      stroke-width="4"
+      fill="none"
+      stroke-linecap="round"
+    />
+
+    <!-- Go Reader Service -->
+    <g id="reader">
+      <rect
+        x="350"
+        y="100"
+        width="140"
+        height="80"
+        rx="8"
+        class="fill-gray-800 stroke-purple-500"
+        stroke-width="2"
+      />
+      <text x="420" y="125" text-anchor="middle" class="text-sm fill-purple-300 font-semibold">
+        Go Reader
+      </text>
+      <text x="420" y="145" text-anchor="middle" class="text-xs fill-gray-400">
+        Frame Parser
+      </text>
+    </g>
+
+    <!-- Frame Visualization Area -->
+    <g id="frame-area">
+      <text x="50" y="230" class="text-sm fill-purple-300 font-semibold">
+        Binary Frame:
+      </text>
+
+      <!-- Byte boxes -->
+      <g id="byte-0">
+        <rect x="50" y="250" width="80" height="60" rx="4" class="fill-gray-800 stroke-green-500" stroke-width="2" />
+        <text x="90" y="275" text-anchor="middle" class="text-xs fill-gray-400">
+          Byte 0
+        </text>
+        <text x="90" y="295" text-anchor="middle" class="text-2xl fill-green-400 font-mono font-bold">
+          0xAA
+        </text>
+        <text x="90" y="308" text-anchor="middle" class="text-xs fill-green-300">
+          START
+        </text>
+      </g>
+
+      <g id="byte-1">
+        <rect x="150" y="250" width="80" height="60" rx="4" class="fill-gray-800 stroke-blue-500" stroke-width="2" />
+        <text x="190" y="275" text-anchor="middle" class="text-xs fill-gray-400">
+          Byte 1
+        </text>
+        <text x="190" y="295" text-anchor="middle" class="text-2xl fill-blue-400 font-mono font-bold">
+          0x17
+        </text>
+        <text x="190" y="308" text-anchor="middle" class="text-xs fill-blue-300">
+          23°C
+        </text>
+      </g>
+
+      <g id="byte-2">
+        <rect x="250" y="250" width="80" height="60" rx="4" class="fill-gray-800 stroke-yellow-500" stroke-width="2" />
+        <text x="290" y="275" text-anchor="middle" class="text-xs fill-gray-400">
+          Byte 2
+        </text>
+        <text x="290" y="295" text-anchor="middle" class="text-2xl fill-yellow-400 font-mono font-bold">
+          0x2D
+        </text>
+        <text x="290" y="308" text-anchor="middle" class="text-xs fill-yellow-300">
+          45%
+        </text>
+      </g>
+
+      <g id="byte-3">
+        <rect x="350" y="250" width="80" height="60" rx="4" class="fill-gray-800 stroke-red-500" stroke-width="2" />
+        <text x="390" y="275" text-anchor="middle" class="text-xs fill-gray-400">
+          Byte 3
+        </text>
+        <text x="390" y="295" text-anchor="middle" class="text-2xl fill-red-400 font-mono font-bold">
+          0x55
+        </text>
+        <text x="390" y="308" text-anchor="middle" class="text-xs fill-red-300">
+          END
+        </text>
+      </g>
+    </g>
+
+    <!-- Parsing Steps -->
+    <g id="parsing-steps">
+      <text x="50" y="350" class="text-sm fill-purple-300 font-semibold">
+        Parsing Steps:
+      </text>
+
+      <!-- Step 1 -->
+      <g id="step-1">
+        <circle cx="65" cy="375" r="5" class="fill-green-500" />
+        <text x="80" y="380" class="text-sm fill-gray-300">
+          1. Read bytes from USB serial port
+        </text>
+      </g>
+
+      <!-- Step 2 -->
+      <g id="step-2">
+        <circle cx="65" cy="405" r="5" class="fill-green-500" />
+        <text x="80" y="410" class="text-sm fill-gray-300">
+          2. Wait for START marker (0xAA)
+        </text>
+      </g>
+
+      <!-- Step 3 -->
+      <g id="step-3">
+        <circle cx="65" cy="435" r="5" class="fill-blue-500" />
+        <text x="80" y="440" class="text-sm fill-gray-300">
+          3. Read temperature byte (degrees Celsius)
+        </text>
+      </g>
+
+      <!-- Step 4 -->
+      <g id="step-4">
+        <circle cx="65" cy="465" r="5" class="fill-yellow-500" />
+        <text x="80" y="470" class="text-sm fill-gray-300">
+          4. Read humidity byte (percent RH)
+        </text>
+      </g>
+
+      <!-- Step 5 -->
+      <g id="step-5">
+        <circle cx="65" cy="495" r="5" class="fill-red-500" />
+        <text x="80" y="500" class="text-sm fill-gray-300">
+          5. Verify END marker (0x55)
+        </text>
+      </g>
+
+      <!-- Step 6 -->
+      <g id="step-6">
+        <circle cx="65" cy="525" r="5" class="fill-purple-500" />
+        <text x="80" y="530" class="text-sm fill-gray-300">
+          6. Update weather data struct
+        </text>
+      </g>
+    </g>
+
+    <!-- Data Flow Arrow -->
+    <g id="data-flow">
+      <path
+        d="M 450 250 Q 520 200 590 180"
+        stroke="#8b5cf6"
+        stroke-width="2"
+        fill="none"
+        stroke-dasharray="5,5"
+        filter="url(#glow)"
+      />
+      <polygon
+        points="590,175 600,180 590,185"
+        class="fill-purple-500"
+      />
+    </g>
+
+    <!-- Metrics Output -->
+    <g id="metrics">
+      <rect
+        x="520"
+        y="100"
+        width="230"
+        height="140"
+        rx="8"
+        class="fill-gray-900 stroke-purple-500"
+        stroke-width="2"
+      />
+      <text x="635" y="125" text-anchor="middle" class="text-sm fill-purple-300 font-semibold">
+        Prometheus Metrics
+      </text>
+      <text x="530" y="150" class="text-xs fill-gray-400 font-mono">
+        weather_temperature_celsius
+      </text>
+      <text x="530" y="168" class="text-lg fill-blue-400 font-mono font-bold">
+        23.00
+      </text>
+      <text x="530" y="195" class="text-xs fill-gray-400 font-mono">
+        weather_humidity_percent
+      </text>
+      <text x="530" y="213" class="text-lg fill-yellow-400 font-mono font-bold">
+        45.00
+      </text>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .binary-protocol-animation {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin: 2rem 0;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+  }
+</style>

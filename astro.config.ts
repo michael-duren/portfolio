@@ -18,7 +18,6 @@ export default defineConfig({
   },
 
   vite: {
-    // @ts-expect-error -- types are incorrect either astro or for tailwindcss vite plugin
     plugins: [tailwindcss()],
     server: {
       host: import.meta.env.DEV,

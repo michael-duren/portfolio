@@ -1,5 +1,5 @@
 ---
-import { getCollection, type CollectionEntry } from "astro:content";
+import { getCollection, type CollectionEntry, render } from "astro:content";
 import MainLayout from "../../layouts/MainLayout.astro";
 import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
@@ -7,7 +7,7 @@ import { Image } from "astro:assets";
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
   return posts.map((post) => ({
-    params: { slug: post.slug },
+    params: { slug: post.id },
     props: { post },
   }));
 }
@@ -17,7 +17,7 @@ type Props = {
 };
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content } = await render(post);
 ---
 
 <MainLayout title={`${post.data.title} | Michael Duren`}>
