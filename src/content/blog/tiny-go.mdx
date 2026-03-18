@@ -22,16 +22,78 @@ import TerminalWindow from "../../components/mdx/TerminalWindow.astro";
 import Callout from "../../components/mdx/Callout.astro";
 import BinaryProtocolAnimation from "./BinaryProtocolAnimation.astro";
 
-# Building PicoWeather Watch: From Embedded C to Cloud Monitoring
-
 Ever wondered how to bridge the gap between embedded systems and modern cloud monitoring? In this post, I'll walk you through building PicoWeather Watch—a super simple IoT weather monitoring system that reads temperature and humidity from a Raspberry Pi Pico and DHT sensor and visualizes the data in Grafana.
 
 This project showcases the full stack: embedded C firmware, converting that firmware using Tiny Go, Go services, binary protocol design, and Prometheus metrics.
 I did not use docker for this because I would have to expose the USB serial device to the container, which can be tricky and is not portable across different host operating systems. Instead, I run the Go reader service directly on the host machine, which allows it to access the USB serial device without any special configuration.
 
-## The Big Picture
+## Tiny Go
 
-The system architecture is beautifully simple:
+> NOTE: To get tiny go editor support you need to install an appropriate plugin. For neovim I use `pcolladosoto/tinygo.nvim`.
+
+Lets start with taking a look at the [demo](https://tinygo.org/).
+What you'll notice right away is that the code uses a pkg called `machine` which provides a hardware abstraction layer for different microcontrollers.
+This allows you to write Go code that can run on various platforms without modification.
+
+The micro controller target is specified at compile time using the `-target` flag. For example, to compile for the Raspberry Pi Pico W, you would use:
+
+```bash
+tinygo build -o firmware.bin -target=pico send_usb.go
+```
+
+To get an idea of the boards supported we can look at their constants [here](https://github.com/tinygo-org/tinygo/blob/release/src/machine/board_pico.go).
+
+I highly recommend going through the [Compiler Internals](https://tinygo.org/docs/concepts/), they're pretty sumarized but here's a general overview:
+
+- Tiny Go uses LLVM as its backend, which allows it to generate efficient machine code for various architectures.
+- It abstracts away interrupts you shouldn't need to worry about, most of this is implemented on a per board basis.
+- Rather than using volatile variables for hardware registers tiny go gives us `Get` and `Set` methods on the `Pin` type,
+  which handle the necessary memory barriers and ensure safe access to hardware registers.
+
+  Example:
+
+  ```c
+  volatile uint32_t *gpio_out = (volatile uint32_t *)0x4001400;
+  *gpio_out = 1;
+  ```
+
+  becomes
+
+  ```go
+  pin := machine.GPIO.GetPin(25) // Get pin 25 (onboard LED)
+  pin.Set(true) // Set pin high
+  ```
+
+- If you're feeling like a nut you can even write assembly:
+
+```go
+result := arm.AsmFull(`
+    add {}, {value}, #3
+`, map[string]interface{}{
+    "value": 42,
+})
+println("result:", int(result))
+
+```
+
+I'd never do this, but hey it's there if you need it!
+
+- Tiny go tries not to use heap allocs, and you should too! Be wary of esacpe analaysis, taking pointers, you can
+  be aware that this is not the time for unecessary abstractions, or any really. Tiny go already gave you some be grateful!
+
+![Image of a tiny go running on a microcontroller](../../images/blog/trash.jpg)
+
+- Go routines are supported, similar to the normal go runtime a stack is allocated per routine
+  and switching happens by saving and restoring the CPU registers. If you are going into the
+  world of concurrent embedded programming though you should be careful about memory usage and avoid creating too many goroutines,
+  and if you need highly performant concurrency maybe use the [hardware interrupts](https://tinygo.org/docs/concepts/compiler-internals/interrupts/) instead.
+
+- One last thing about heap allocations, if you're using a timing based protocol like the DHT11 you should be careful about any GC pauses that could cause you to miss critical timing windows.
+  In general, it's best to avoid heap allocations in time-sensitive code. You can use slices as long you're aware of when they may cause a heap allocation.
+
+## The Project
+
+The system architecture is simple:
 
 1. **Raspberry Pi Pico W** with DHT sensor reads temperature/humidity
 2. **Firmware** (C or Go) sends data via USB serial using a custom binary protocol
@@ -42,7 +104,7 @@ The system architecture is beautifully simple:
 <Callout type="info" title="Why Two Firmware Implementations?">
   I implemented the firmware in both C and Go (using TinyGo) to explore
   different embedded development approaches. Both use the exact same binary
-  protocol, making them interchangeable!
+  protocol, making them interchangeable
 </Callout>
 
 ## The Binary Protocol: Keeping It Simple
@@ -166,6 +228,7 @@ This approach handles several edge cases:
 The C implementation uses the Pico SDK to read from the DHT11 sensor and send data over USB:
 
 <TerminalWindow title="pico_weather_watch.c">
+
 ```c
 int main() {
     init();
@@ -191,8 +254,6 @@ int main() {
 
 </TerminalWindow>
 
-The DHT11 sensor uses a one-wire protocol that's notoriously timing-sensitive. The Pico handles this beautifully with its dual-core ARM Cortex-M0+ running at 133 MHz.
-
 ## The Go Firmware: TinyGo Magic
 
 The Go version uses TinyGo—a Go compiler for embedded systems. Here's the equivalent code:
@@ -213,178 +274,14 @@ func send(temperature, humidity int32) error {
 </TerminalWindow>
 
 <Callout type="info" title="TinyGo vs C">
-  TinyGo produces binaries only slightly larger than C (about 20-30% bigger) but gives you memory safety, better abstractions, and familiar Go syntax. For hobby projects, the tradeoff is often worth it!
+  The build size actually ends up being pretty similar. Although these are both small programs and I may not be the best at
+  `cmake` files:
+
+- C: `65K Mar 18 08:11 pico_weather_watch.uf2`
+
+- GO: `66K Mar 18 16:53 output.uf2`
 </Callout>
 
-## Prometheus Metrics: Making Data Observable
-
-The Go reader service exposes metrics in Prometheus text format:
-
-<TerminalWindow title="metrics-endpoint">
-```bash
-$ curl http://localhost:8080/metrics
-
-# HELP weather_temperature_celsius Current temperature in Celsius
-# TYPE weather_temperature_celsius gauge
-weather_temperature_celsius 23.00
-
-# HELP weather_humidity_percent Current relative humidity percentage
-# TYPE weather_humidity_percent gauge
-weather_humidity_percent 45.00
-
-# HELP weather_last_update_timestamp_seconds Timestamp of last sensor reading
-# TYPE weather_last_update_timestamp_seconds gauge
-weather_last_update_timestamp_seconds 1709481234
-````
-
-</TerminalWindow>
-
-The metrics handler is straightforward:
-
-<TerminalWindow title="metrics-handler.go">
-```go
-func MetricsHandler(reader *Reader) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        data := reader.GetCurrentData()
-
-        fmt.Fprintf(w, "# HELP weather_temperature_celsius Current temperature in Celsius\n")
-        fmt.Fprintf(w, "# TYPE weather_temperature_celsius gauge\n")
-        fmt.Fprintf(w, "weather_temperature_celsius %.2f\n", data.Temperature)
-
-        fmt.Fprintf(w, "# HELP weather_humidity_percent Current relative humidity percentage\n")
-        fmt.Fprintf(w, "# TYPE weather_humidity_percent gauge\n")
-        fmt.Fprintf(w, "weather_humidity_percent %.2f\n", data.Humidity)
-
-        fmt.Fprintf(w, "# HELP weather_last_update_timestamp_seconds Timestamp of last sensor reading\n")
-        fmt.Fprintf(w, "# TYPE weather_last_update_timestamp_seconds gauge\n")
-        fmt.Fprintf(w, "weather_last_update_timestamp_seconds %d\n", data.Timestamp.Unix())
-    }
-
-}
-
-````
-</TerminalWindow>
-
-## Dockerizing Everything
-
-To make deployment easy, I containerized the entire stack with Docker Compose:
-
-<TerminalWindow title="docker-compose.yml">
-```yaml
-services:
-  weather-reader:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    devices:
-      - /dev/ttyACM0:/dev/ttyACM0
-    environment:
-      - USB_PORT=/dev/ttyACM0
-      - HTTP_PORT=8080
-    ports:
-      - "8080:8080"
-    networks:
-      - weather-network
-
-  prometheus:
-    build:
-      context: .
-      dockerfile: Dockerfile.prometheus
-    ports:
-      - "9090:9090"
-    networks:
-      - weather-network
-    depends_on:
-      - weather-reader
-
-  grafana:
-    build:
-      context: .
-      dockerfile: Dockerfile.grafana
-    ports:
-      - "3000:3000"
-    networks:
-      - weather-network
-    depends_on:
-      - prometheus
-````
-
-</TerminalWindow>
-
-The key detail here is the `devices` section—this passes the USB serial device into the container so the Go service can read from it.
-
-## Structured Logging with slog
-
-I used Go's new `log/slog` package for structured logging throughout the reader service:
-
-<TerminalWindow title="logging.go">
-```go
-logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-    Level: slog.LevelInfo,
-}))
-
-logger.Info("received weather data",
-"temperature_c", temperature,
-"humidity_pct", humidity,
-)
-
-````
-</TerminalWindow>
-
-This produces beautiful JSON logs:
-
-<TerminalWindow title="json-logs">
-```json
-{
-  "time": "2024-03-14T12:00:00Z",
-  "level": "INFO",
-  "msg": "received weather data",
-  "temperature_c": 23,
-  "humidity_pct": 45
-}
-````
-
-</TerminalWindow>
-
-Structured logs are far easier to query, filter, and aggregate than traditional text logs—especially when you're debugging production issues.
-
-## Handling Concurrency: Thread-Safe Data Access
-
-Since the reader goroutine and HTTP handlers run concurrently, I needed thread-safe access to the current weather data:
-
-<TerminalWindow title="thread-safety.go">
-```go
-type Reader struct {
-    port        *serial.Port
-    currentData WeatherData
-    mu          sync.RWMutex
-    logger      *slog.Logger
-}
-
-func (r \*Reader) GetCurrentData() WeatherData {
-r.mu.RLock()
-defer r.mu.RUnlock()
-return r.currentData
-}
-
-func (r \*Reader) processFrame(frame []byte) {
-temperature := float64(frame[1])
-humidity := float64(frame[2])
-
-    r.mu.Lock()
-    r.currentData = WeatherData{
-        Temperature: temperature,
-        Humidity:    humidity,
-        Timestamp:   time.Now(),
-    }
-    r.mu.Unlock()
-
-}
-
-````
-</TerminalWindow>
-
-Using `sync.RWMutex` instead of `sync.Mutex` allows multiple readers (HTTP handlers) to read simultaneously while ensuring exclusive access for writes (frame processing).
 
 ## Grafana Dashboards: Visualizing the Data
 
@@ -413,41 +310,18 @@ rate(weather_humidity_percent[5m])
   office!
 </Callout>
 
-## Running the System
-
-Getting everything running is as simple as:
-
-<TerminalWindow title="bash">
-```bash
-# Navigate to the reader directory
-$ cd reader
-
-# Start all services
-
-$ docker-compose up -d
-
-# Watch the logs
-
-$ docker-compose logs -f weather-reader
-
-# Access Grafana
-
-$ open http://localhost:3000
-
-```
-</TerminalWindow>
-
 ## Lessons Learned
 
-1. **Binary protocols are fun**: Designing a minimal protocol taught me a lot about frame synchronization and error handling.
+1. **I need to understand the electronics more**: After this I have a few books planned on understanding the components like conductors, resistors, capacitors, and how to read circuit diagrams.
+   I also want to learn how to use a multimeter and oscilloscope properly and make a music synthesizer some day.
 
 2. **TinyGo is production-ready**: For non-critical embedded projects, TinyGo offers a great developer experience with minimal overhead.
 
-3. **Structured logging is essential**: JSON logs made debugging the frame parser infinitely easier than printf debugging.
+3. **Structured logging kinda sucks**: FOR this, I'd have to do different builds for debugging and go service reading data, since
+   logs break the binary protocol.
 
-4. **Docker simplifies deployment**: Being able to run `docker-compose up` and have Prometheus + Grafana ready is powerful.
-
-5. **Observability matters**: Even for hobby projects, proper metrics and monitoring make development much smoother.
+4. **Observability matters**: Even for hobby projects, proper metrics and monitoring make development much smoother,
+   I really should get a debugger for my pico 😝.
 
 ## What's Next?
 
@@ -469,5 +343,8 @@ Happy hacking!
 
 ---
 
-*Have questions or built something similar? Reach out on GitHub!*
+_Have questions or built something similar? Reach out on GitHub!_
+
+```
+
 ```
