@@ -27,6 +27,8 @@ Ever wondered how to bridge the gap between embedded systems and modern cloud mo
 This project showcases the full stack: embedded C firmware, converting that firmware using Tiny Go, Go services, binary protocol design, and Prometheus metrics.
 I did not use docker for this because I would have to expose the USB serial device to the container, which can be tricky and is not portable across different host operating systems. Instead, I run the Go reader service directly on the host machine, which allows it to access the USB serial device without any special configuration.
 
+[Course repo](https://github.com/michael-duren/picoweather-watch).
+
 ## Tiny Go
 
 > NOTE: To get tiny go editor support you need to install an appropriate plugin. For neovim I use `pcolladosoto/tinygo.nvim`.
