@@ -1,0 +1,70 @@
+---
+title: "Linux Container Essentials"
+description: "Understanding namespaces, cgroups, mounts, and unix sockets"
+pubDate: 2026-06-25
+cardImage: "../../images/blog/tinygo-logo.png"
+heroImage: "../../images/blog/tinygo-hero.jpeg"
+tags:
+  [
+    "Go",
+    "C",
+    "Unix",
+    "Linux",
+    "Docker"
+  ]
+---
+
+In a world of abstraction, AI and black boxes, understanding what's actually happening is important. 
+At least I think so. AI has transformed our productivity but has it helped our understanding
+of the things we're building?
+
+In this article we'll go into the Linux OS essentials necessary to understand what containers are
+and how they work.
+
+## User IDs & Groups
+
+This maybe seems like an odd one to start with, but there's a reason docker groups exist. 
+Anyway here's me: `mduren:x:1000:1000::/home/mduren:/usr/bin/zsh`
+
+My login name, an x denoting I have a password, my user ID, group ID (one of many group IDs), notes (I don't have any), home directory and login shell.
+
+Checking out the docker group for examle: `docker:x:961:mduren` by running `cat /etc/group | grep -i docker` we see the group name,
+encrypted group password represented by `x`, Group ID, and user list.
+
+## Understanding namespaces
+
+One of the quickest introductions (if you're on a linux system) to namespaces is to simply run `man namespaces`.
+
+`A  namespace  wraps  a global system resource in an abstraction that makes it appear to the processes within the namespace that they have their own isolated instance of the global resource.`
+
+A global resource that's vague, lets take a look at what resources there are: 
+
+     Namespace   Flag              Page                    Isolates
+ ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     Cgroup      CLONE_NEWCGROUP   cgroup_namespaces(7)    Cgroup root directory
+     IPC         CLONE_NEWIPC      ipc_namespaces(7)       System V IPC, POSIX message queues
+     Network     CLONE_NEWNET      network_namespaces(7)   Network devices, stacks, ports, etc.
+     Mount       CLONE_NEWNS       mount_namespaces(7)     Mount points
+     PID         CLONE_NEWPID      pid_namespaces(7)       Process IDs
+     Time        CLONE_NEWTIME     time_namespaces(7)      Boot and monotonic clocks
+     User        CLONE_NEWUSER     user_namespaces(7)      User and group IDs
+     UTS         CLONE_NEWUTS      uts_namespaces(7)       Hostname and NIS domain name
+
+
+## PTY Psuedo Terminals and Interactively running containers
+
+1. create launches the monitor (a process that outlives create).
+2. Monitor listens on a console socket.
+3. Container process opens the PTY → gets master + slave, keeps slave as its stdio, sends the master fd to the monitor over the console socket (SCM_RIGHTS).
+4. Monitor now holds the master and listens on an attach socket; box attach connects there and the monitor relays bytes ↔ master.
+
+One subtlety to file away: after the container process sets the slave as its stdio, it also does setsid() + TIOCSCTTY to make that slave its controlling terminal — that's what makes Ctrl-C and job control actually work.
+
+Where to read the primitives
+
+- pty(7), pts(4) — the master/slave model
+- termios(3) — the line discipline (echo, canonical mode, signals)
+- openpty(3) / forkpty(3) — the convenience calls that create the pair
+- unix(7) + cmsg(3) — SCM_RIGHTS fd passing (the console-socket mechanism)
+- ioctl_tty(2) — TIOCSCTTY (claim controlling terminal)
+
