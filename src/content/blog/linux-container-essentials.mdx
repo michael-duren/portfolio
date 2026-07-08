@@ -4,20 +4,8 @@ description: "Understanding namespaces, cgroups, mounts, and unix sockets"
 pubDate: 2026-06-25
 cardImage: "../../images/blog/tinygo-logo.png"
 heroImage: "../../images/blog/tinygo-hero.jpeg"
-tags:
-  [
-    "Go",
-    "C",
-    "Unix",
-    "Linux",
-    "Docker",
-    "Podman",
-    "Runc",
-    "Crun",
-  ]
+tags: ["Go", "C", "Unix", "Linux", "Docker", "Podman", "Runc", "Crun"]
 ---
-
-> WARNING: WIP
 
 In a world of abstraction, AI and black boxes, understanding what's actually happening is important.
 At least I think so. AI has transformed our productivity but has it helped our understanding
@@ -37,15 +25,15 @@ mduren:x:1000:1000::/home/mduren:/usr/bin/zsh
 
 That colon-separated line breaks down as:
 
-| Field | Value | Meaning |
-| --- | --- | --- |
-| Login name | `mduren` | the account's username |
-| Password | `x` | placeholder; the real hash lives in `/etc/shadow` |
-| UID | `1000` | user ID |
-| GID | `1000` | primary group ID (one of many groups I can belong to) |
-| GECOS | _(empty)_ | comment/notes field — I don't have any |
-| Home | `/home/mduren` | home directory |
-| Shell | `/usr/bin/zsh` | login shell |
+| Field      | Value          | Meaning                                               |
+| ---------- | -------------- | ----------------------------------------------------- |
+| Login name | `mduren`       | the account's username                                |
+| Password   | `x`            | placeholder; the real hash lives in `/etc/shadow`     |
+| UID        | `1000`         | user ID                                               |
+| GID        | `1000`         | primary group ID (one of many groups I can belong to) |
+| GECOS      | _(empty)_      | comment/notes field — I don't have any                |
+| Home       | `/home/mduren` | home directory                                        |
+| Shell      | `/usr/bin/zsh` | login shell                                           |
 
 Now the docker group, via `cat /etc/group | grep -i docker`:
 
@@ -55,12 +43,16 @@ docker:x:961:mduren
 
 Entries in `/etc/group` follow `name:password:GID:members`:
 
-| Field | Value | Meaning |
-| --- | --- | --- |
-| Group name | `docker` | the group's name |
-| Password | `x` | group password placeholder (rarely used; lives in `/etc/gshadow`) |
-| GID | `961` | group ID |
-| Members | `mduren` | users belonging to the group |
+| Field      | Value    | Meaning                                                           |
+| ---------- | -------- | ----------------------------------------------------------------- |
+| Group name | `docker` | the group's name                                                  |
+| Password   | `x`      | group password placeholder (rarely used; lives in `/etc/gshadow`) |
+| GID        | `961`    | group ID                                                          |
+| Members    | `mduren` | users belonging to the group                                      |
+
+Why is this important for containers? Containers can either be **rootfull** or **rootless**.
+Rootfull means the containers process is running as the **root** user (UID: `0`, GID: `0`),
+we'll dive into this more later on.
 
 ## Understanding namespaces
 
@@ -70,16 +62,40 @@ One of the quickest introductions (if you're on a linux system) to namespaces is
 
 A global resource — that's vague. Let's take a look at what resources there are:
 
-| Namespace | Flag | Page | Isolates |
-| --- | --- | --- | --- |
-| Cgroup | `CLONE_NEWCGROUP` | `cgroup_namespaces(7)` | Cgroup root directory |
-| IPC | `CLONE_NEWIPC` | `ipc_namespaces(7)` | System V IPC, POSIX message queues |
-| Network | `CLONE_NEWNET` | `network_namespaces(7)` | Network devices, stacks, ports, etc. |
-| Mount | `CLONE_NEWNS` | `mount_namespaces(7)` | Mount points |
-| PID | `CLONE_NEWPID` | `pid_namespaces(7)` | Process IDs |
-| Time | `CLONE_NEWTIME` | `time_namespaces(7)` | Boot and monotonic clocks |
-| User | `CLONE_NEWUSER` | `user_namespaces(7)` | User and group IDs |
-| UTS | `CLONE_NEWUTS` | `uts_namespaces(7)` | Hostname and NIS domain name |
+| Namespace | Flag              | Page                    | Isolates                             |
+| --------- | ----------------- | ----------------------- | ------------------------------------ |
+| Cgroup    | `CLONE_NEWCGROUP` | `cgroup_namespaces(7)`  | Cgroup root directory                |
+| IPC       | `CLONE_NEWIPC`    | `ipc_namespaces(7)`     | System V IPC, POSIX message queues   |
+| Network   | `CLONE_NEWNET`    | `network_namespaces(7)` | Network devices, stacks, ports, etc. |
+| Mount     | `CLONE_NEWNS`     | `mount_namespaces(7)`   | Mount points                         |
+| PID       | `CLONE_NEWPID`    | `pid_namespaces(7)`     | Process IDs                          |
+| Time      | `CLONE_NEWTIME`   | `time_namespaces(7)`    | Boot and monotonic clocks            |
+| User      | `CLONE_NEWUSER`   | `user_namespaces(7)`    | User and group IDs                   |
+| UTS       | `CLONE_NEWUTS`    | `uts_namespaces(7)`     | Hostname and NIS domain name         |
+
+Containers are supposed to be a black box, a somewhat seemingly virtualized environment like you're on a different
+computer.
+We do that by isolating what it can see and its identity,
+
+UTS -> Allows us to change the hostname for the process in the container.
+User Namespace -> creating a new user namespace allows us to set the internal applicaton process as root
+but externally we can set the user ID to be a non root user. This is where the user ID information comes
+in from the previous section. The container process has to be root in order to call system calls (which we'll get to)
+that change it's environment. But we don't want a container process to be running as root because if the users code ever 
+broke out of the container it would have root access to the host macine.
+Cgroup -> This one is critical, we want to be able to set computer resources specific to the container.
+IPC/Network -> 
+Mount & PID -> These are crucial without them containers could see all running processes on the host machine.
+Talk about a security issue.
+Time -> ?
+
+## Essential syscalls
+
+What is a `syscall`? 
+
+## Cgroups
+
+- **cgroups:** run `cat /proc/<pid>/cgroup`, then look under `/sys/fs/cgroup/…` for files like `memory.max`, `cpu.max`, and `pids.max`.
 
 ## PTY Pseudo Terminals and Interactively running containers
 
@@ -106,25 +122,40 @@ Every process carries a set of resource limits (rlimits). You can read a running
 cat /proc/898951/limits
 ```
 
-| Limit | Soft Limit | Hard Limit | Units |
-| --- | --- | --- | --- |
-| Max cpu time | unlimited | unlimited | seconds |
-| Max file size | unlimited | unlimited | bytes |
-| Max data size | unlimited | unlimited | bytes |
-| Max stack size | 8388608 | unlimited | bytes |
-| Max core file size | 0 | unlimited | bytes |
-| Max resident set | unlimited | unlimited | bytes |
-| Max processes | 189551 | 189551 | processes |
-| Max open files | 1024 | 4096 | files |
-| Max locked memory | 8388608 | 8388608 | bytes |
-| Max address space | unlimited | unlimited | bytes |
-| Max file locks | unlimited | unlimited | locks |
-| Max pending signals | 189551 | 189551 | signals |
-| Max msgqueue size | 819200 | 819200 | bytes |
-| Max nice priority | 0 | 0 | — |
-| Max realtime priority | 0 | 0 | — |
-| Max realtime timeout | unlimited | unlimited | us |
+| Limit                 | Soft Limit | Hard Limit | Units     |
+| --------------------- | ---------- | ---------- | --------- |
+| Max cpu time          | unlimited  | unlimited  | seconds   |
+| Max file size         | unlimited  | unlimited  | bytes     |
+| Max data size         | unlimited  | unlimited  | bytes     |
+| Max stack size        | 8388608    | unlimited  | bytes     |
+| Max core file size    | 0          | unlimited  | bytes     |
+| Max resident set      | unlimited  | unlimited  | bytes     |
+| Max processes         | 189551     | 189551     | processes |
+| Max open files        | 1024       | 4096       | files     |
+| Max locked memory     | 8388608    | 8388608    | bytes     |
+| Max address space     | unlimited  | unlimited  | bytes     |
+| Max file locks        | unlimited  | unlimited  | locks     |
+| Max pending signals   | 189551     | 189551     | signals   |
+| Max msgqueue size     | 819200     | 819200     | bytes     |
+| Max nice priority     | 0          | 0          | —         |
+| Max realtime priority | 0          | 0          | —         |
+| Max realtime timeout  | unlimited  | unlimited  | us        |
 
-## Cgroups
+## setuid
 
-- **cgroups:** run `cat /proc/<pid>/cgroup`, then look under `/sys/fs/cgroup/…` for files like `memory.max`, `cpu.max`, and `pids.max`.
+- p. 21 — [setuid example](./setuid/README.md)
+- p. 23 — [Adrian Mouat: Why Linux Capabilities Exist and How They Work](https://adrianmouat.com/posts/linux-capabilities-why-they-exist-and-how-they-work/)
+
+fork — duplicate the calling process. Child gets its own copy of memory, fds, etc. Same code continues running in both, diverging based on fork's return value (0 in child, childPID in parent).
+clone — same idea, but with a flags argument that lets you control what's shared vs. duplicated vs. isolated, including creating new namespaces for the child. fork() is essentially clone() called with a default flag set that shares nothing extra — it's the "no special namespace/sharing options" case.
+execve — replace the calling process's memory with a brand new program loaded from disk. Same PID, new code. Doesn't create a process, just replaces what's running in the current one.
+
+## TTY
+
+TTY literally stands for "teletype" — the electromechanical typewriters (like the Teletype Model 33) that were the physical terminals of the 1960s–70s, wired to the computer over a serial line. The hardware is museum material now, but the software abstraction built for it never left. In Linux, a tty is a kernel object with three layers: a device (where bytes physically come from and go to), a line discipline (the kernel middle layer that buffers input into lines, handles backspace, echoes keystrokes, and converts Ctrl-C into SIGINT for the foreground process group), and the character device file (/dev/tty1, /dev/pts/3) that processes read and write. The line discipline is the part that makes a tty more than a dumb byte pipe — it's where job control signals, canonical "cooked" mode vs raw mode, and echo all live.
+Today the "device" layer comes in three flavors: real serial ports (/dev/ttyS0, still used for embedded boards and servers), virtual consoles (/dev/tty1–tty63, the text screens you reach with Ctrl-Alt-F3, where the kernel itself plays the role of the terminal hardware), and pseudoterminals (/dev/pts/N, where a userspace program — terminal emulator, sshd, tmux, your container runtime — plays the terminal hardware by holding the master side). Same line discipline, same job-control semantics in all three; only who's on the far end changes. There's also the magic file /dev/tty, which always means "my controlling terminal, whatever it is."
+
+## Appendix/Terminology
+
+- **canonical cooked mode** vs **raw mode** - a terminal is either in one of two states **cooked** using a buffered read separated on `\n` or raw, every byte
+  is sent to the program without buffering think a program like vim.
