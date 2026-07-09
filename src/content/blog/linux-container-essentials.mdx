@@ -91,7 +91,20 @@ Time -> ?
 
 ## Essential syscalls
 
-What is a `syscall`? 
+### Overview
+
+What is a `syscall`? There are two levels of privileges when it comes to accessing hardware resources:
+
+1. User space -> where most of our programs run, browsers, email etc.
+2. Kernel space -> what actually has access to system resources like files, memory, network requests, etc.
+
+The separation above is leaving a lot out but syscalls are what we use when we want to access privileged resources
+from our programs. Our programs running in the user space use syscalls to request the kernel take an action on our behalf.
+
+Example of syscalls:
+
+- `read` - read from an open fd into a user-space buffer. `fd`s in linux are essentially pointers to different types of 
+resources they're an abstraction over things that could be files, terminals, pipes, network sockets etc. 
 
 ## Cgroups
 
