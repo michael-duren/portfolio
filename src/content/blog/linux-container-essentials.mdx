@@ -97,6 +97,22 @@ What is a `syscall`?
 
 - **cgroups:** run `cat /proc/<pid>/cgroup`, then look under `/sys/fs/cgroup/…` for files like `memory.max`, `cpu.max`, and `pids.max`.
 
+If we look at `cgroup.controllers` we can see what is currently available on the machine:
+```sh 
+root@vm:/sys/fs/cgroup# cat cgroup.controllers
+cpuset cpu io memory hugetlb pids rdma misc
+```
+
+Each of these controllers manages a type of resource that processes might consume.
+To enable the controllers they must be written into the `cgroup.subtree_control` file.
+
+Setting a control for something like memory for example we just have to update the `memory.max`
+file. You might `cat memory.max` and find that it just says `max` which means processes that are assigned
+this `cgroup` can use the maximum amount of memory, but we could update it to be `echo 100000 > memory.max`(100 KB).
+Making a new `cgroup` is easy, just create a folder for example `mkdir durendev` and `ls -la durendev` and we'll
+see all the default `cgroup` files have been added for us, `cat cgroup.procs` to see the current processes using
+the current `cgroup` (for a new `cgroup` this will be empty).
+
 ## PTY Pseudo Terminals and Interactively running containers
 
 1. create launches the monitor (a process that outlives create).
