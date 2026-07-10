@@ -77,17 +77,59 @@ Containers are supposed to be a black box, a somewhat seemingly virtualized envi
 computer.
 We do that by isolating what it can see and its identity,
 
-UTS -> Allows us to change the hostname for the process in the container.
-User Namespace -> creating a new user namespace allows us to set the internal applicaton process as root
-but externally we can set the user ID to be a non root user. This is where the user ID information comes
-in from the previous section. The container process has to be root in order to call system calls (which we'll get to)
-that change it's environment. But we don't want a container process to be running as root because if the users code ever 
-broke out of the container it would have root access to the host macine.
-Cgroup -> This one is critical, we want to be able to set computer resources specific to the container.
-IPC/Network -> 
-Mount & PID -> These are crucial without them containers could see all running processes on the host machine.
-Talk about a security issue.
-Time -> ?
+- UTS -> Allows us to change the hostname for the process in the container.
+- User Namespace -> creating a new user namespace allows us to set the internal application process as root
+  but externally we can set the user ID to be a non root user. This is where the user ID information comes
+  in from the previous section. The container process has to be root in order to call system calls (which we'll get to)
+  that change it's environment. But we don't want a container process to be running as root because if the users code ever
+  broke out of the container it would have root access to the host machine.
+- Cgroup -> This one is critical, we want to be able to set computer resources specific to the container.
+- `Network` ->
+- `IPC` ->
+- `Mount` -> Finding mounted filesystems: `man findmnt`. If we don't isolate the existing mounts you could see
+  the hosts mounts from `cat /proc/<PID>/mounts` because the child process (container) inherited access to all the preexisting mounts.
+  When binding a host directory inside a containers root, with something like `docker run -v <host>:<container> ...` we are still 
+  using the `mount` namespace but binding the host dir into a mount in the container. Other containers cannot see into this however
+  since they each have their own `mount` namespace.
+- `PID` -> These are crucial without them containers could see all running processes on the host machine.
+  Talk about a security issue.
+- Time -> ?
+
+Seeing the namespaces on your system: `lsns`, here I'm running this in a vm
+as root.
+
+```bash
+[root@archlinux ~]# lsns
+        NS TYPE   NPROCS   PID USER             COMMAND
+4026531832 mnt       101     1 root             /usr/lib/systemd/systemd --switched-root --system --deserialize=54
+4026531833 net       119     1 root             /usr/lib/systemd/systemd --switched-root --system --deserialize=54
+4026531834 time      119     1 root             /usr/lib/systemd/systemd --switched-root --system --deserialize=54
+4026531835 cgroup    119     1 root             /usr/lib/systemd/systemd --switched-root --system --deserialize=54
+4026531836 pid       119     1 root             /usr/lib/systemd/systemd --switched-root --system --deserialize=54
+4026531837 user      119     1 root             /usr/lib/systemd/systemd --switched-root --system --deserialize=54
+4026531838 uts       106     1 root             /usr/lib/systemd/systemd --switched-root --system --deserialize=54
+4026531839 ipc       119     1 root             /usr/lib/systemd/systemd --switched-root --system --deserialize=54
+4026532401 mnt         4   227 root             ├─/usr/lib/systemd/systemd-userdbd
+4026532402 mnt         6   231 root             ├─/usr/lib/systemd/systemd-nsresourced
+4026532628 uts         4   227 root             ├─/usr/lib/systemd/systemd-userdbd
+4026532629 uts         6   231 root             ├─/usr/lib/systemd/systemd-nsresourced
+```
+
+## Processes and `chroot`
+
+You've probably at some point needed to find or terminate a process on your machine, maybe its a container or a dev server
+that won't stop running and ran the classic `ps` command. `ps` outputs information about different processes running on your machine,
+if you're on mac or linux (we won't talk about Windows). Where is that command reading from? Turns out it reads from '/proc/' a pseudo
+filesystem on your computer to read information from the kernel, and `/proc/<proc-id>/exe` is a symbolic link to the actual program binary.
+
+Isolating containers means importantly isolating the processes and the rest of the file system.
+Using the `chroot` command or `pivot_root` (`man 2 pivot_root`) `syscall` allows us to change what the root level of the file system for a process effectively isolating
+both the `/proc` and processes to a new view, and with the addition of our before mentioned namespace `CLONE_NEWPID` we have an isolated
+set of processes the container can see.
+
+Well, almost.
+
+If you run `ps` you'll get something unexpected. TODO: fill in examples here
 
 ## Essential syscalls
 
@@ -103,15 +145,16 @@ from our programs. Our programs running in the user space use syscalls to reques
 
 Example of syscalls:
 
-- `read` - read from an open fd into a user-space buffer. `fd`s in linux are essentially pointers to different types of 
-resources they're an abstraction over things that could be files, terminals, pipes, network sockets etc. 
+- `read` - read from an open fd into a user-space buffer. `fd`s in linux are essentially pointers to different types of
+  resources they're an abstraction over things that could be files, terminals, pipes, network sockets etc.
 
 ## Cgroups
 
 - **cgroups:** run `cat /proc/<pid>/cgroup`, then look under `/sys/fs/cgroup/…` for files like `memory.max`, `cpu.max`, and `pids.max`.
 
 If we look at `cgroup.controllers` we can see what is currently available on the machine:
-```sh 
+
+```sh
 root@vm:/sys/fs/cgroup# cat cgroup.controllers
 cpuset cpu io memory hugetlb pids rdma misc
 ```
