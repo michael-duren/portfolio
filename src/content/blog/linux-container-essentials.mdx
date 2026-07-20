@@ -74,26 +74,27 @@ A global resource — that's vague. Let's take a look at what resources there ar
 | UTS       | `CLONE_NEWUTS`    | `uts_namespaces(7)`     | Hostname and NIS domain name         |
 
 Containers are supposed to be a black box, a somewhat seemingly virtualized environment like you're on a different
-computer.
-We do that by isolating what it can see and its identity,
+computer. We do that by isolating what the process can see and its identity:
 
-- UTS -> Allows us to change the hostname for the process in the container.
-- User Namespace -> creating a new user namespace allows us to set the internal application process as root
+- `UTS` — allows us to change the hostname for the process in the container.
+- `User` — creating a new user namespace allows us to set the internal application process as root
   but externally we can set the user ID to be a non root user. This is where the user ID information comes
   in from the previous section. The container process has to be root in order to call system calls (which we'll get to)
-  that change it's environment. But we don't want a container process to be running as root because if the users code ever
+  that change its environment. But we don't want a container process to be running as root because if the users code ever
   broke out of the container it would have root access to the host machine.
-- Cgroup -> This one is critical, we want to be able to set computer resources specific to the container.
-- `Network` ->
-- `IPC` ->
-- `Mount` -> Finding mounted filesystems: `man findmnt`. If we don't isolate the existing mounts you could see
+- `Cgroup` — this one is critical, we want to be able to set computer resources specific to the container.
+- `Network` — gives the container its own network stack: interfaces, routing tables, and ports. Two containers
+  can each bind port 80 without conflicting.
+- `IPC` — isolates System V IPC and POSIX message queues so a container can't read or interfere with
+  shared memory and queues owned by the host or other containers.
+- `Mount` — finding mounted filesystems: `man findmnt`. If we don't isolate the existing mounts you could see
   the hosts mounts from `cat /proc/<PID>/mounts` because the child process (container) inherited access to all the preexisting mounts.
-  When binding a host directory inside a containers root, with something like `docker run -v <host>:<container> ...` we are still 
+  When binding a host directory inside a containers root, with something like `docker run -v <host>:<container> ...` we are still
   using the `mount` namespace but binding the host dir into a mount in the container. Other containers cannot see into this however
   since they each have their own `mount` namespace.
-- `PID` -> These are crucial without them containers could see all running processes on the host machine.
+- `PID` — these are crucial, without them containers could see all running processes on the host machine.
   Talk about a security issue.
-- Time -> ?
+- `Time` — lets the container have its own boot and monotonic clock offsets. Rarely user-facing, but it exists.
 
 Seeing the namespaces on your system: `lsns`, here I'm running this in a vm
 as root.
@@ -119,38 +120,44 @@ as root.
 
 You've probably at some point needed to find or terminate a process on your machine, maybe its a container or a dev server
 that won't stop running and ran the classic `ps` command. `ps` outputs information about different processes running on your machine,
-if you're on mac or linux (we won't talk about Windows). Where is that command reading from? Turns out it reads from '/proc/' a pseudo
+if you're on mac or linux (we won't talk about Windows). Where is that command reading from? Turns out it reads from `/proc/`, a pseudo
 filesystem on your computer to read information from the kernel, and `/proc/<proc-id>/exe` is a symbolic link to the actual program binary.
 
 Isolating containers means importantly isolating the processes and the rest of the file system.
-Using the `chroot` command or `pivot_root` (`man 2 pivot_root`) `syscall` allows us to change what the root level of the file system for a process effectively isolating
-both the `/proc` and processes to a new view, and with the addition of our before mentioned namespace `CLONE_NEWPID` we have an isolated
+Using the `chroot` command or the `pivot_root` syscall (`man 2 pivot_root`) allows us to change the root of the file system for a process, effectively isolating
+both `/proc` and processes to a new view, and with the addition of our before mentioned namespace `CLONE_NEWPID` we have an isolated
 set of processes the container can see.
 
 Well, almost.
 
-If you run `ps` you'll get something unexpected. TODO: fill in examples here
+{/* TODO: fill in example — run `ps` inside the chroot + new PID namespace and show the unexpected output (proc not remounted yet) */}
 
 ## Essential syscalls
 
-### Overview
-
 What is a `syscall`? There are two levels of privileges when it comes to accessing hardware resources:
 
-1. User space -> where most of our programs run, browsers, email etc.
-2. Kernel space -> what actually has access to system resources like files, memory, network requests, etc.
+1. User space — where most of our programs run, browsers, email etc.
+2. Kernel space — what actually has access to system resources like files, memory, network requests, etc.
 
 The separation above is leaving a lot out but syscalls are what we use when we want to access privileged resources
 from our programs. Our programs running in the user space use syscalls to request the kernel take an action on our behalf.
 
-Example of syscalls:
+Some syscalls that matter for containers:
 
-- `read` - read from an open fd into a user-space buffer. `fd`s in linux are essentially pointers to different types of
-  resources they're an abstraction over things that could be files, terminals, pipes, network sockets etc.
+- `read` — read from an open fd into a user-space buffer. `fd`s in linux are essentially pointers to different types of
+  resources, they're an abstraction over things that could be files, terminals, pipes, network sockets etc.
+- `fork` — duplicate the calling process. Child gets its own copy of memory, fds, etc. Same code continues running
+  in both, diverging based on fork's return value (0 in child, child PID in parent).
+- `clone` — same idea as `fork`, but with a flags argument that lets you control what's shared vs. duplicated vs. isolated,
+  including creating new namespaces for the child. `fork()` is essentially `clone()` called with a default flag set that
+  shares nothing extra — it's the "no special namespace/sharing options" case.
+- `execve` — replace the calling process's memory with a brand new program loaded from disk. Same PID, new code.
+  Doesn't create a process, just replaces what's running in the current one.
 
 ## Cgroups
 
-- **cgroups:** run `cat /proc/<pid>/cgroup`, then look under `/sys/fs/cgroup/…` for files like `memory.max`, `cpu.max`, and `pids.max`.
+To see which cgroup a process belongs to, run `cat /proc/<pid>/cgroup`, then look under `/sys/fs/cgroup/…`
+for files like `memory.max`, `cpu.max`, and `pids.max`.
 
 If we look at `cgroup.controllers` we can see what is currently available on the machine:
 
@@ -164,27 +171,10 @@ To enable the controllers they must be written into the `cgroup.subtree_control`
 
 Setting a control for something like memory for example we just have to update the `memory.max`
 file. You might `cat memory.max` and find that it just says `max` which means processes that are assigned
-this `cgroup` can use the maximum amount of memory, but we could update it to be `echo 100000 > memory.max`(100 KB).
+this `cgroup` can use the maximum amount of memory, but we could update it to be `echo 100000 > memory.max` (100 KB).
 Making a new `cgroup` is easy, just create a folder for example `mkdir durendev` and `ls -la durendev` and we'll
 see all the default `cgroup` files have been added for us, `cat cgroup.procs` to see the current processes using
 the current `cgroup` (for a new `cgroup` this will be empty).
-
-## PTY Pseudo Terminals and Interactively running containers
-
-1. create launches the monitor (a process that outlives create).
-2. Monitor listens on a console socket.
-3. Container process opens the PTY → gets master + slave, keeps slave as its stdio, sends the master fd to the monitor over the console socket (SCM_RIGHTS).
-4. Monitor now holds the master and listens on an attach socket; box attach connects there and the monitor relays bytes ↔ master.
-
-One subtlety to file away: after the container process sets the slave as its stdio, it also does setsid() + TIOCSCTTY to make that slave its controlling terminal — that's what makes Ctrl-C and job control actually work.
-
-**Where to read the primitives:**
-
-- `pty(7)`, `pts(4)` — the master/slave model
-- `termios(3)` — the line discipline (echo, canonical mode, signals)
-- `openpty(3)` / `forkpty(3)` — the convenience calls that create the pair
-- `unix(7)` + `cmsg(3)` — `SCM_RIGHTS` fd passing (the console-socket mechanism)
-- `ioctl_tty(2)` — `TIOCSCTTY` (claim controlling terminal)
 
 ## RLimits
 
@@ -213,21 +203,66 @@ cat /proc/898951/limits
 | Max realtime priority | 0          | 0          | —         |
 | Max realtime timeout  | unlimited  | unlimited  | us        |
 
-## setuid
-
-- p. 21 — [setuid example](./setuid/README.md)
-- p. 23 — [Adrian Mouat: Why Linux Capabilities Exist and How They Work](https://adrianmouat.com/posts/linux-capabilities-why-they-exist-and-how-they-work/)
-
-fork — duplicate the calling process. Child gets its own copy of memory, fds, etc. Same code continues running in both, diverging based on fork's return value (0 in child, childPID in parent).
-clone — same idea, but with a flags argument that lets you control what's shared vs. duplicated vs. isolated, including creating new namespaces for the child. fork() is essentially clone() called with a default flag set that shares nothing extra — it's the "no special namespace/sharing options" case.
-execve — replace the calling process's memory with a brand new program loaded from disk. Same PID, new code. Doesn't create a process, just replaces what's running in the current one.
+{/*
+TODO: setuid & capabilities section
+- setuid example (from container security notes, p. 21)
+- p. 23 — Adrian Mouat: Why Linux Capabilities Exist and How They Work
+  https://adrianmouat.com/posts/linux-capabilities-why-they-exist-and-how-they-work/
+*/}
 
 ## TTY
 
-TTY literally stands for "teletype" — the electromechanical typewriters (like the Teletype Model 33) that were the physical terminals of the 1960s–70s, wired to the computer over a serial line. The hardware is museum material now, but the software abstraction built for it never left. In Linux, a tty is a kernel object with three layers: a device (where bytes physically come from and go to), a line discipline (the kernel middle layer that buffers input into lines, handles backspace, echoes keystrokes, and converts Ctrl-C into SIGINT for the foreground process group), and the character device file (/dev/tty1, /dev/pts/3) that processes read and write. The line discipline is the part that makes a tty more than a dumb byte pipe — it's where job control signals, canonical "cooked" mode vs raw mode, and echo all live.
-Today the "device" layer comes in three flavors: real serial ports (/dev/ttyS0, still used for embedded boards and servers), virtual consoles (/dev/tty1–tty63, the text screens you reach with Ctrl-Alt-F3, where the kernel itself plays the role of the terminal hardware), and pseudoterminals (/dev/pts/N, where a userspace program — terminal emulator, sshd, tmux, your container runtime — plays the terminal hardware by holding the master side). Same line discipline, same job-control semantics in all three; only who's on the far end changes. There's also the magic file /dev/tty, which always means "my controlling terminal, whatever it is."
+TTY literally stands for "teletype" — the electromechanical typewriters (like the Teletype Model 33) that were the
+physical terminals of the 1960s–70s, wired to the computer over a serial line. The hardware is museum material now,
+but the software abstraction built for it never left.
+
+In Linux, a tty is a kernel object with three layers:
+
+1. A **device** — where bytes physically come from and go to.
+2. A **line discipline** — the kernel middle layer that buffers input into lines, handles backspace, echoes keystrokes,
+   and converts Ctrl-C into SIGINT for the foreground process group.
+3. The **character device file** (`/dev/tty1`, `/dev/pts/3`) that processes read and write.
+
+The line discipline is the part that makes a tty more than a dumb byte pipe — it's where job control signals,
+canonical "cooked" mode vs raw mode, and echo all live.
+
+Today the "device" layer comes in three flavors: real serial ports (`/dev/ttyS0`, still used for embedded boards and
+servers), virtual consoles (`/dev/tty1`–`tty63`, the text screens you reach with Ctrl-Alt-F3, where the kernel itself
+plays the role of the terminal hardware), and pseudoterminals (`/dev/pts/N`, where a userspace program — terminal
+emulator, sshd, tmux, your container runtime — plays the terminal hardware by holding the master side). Same line
+discipline, same job-control semantics in all three; only who's on the far end changes. There's also the magic file
+`/dev/tty`, which always means "my controlling terminal, whatever it is."
+
+## PTYs and interactively running containers
+
+How does `docker run -it` (or `runc`'s equivalent) actually give you an interactive shell inside a container?
+The runtime wires up a pseudoterminal:
+
+1. `create` launches a **monitor** — a process that outlives the `create` command itself.
+2. The monitor listens on a **console socket**.
+3. The container process opens a PTY → gets the master + slave pair, keeps the slave as its stdio, and sends the
+   master fd to the monitor over the console socket (`SCM_RIGHTS`).
+4. The monitor now holds the master and listens on an **attach socket**; the runtime's `attach` command connects
+   there and the monitor relays bytes ↔ master.
+
+One subtlety to file away: after the container process sets the slave as its stdio, it also does `setsid()` +
+`TIOCSCTTY` to make that slave its controlling terminal — that's what makes Ctrl-C and job control actually work.
+
+**Where to read the primitives:**
+
+- `pty(7)`, `pts(4)` — the master/slave model
+- `termios(3)` — the line discipline (echo, canonical mode, signals)
+- `openpty(3)` / `forkpty(3)` — the convenience calls that create the pair
+- `unix(7)` + `cmsg(3)` — `SCM_RIGHTS` fd passing (the console-socket mechanism)
+- `ioctl_tty(2)` — `TIOCSCTTY` (claim controlling terminal)
+
+{/*
+TODO: ## Container Images
+- layers, OCI image spec, overlayfs
+- how the rootfs we chroot/pivot_root into actually gets built
+*/}
 
 ## Appendix/Terminology
 
-- **canonical cooked mode** vs **raw mode** - a terminal is either in one of two states **cooked** using a buffered read separated on `\n` or raw, every byte
-  is sent to the program without buffering think a program like vim.
+- **canonical cooked mode** vs **raw mode** — a terminal is either in one of two states: **cooked**, using a buffered read
+  separated on `\n`, or **raw**, where every byte is sent to the program without buffering — think a program like vim.
