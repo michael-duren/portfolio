@@ -7,19 +7,21 @@ heroImage: "../../images/blog/linux-container-essentials-hero.png"
 tags: ["Go", "C", "Unix", "Linux", "Docker", "Podman", "Runc", "Crun"]
 ---
 
-In a world of abstraction, AI and black boxes, understanding what's actually happening is important.
-At least I think so. AI has transformed our productivity but has it helped our understanding
-of the things we're building?
-
 In this article we'll go into the Linux OS essentials necessary to understand what containers are
 and how they work.
 
+> Keep in mind the phrase "Everything is a file", this will help in understanding each piece of this article.
+
 ## User IDs & Groups
 
-This maybe seems like an odd one to start with, but there's a reason docker groups exist.
-Here's my entry in `/etc/passwd`:
+> If you are already familiar with how Linux users and groups work you can skip this.
 
-```text
+This maybe seems like an odd one to start with, but there's a reason docker groups exist.
+We can find information about a user on a Linux system by reading the contents of `/etc/passwd`
+or a group by reading `/etc/group`.
+
+```bash
+cat /etc/passwd
 mduren:x:1000:1000::/home/mduren:/usr/bin/zsh
 ```
 
@@ -35,10 +37,18 @@ That colon-separated line breaks down as:
 | Home       | `/home/mduren` | home directory                                        |
 | Shell      | `/usr/bin/zsh` | login shell                                           |
 
-Now the docker group, via `cat /etc/group | grep -i docker`:
+A user has a primary group, but can belong to many groups. In order to see your groups
+you belong in you can search `cat /etc/group | grep -i $USER`
 
-```text
-docker:x:961:mduren
+An example of needing to belong to a group is being able to call docker without sudo, because as we'll see
+throughout this article, the docker daemon runs as root, so after installation on linux we'll typically
+want to add ourselves to the docker group.
+
+```bash
+# add yourself to the docker group
+sudo usermod -aG docker $USER
+cat /etc/group | grep -i docker
+> docker:x:961:mduren
 ```
 
 Entries in `/etc/group` follow `name:password:GID:members`:
@@ -203,12 +213,11 @@ cat /proc/898951/limits
 | Max realtime priority | 0          | 0          | —         |
 | Max realtime timeout  | unlimited  | unlimited  | us        |
 
-{/*
 TODO: setuid & capabilities section
+
 - setuid example (from container security notes, p. 21)
 - p. 23 — Adrian Mouat: Why Linux Capabilities Exist and How They Work
   https://adrianmouat.com/posts/linux-capabilities-why-they-exist-and-how-they-work/
-*/}
 
 ## TTY
 
@@ -256,11 +265,10 @@ One subtlety to file away: after the container process sets the slave as its std
 - `unix(7)` + `cmsg(3)` — `SCM_RIGHTS` fd passing (the console-socket mechanism)
 - `ioctl_tty(2)` — `TIOCSCTTY` (claim controlling terminal)
 
-{/*
 TODO: ## Container Images
+
 - layers, OCI image spec, overlayfs
 - how the rootfs we chroot/pivot_root into actually gets built
-*/}
 
 ## Appendix/Terminology
 

@@ -2,8 +2,8 @@
 title: "Building PicoWeather Watch: From Embedded C to Cloud Monitoring with TinyGo"
 description: "A deep dive into building a complete IoT weather monitoring system with Raspberry Pi Pico W, exploring binary protocols, USB serial communication, and Prometheus metrics."
 pubDate: 2026-03-17
-cardImage: "../../images/blog/tinygo-logo.png"
-heroImage: "../../images/blog/tinygo-hero.jpeg"
+cardImage: "../../images/blog/tinygo-card.png"
+heroImage: "../../images/blog/tinygo-hero.png"
 tags:
   [
     "Go",
@@ -83,7 +83,7 @@ I'd never do this, but hey it's there if you need it!
 - Tiny go tries not to use heap allocs, and you should too! Be wary of esacpe analaysis, taking pointers, you can
   be aware that this is not the time for unecessary abstractions, or any really. Tiny go already gave you some be grateful!
 
-![Image of a tiny go running on a microcontroller](../../images/blog/trash.jpg)
+![Raw C volatile register write next to the equivalent TinyGo machine package call](../../images/blog/tinygo-c-vs-go.png)
 
 - Go routines are supported, similar to the normal go runtime a stack is allocated per routine
   and switching happens by saving and restoring the CPU registers. If you are going into the
