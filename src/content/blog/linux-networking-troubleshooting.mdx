@@ -32,12 +32,12 @@ why it looks cryptic compared to old-style `eth0`.
 nmcli connection add type ethernet ifname enp3s0u2u2u3 con-name udm-recovery ip4 192.168.1.25/24 gw4 192.168.1.1
 ```
 
-**What it does:** Creates a *saved* NetworkManager connection profile (not yet active)
+**What it does:** Creates a _saved_ NetworkManager connection profile (not yet active)
 called `udm-recovery`, bound specifically to the `enp3s0u2u2u3` interface.
 
 **Why we specified a manual IP instead of using DHCP:**
 A device in Recovery Mode doesn't run a DHCP server — it's a minimal bootloader-level
-environment, not the full router OS. Normally when you plug into a router/UDM, *it*
+environment, not the full router OS. Normally when you plug into a router/UDM, _it_
 hands your laptop an IP automatically via DHCP. In recovery mode nothing is offering
 that, so your laptop has no way to get an address on its own. We had to manually put
 the laptop on the same subnet (`192.168.1.x`) as the UDM's known recovery-mode
@@ -45,13 +45,14 @@ fallback address, or there'd be no way for the two devices to route traffic to e
 other at all — like trying to mail a letter with no return address in the same zip code.
 
 **Breaking down the flags:**
+
 - `type ethernet` — this is a wired connection profile.
 - `ifname enp3s0u2u2u3` — bind it to that specific physical interface.
 - `con-name udm-recovery` — just a friendly label so we can reference/delete it later.
 - `ip4 192.168.1.25/24` — manually assigns the laptop the address `192.168.1.25`,
   with a `/24` (i.e. `255.255.255.0`) subnet mask. The specific number `.25` was
   arbitrary — any unused address in `192.168.1.2`–`192.168.1.254` would've worked.
-  It only matters that it's *in the same subnet* as the device we're trying to reach.
+  It only matters that it's _in the same subnet_ as the device we're trying to reach.
 - `gw4 192.168.1.1` — sets a default gateway. (This turned out to be the wrong
   address for where the UDM was actually listening — see step 4.)
 
@@ -72,7 +73,7 @@ nmcli connection up udm-recovery
 
 **What it does:** Switches the `enp3s0u2u2u3` interface over to actually use the
 `udm-recovery` profile — this is the step that actually applies the static IP to
-the interface (step 2 only *created* the profile, it didn't apply it).
+the interface (step 2 only _created_ the profile, it didn't apply it).
 
 ---
 
@@ -89,7 +90,8 @@ local network claimed that address.
 ```bash
 ping 192.168.1.30
 ```
-*(after recreating the profile with the corrected gateway — see step 5)*
+
+_(after recreating the profile with the corrected gateway — see step 5)_
 
 **Result:** Succeeded. This confirmed the UDM's recovery mode was actually
 listening on `192.168.1.30`, not the more commonly referenced `192.168.1.1`.
@@ -156,12 +158,12 @@ to normal automatic DHCP behavior on that interface.
 
 ## Quick command cheat-sheet
 
-| Command | Purpose |
-|---|---|
-| `nmcli device status` | List interfaces, find the Ethernet device name |
-| `nmcli connection add type ethernet ifname <if> con-name <name> ip4 <ip>/<mask> gw4 <gw>` | Create a static IP profile |
-| `nmcli connection up <name>` | Activate a saved profile |
-| `nmcli connection down <name>` | Deactivate a profile without deleting it |
-| `nmcli connection delete <name>` | Remove a saved profile entirely |
-| `ip addr show <if>` | Confirm what IP is actually applied to an interface |
-| `ping <ip>` | Test basic Layer 3 reachability |
+| Command                                                                                   | Purpose                                             |
+| ----------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| `nmcli device status`                                                                     | List interfaces, find the Ethernet device name      |
+| `nmcli connection add type ethernet ifname <if> con-name <name> ip4 <ip>/<mask> gw4 <gw>` | Create a static IP profile                          |
+| `nmcli connection up <name>`                                                              | Activate a saved profile                            |
+| `nmcli connection down <name>`                                                            | Deactivate a profile without deleting it            |
+| `nmcli connection delete <name>`                                                          | Remove a saved profile entirely                     |
+| `ip addr show <if>`                                                                       | Confirm what IP is actually applied to an interface |
+| `ping <ip>`                                                                               | Test basic Layer 3 reachability                     |

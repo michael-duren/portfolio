@@ -188,7 +188,7 @@ the current `cgroup` (for a new `cgroup` this will be empty).
 
 ## RLimits
 
-Every process carries a set of resource limits (rlimits). You can read a running process's limits from `/proc/<pid>/limits`:
+Every process carries a set of resource limits (`rlimits`). You can read a running process's limits from `/proc/<pid>/limits`:
 
 ```bash
 cat /proc/898951/limits
@@ -269,6 +269,14 @@ TODO: ## Container Images
 
 - layers, OCI image spec, overlayfs
 - how the rootfs we chroot/pivot_root into actually gets built
+
+## Container Networking
+
+- Bridge mode: Apps running in standalone containers explicitly sets any connection between a container and host port; typically used as the default.
+  This creates a virtual `ethernet` bridge or `veth` that forwards packets between any other network interfaces attached.
+- Host mode: removes network isolation to the host.
+- Container mode: Reuse the network namespace of another container.
+- No networking: Disable support
 
 ## Appendix/Terminology
 
