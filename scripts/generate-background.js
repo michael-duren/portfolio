@@ -523,7 +523,7 @@ async function main() {
     });
 
     // Escape backticks and \${ for use in the template literal
-    const escapedHtml = html.replace(/\`/g, '\\`').replace(/\$\{/g, '\\${');
+    const escapedHtml = html.replace(/`/g, '\\`').replace(/\$\{/g, '\\${');
 
     const outputContent = `---
 /* 
