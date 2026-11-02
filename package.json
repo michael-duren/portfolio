@@ -24,7 +24,7 @@
     "astro": "^7.0.3",
     "astro-icon": "^1.1.5",
     "js-confetti": "^0.13.1",
-    "nanostores": "^1.2.0",
+    "nanostores": "^1.5.5",
     "nodemailer": "^9.0.3",
     "satori": "^0.25.0",
     "shiki": "^4.0.2",
