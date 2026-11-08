@@ -27,7 +27,7 @@
     "nanostores": "^1.2.0",
     "nodemailer": "^9.0.3",
     "satori": "^0.25.0",
-    "shiki": "^4.0.2",
+    "shiki": "^4.6.0",
     "tailwindcss": "^4.2.1"
   },
   "devDependencies": {
