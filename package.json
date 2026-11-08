@@ -26,7 +26,7 @@
     "js-confetti": "^0.13.1",
     "nanostores": "^1.2.0",
     "nodemailer": "^9.0.3",
-    "satori": "^0.25.0",
+    "satori": "^0.63.2",
     "shiki": "^4.0.2",
     "tailwindcss": "^4.2.1"
   },
